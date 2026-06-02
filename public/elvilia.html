@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex dos Reinos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   RESET & ROOT
+═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:      #1a1209;
+  --ink2:     #3d2b0e;
+  --ink3:     #7a5c2e;
+  --parch:    #f5f0e4;
+  --parch2:   #ede5d0;
+  --parch3:   #e2d8c0;
+  --cream:    #fdf8ef;
+  --gold:     #8b6914;
+  --gold2:    #c9a227;
+  --gold3:    #e8d08a;
+  --rust:     #7a2d12;
+  --rust2:    #a83e1a;
+  --navy:     #0d2240;
+  --moss:     #2d4a1e;
+  --shadow:   rgba(26,18,9,0.18);
+  --radius:   4px;
+  --font-title: 'Cinzel', Georgia, serif;
+  --font-body:  'Crimson Pro', Georgia, serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════════
+   BACKGROUND TEXTURE
+═══════════════════════════════════════════════ */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: -1;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(139,105,20,0.04) 28px, rgba(139,105,20,0.04) 29px),
+    repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(139,105,20,0.03) 28px, rgba(139,105,20,0.03) 29px);
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════ */
+.site-header {
+  background: var(--ink2);
+  border-bottom: 3px solid var(--gold2);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 16px var(--shadow);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+}
+
+.header-crest {
+  width: 44px; height: 44px;
+  border: 2px solid var(--gold2);
+  border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-brand h1 {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  color: var(--gold3);
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+}
+.header-brand p {
+  font-size: 0.75rem;
+  color: rgba(232,208,138,0.6);
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* ═══════════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════════ */
+.btn {
+  font-family: var(--font-title);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  padding: 7px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.18s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.btn-gold {
+  background: var(--gold2);
+  color: var(--ink);
+  border-color: var(--gold);
+}
+.btn-gold:hover { background: var(--gold3); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--gold3);
+  border-color: rgba(201,162,39,0.4);
+}
+.btn-outline:hover {
+  background: rgba(201,162,39,0.1);
+  border-color: var(--gold2);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink3);
+  border-color: rgba(139,105,20,0.25);
+}
+.btn-ghost:hover { background: var(--parch2); color: var(--ink2); }
+
+.btn-danger {
+  background: transparent;
+  color: var(--rust2);
+  border-color: rgba(122,45,18,0.3);
+}
+.btn-danger:hover { background: rgba(122,45,18,0.08); }
+
+.btn-sm { padding: 4px 10px; font-size: 0.6rem; }
+.btn-xs { padding: 3px 8px; font-size: 0.58rem; }
+
+/* ═══════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════ */
+.app-layout {
+  display: flex;
+  min-height: calc(100vh - 68px);
+}
+
+/* ═══════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════ */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--parch2);
+  border-right: 1px solid rgba(139,105,20,0.3);
+  padding: 1.2rem 0;
+  position: sticky;
+  top: 68px;
+  height: calc(100vh - 68px);
+  overflow-y: auto;
+}
+
+.sidebar-label {
+  font-family: var(--font-title);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  color: var(--ink3);
+  padding: 0 1rem 0.4rem;
+  border-bottom: 1px solid rgba(139,105,20,0.2);
+  margin-bottom: 0.4rem;
+}
+
+.reino-nav-btn {
+  display: block;
+  width: 100%;
+  padding: 9px 1rem;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+  position: relative;
+}
+.reino-nav-btn:hover {
+  background: rgba(139,105,20,0.08);
+  color: var(--ink);
+}
+.reino-nav-btn.active {
+  background: rgba(139,105,20,0.14);
+  border-left-color: var(--gold2);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════
+   MAIN CONTENT
+═══════════════════════════════════════════════ */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  max-width: 980px;
+}
+
+/* ═══════════════════════════════════════════════
+   LOADING / EMPTY
+═══════════════════════════════════════════════ */
+.state-loading, .state-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--ink3);
+  font-style: italic;
+}
+.state-loading::before {
+  content: '⏳';
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-style: normal;
+  animation: spin 2s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════════
+   SECTION DIVIDERS
+═══════════════════════════════════════════════ */
+.section-heading {
+  font-family: var(--font-title);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  border-bottom: 1px solid rgba(139,105,20,0.3);
+  padding-bottom: 5px;
+  margin: 1.8rem 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ═══════════════════════════════════════════════
+   KINGDOM HERO
+═══════════════════════════════════════════════ */
+.reino-hero {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 1.5rem;
+  background: var(--parch);
+  border: 1px solid rgba(139,105,20,0.35);
+  border-radius: 6px;
+  padding: 1.4rem;
+  margin-bottom: 0.5rem;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.emblem-frame {
+  width: 150px; height: 150px;
+  border: 2px solid var(--gold);
+  border-radius: 4px;
+  background: var(--cream);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.emblem-frame img { width: 100%; height: 100%; object-fit: contain; }
+.emblem-placeholder {
+  font-size: 0.7rem;
+  color: var(--ink3);
+  text-align: center;
+  font-style: italic;
+  padding: 0.5rem;
+}
+
+.reino-meta h2 {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  color: var(--ink2);
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.05em;
+}
+.reino-meta .capital-label {
+  font-size: 0.82rem;
+  color: var(--ink3);
+  font-style: italic;
+  margin-bottom: 0.7rem;
+}
+.reino-meta .desc-text {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--ink2);
+}
+
+.hero-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ═══════════════════════════════════════════════
+   STAT GRID
+═══════════════════════════════════════════════ */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.7rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat-card {
+  background: var(--parch);
+  border: 1px solid rgba(139,105,20,0.25);
+  border-radius: 4px;
+  padding: 0.7rem 1rem;
+}
+.stat-card .st-label {
+  font-family: var(--font-title);
+  font-size: 0.58rem;
+  letter-spacing: 0.09em;
+  color: var(--ink3);
+  margin-bottom: 3px;
+}
+.stat-card .st-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--ink2);
+  line-height: 1.1;
+}
+.stat-card .st-sub {
+  font-size: 0.75rem;
+  color: var(--ink3);
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════
+   UNIFORM BLOCK
+═══════════════════════════════════════════════ */
+uniform-block {
+  display: flex; /* Mudado de grid para flex para melhor controle */
+  flex-direction: column;
+  gap: 1.5rem;
+  background: var(--parch);
+  border: 1px solid rgba(139,105,20,0.25);
+  border-radius: 4px;
+  padding: 1.2rem;
+}
+
+.uniform-item {
+  display: grid;
+  grid-template-columns: 100px 1fr; /* Foto fixa em 100px e texto ocupa o resto */
+  gap: 1.2rem;
+  align-items: start;
+  border-bottom: 1px solid rgba(139,105,20,0.1);
+  padding-bottom: 1rem;
+}
+.uniform-item:last-child {
+  border-bottom: none;
+}
+.uniform-img-frame {
+  width: 100px; height: 140px;
+  border: 1px solid rgba(139,105,20,0.3);
+  border-radius: 3px;
+  background: var(--cream);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.uniform-img-frame img { width: 100%; height: 100%; object-fit: contain; }
+.uniform-img-frame .img-placeholder {
+  font-size: 0.65rem;
+  color: var(--ink3);
+  text-align: center;
+  padding: 0.5rem;
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════
+   TABLE
+═══════════════════════════════════════════════ */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  margin-bottom: 0.5rem;
+}
+.data-table thead th {
+  font-family: var(--font-title);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: var(--ink3);
+  padding: 6px 10px;
+  text-align: left;
+  background: var(--parch2);
+  border-bottom: 1px solid var(--gold);
+  white-space: nowrap;
+}
+.data-table tbody td {
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(139,105,20,0.1);
+  color: var(--ink2);
+  vertical-align: middle;
+}
+.data-table tbody tr:hover td { background: rgba(139,105,20,0.04); }
+
+.type-badge {
+  display: inline-block;
+  font-family: var(--font-title);
+  font-size: 0.55rem;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.badge-capital    { background: #0d2240; color: #c9a227; }
+.badge-cidade     { background: #1a3a1e; color: #a8d0a8; }
+.badge-forte      { background: #3d2000; color: #ffcc80; }
+.badge-fortaleza  { background: #2a1200; color: #ffab40; }
+.badge-porto      { background: #0d2a38; color: #80deea; }
+.badge-ruinas     { background: #2a2820; color: #b0a890; }
+.badge-outros     { background: #2a2a2a; color: #c0c0c0; }
+
+.row-actions {
+  display: flex;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════════
+   INSTABILITY CARDS
+═══════════════════════════════════════════════ */
+.instability-card {
+  background: rgba(122,45,18,0.06);
+  border-left: 3px solid var(--rust);
+  padding: 0.8rem 1rem;
+  border-radius: 0 4px 4px 0;
+  margin-bottom: 0.6rem;
+  animation: fadeIn 0.3s ease;
+}
+.instability-card .inst-type {
+  font-family: var(--font-title);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--rust2);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.instability-card .inst-desc {
+  font-size: 0.9rem;
+  color: var(--ink2);
+  line-height: 1.55;
+}
+
+/* ═══════════════════════════════════════════════
+   COMMERCE TAGS
+═══════════════════════════════════════════════ */
+.commerce-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.commerce-tag {
+  background: rgba(139,105,20,0.1);
+  border: 1px solid rgba(139,105,20,0.28);
+  border-radius: 3px;
+  padding: 3px 10px;
+  font-size: 0.82rem;
+  color: var(--ink2);
+}
+
+/* ═══════════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════════ */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(26,18,9,0.65);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+  animation: fadeBackdrop 0.2s ease;
+}
+@keyframes fadeBackdrop { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  background: var(--cream);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 40px rgba(26,18,9,0.4);
+  animation: modalIn 0.25s ease;
+}
+@keyframes modalIn { from { transform: scale(0.95) translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.modal-header {
+  background: var(--ink2);
+  padding: 1rem 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--gold2);
+}
+.modal-header h3 {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: var(--gold3);
+}
+.modal-close {
+  background: none; border: none;
+  color: rgba(232,208,138,0.6);
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: color 0.15s;
+}
+.modal-close:hover { color: var(--gold3); }
+
+.modal-body { padding: 1.4rem; }
+.modal-footer {
+  padding: 1rem 1.4rem;
+  border-top: 1px solid rgba(139,105,20,0.2);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* ═══════════════════════════════════════════════
+   FORM FIELDS
+═══════════════════════════════════════════════ */
+.field-group { margin-bottom: 1rem; }
+.field-group label {
+  display: block;
+  font-family: var(--font-title);
+  font-size: 0.6rem;
+  letter-spacing: 0.09em;
+  color: var(--ink3);
+  margin-bottom: 4px;
+}
+.field-group input,
+.field-group select,
+.field-group textarea {
+  width: 100%;
+  background: var(--parch);
+  border: 1px solid rgba(139,105,20,0.35);
+  border-radius: 3px;
+  padding: 7px 10px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--ink);
+  transition: border-color 0.15s;
+  outline: none;
+}
+.field-group input:focus,
+.field-group select:focus,
+.field-group textarea:focus {
+  border-color: var(--gold2);
+  background: var(--cream);
+}
+.field-group textarea { resize: vertical; min-height: 80px; }
+.field-group select option { background: var(--parch); }
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+.field-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.6rem;
+}
+
+/* ═══════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════ */
+#toast-container {
+  position: fixed;
+  bottom: 1.5rem; right: 1.5rem;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.toast {
+  background: var(--ink2);
+  border: 1px solid var(--gold2);
+  color: var(--gold3);
+  font-family: var(--font-title);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  padding: 9px 16px;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px var(--shadow);
+  animation: toastIn 0.3s ease;
+  max-width: 280px;
+}
+.toast.error { border-color: var(--rust2); color: #ffaa80; }
+@keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
+
+/* ═══════════════════════════════════════════════
+   CONFIRM DIALOG
+═══════════════════════════════════════════════ */
+.confirm-dialog {
+  background: var(--cream);
+  border: 1px solid var(--rust);
+  border-radius: 6px;
+  padding: 1.5rem;
+  max-width: 360px;
+  box-shadow: 0 8px 40px rgba(26,18,9,0.4);
+  text-align: center;
+}
+.confirm-dialog h4 {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  color: var(--rust2);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.7rem;
+}
+.confirm-dialog p {
+  font-size: 0.88rem;
+  color: var(--ink2);
+  margin-bottom: 1.2rem;
+  line-height: 1.5;
+}
+.confirm-btns { display: flex; gap: 0.6rem; justify-content: center; }
+
+/* ═══════════════════════════════════════════════
+   NAVAL BAR
+═══════════════════════════════════════════════ */
+.naval-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+.naval-row .nv-label {
+  font-family: var(--font-title);
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  color: var(--ink3);
+  min-width: 130px;
+}
+.naval-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(139,105,20,0.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.naval-fill {
+  height: 100%;
+  background: var(--navy);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+.naval-num {
+  font-size: 0.82rem;
+  color: var(--ink2);
+  min-width: 55px;
+  text-align: right;
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media (max-width: 700px) {
+  .sidebar { display: none; }
+  .main-content { padding: 1rem; }
+  .reino-hero { grid-template-columns: 1fr; }
+  .field-row, .field-row-3 { grid-template-columns: 1fr; }
+  .uniform-block { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-brand">
+    <div class="header-crest">
+      <svg viewBox="0 0 40 40" width="32" height="32">
+        <polygon points="20,4 34,12 34,28 20,36 6,28 6,12" fill="none" stroke="#c9a227" stroke-width="1.8"/>
+        <polygon points="20,10 28,15 28,25 20,30 12,25 12,15" fill="none" stroke="#c9a227" stroke-width="0.8" opacity="0.5"/>
+        <circle cx="20" cy="20" r="4" fill="#c9a227"/>
+        <line x1="20" y1="4" x2="20" y2="36" stroke="#c9a227" stroke-width="0.7" opacity="0.4"/>
+        <line x1="6" y1="20" x2="34" y2="20" stroke="#c9a227" stroke-width="0.7" opacity="0.4"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Codex dos Reinos</h1>
+      <p>Registros militares, populacionais e comerciais</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <a href="corpo.html" class="btn btn-outline">Familias</a>
+    <a href="base.html" class="btn btn-outline">Descrição</a>
+    <button class="btn btn-outline" onclick="openNewKingdomModal()">⚔ Novo Reino</button>
+  </div>
+</header>
+
+<div class="app-layout">
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-label">Reinos</div>
+    <div id="reino-list">
+      <div class="state-loading" style="padding:2rem 1rem;font-size:0.8rem">Carregando...</div>
+    </div>
+  </nav>
+
+  <main class="main-content" id="main-content">
+    <div class="state-empty" id="welcome-state">
+      <div style="font-size:3rem;margin-bottom:1rem;filter:sepia(1) opacity(0.5)">⚜</div>
+      <p style="font-family:var(--font-title);font-size:0.9rem;letter-spacing:0.1em;color:var(--ink3)">
+        Selecione um reino para consultar seus registros
+      </p>
+    </div>
+    <div id="reino-detail" style="display:none"></div>
+  </main>
+</div>
+
+<div id="modal-container"></div>
+
+<div id="toast-container"></div>
+
+<script>
+/* ══════════════════════════════════════════════════
+   STATE & CONFIG
+══════════════════════════════════════════════════ */
+const API = '';  // same origin
+let currentReinoName = null;
+let currentData = null;
+const MAX_NAVAL = { guerra: 68, patrulha: 120 };
+
+/* ══════════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════════ */
+function toast(msg, type = 'ok') {
+  const tc = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast' + (type === 'error' ? ' error' : '');
+  t.textContent = msg;
+  tc.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+/* ══════════════════════════════════════════════════
+   API HELPERS
+══════════════════════════════════════════════════ */
+async function apiFetch(url, opts = {}) {
+  const res = await fetch(API + url, {
+    headers: { 'Content-Type': 'application/json' },
+    ...opts,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Erro desconhecido');
+  return data;
+}
+
+/* ══════════════════════════════════════════════════
+   LOAD REINO LIST
+══════════════════════════════════════════════════ */
+async function loadReinoList() {
+  try {
+    const reinos = await apiFetch('/api/reinos');
+    const list = document.getElementById('reino-list');
+    list.innerHTML = '';
+    reinos.forEach(r => {
+      const btn = document.createElement('button');
+      btn.className = 'reino-nav-btn' + (r.title === currentReinoName ? ' active' : '');
+      btn.textContent = r.title;
+      btn.onclick = () => selectReino(r.title);
+      list.appendChild(btn);
+    });
+  } catch (e) {
+    toast('Erro ao carregar reinos: ' + e.message, 'error');
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   SELECT REINO
+══════════════════════════════════════════════════ */
+async function selectReino(nome) {
+  currentReinoName = nome;
+  // Update sidebar active
+  document.querySelectorAll('.reino-nav-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === nome);
+  });
+  document.getElementById('welcome-state').style.display = 'none';
+  const detail = document.getElementById('reino-detail');
+  detail.style.display = 'block';
+  detail.innerHTML = '<div class="state-loading">Carregando registros...</div>';
+  try {
+    const resp = await apiFetch('/api/reinos/' + encodeURIComponent(nome));
+    currentData = resp;
+    renderReino(nome, resp.parsed, resp.rows);
+  } catch (e) {
+    detail.innerHTML = `<div class="state-empty">Erro: ${e.message}</div>`;
+    toast('Erro: ' + e.message, 'error');
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   RENDER REINO
+══════════════════════════════════════════════════ */
+function renderReino(nome, parsed, rows) {
+  const { reino, cidades, instabilidades } = parsed;
+  const detail = document.getElementById('reino-detail');
+
+  // Stats
+  const totalPop = cidades.reduce((s, c) => s + (parseInt(c.pop) || 0), 0);
+  const totalMil = cidades.reduce((s, c) => s + (parseInt(c.mil) || 0), 0);
+  const totalGuerra = cidades.reduce((s, c) => s + (parseInt(c.naviosGuerra) || 0), 0);
+  const totalPatrulha = cidades.reduce((s, c) => s + (parseInt(c.naviosPatrulha) || 0), 0);
+
+  const capital = cidades.find(c => c.tipo && c.tipo.toLowerCase().includes('capital'));
+  const capLabel = capital ? `Capital: ${capital.cidade}` : '';
+
+  // Commerce tags from reino.comercio field
+  const comercios = reino.comercio
+    ? reino.comercio.split(/[,;|]/).map(s => s.trim()).filter(Boolean)
+    : [];
+
+  detail.innerHTML = `
+    <div class="reino-hero">
+      <div>
+        <div class="emblem-frame">
+          ${reino.urlEmblema
+            ? `<img src="${reino.urlEmblema}" alt="Emblema de ${nome}" onerror="this.parentNode.innerHTML='<div class=emblem-placeholder>Emblema<br>pendente</div>'">`
+            : `<div class="emblem-placeholder">Emblema<br>pendente</div>`}
+        </div>
+        <div style="margin-top:0.8rem;display:flex;flex-direction:column;gap:4px">
+          <button class="btn btn-ghost btn-sm" style="width:100%" onclick="openInfoModal()">✏ Editar Informações</button>
+          <button class="btn btn-danger btn-sm" style="width:100%" onclick="confirmDeleteReino('${nome}')">✕ Remover Reino</button>
+        </div>
+      </div>
+      <div class="reino-meta">
+        <h2>${nome}</h2>
+        ${capLabel ? `<div class="capital-label">${capLabel}</div>` : ''}
+        <div class="desc-text">${reino.descricao || '<em style="color:var(--ink3)">Sem descrição registrada.</em>'}</div>
+        ${comercos_html(comercios)}
+      </div>
+    </div>
+
+    <div class="stat-grid" style="margin-top:1rem">
+      <div class="stat-card">
+        <div class="st-label">População Total</div>
+        <div class="st-value">${totalPop.toLocaleString('pt-BR')}</div>
+        <div class="st-sub">hab. estimados</div>
+      </div>
+      <div class="stat-card">
+        <div class="st-label">Efetivo Militar</div>
+        <div class="st-value">${totalMil.toLocaleString('pt-BR')}</div>
+        <div class="st-sub">${totalPop > 0 ? (totalMil/totalPop*100).toFixed(1) : '0'}% da pop.</div>
+      </div>
+      <div class="stat-card">
+        <div class="st-label">Navios de Guerra</div>
+        <div class="st-value">${totalGuerra}</div>
+        <div class="st-sub">grandes embarcações</div>
+      </div>
+      <div class="stat-card">
+        <div class="st-label">Navios Patrulha</div>
+        <div class="st-value">${totalPatrulha}</div>
+        <div class="st-sub">embarcações menores</div>
+      </div>
+    </div>
+
+    <div style="background:var(--parch);border:1px solid rgba(139,105,20,0.2);border-radius:4px;padding:0.9rem 1rem;margin-bottom:0.3rem">
+      <div style="font-family:var(--font-title);font-size:0.6rem;letter-spacing:0.1em;color:var(--ink3);margin-bottom:0.6rem">Poder Naval (relativo a Valos)</div>
+      <div class="naval-row">
+        <span class="nv-label">Navios de Guerra</span>
+        <div class="naval-track"><div class="naval-fill" style="width:${Math.min(100,Math.round(totalGuerra/MAX_NAVAL.guerra*100))}%"></div></div>
+        <span class="naval-num">${totalGuerra} unid.</span>
+      </div>
+      <div class="naval-row">
+        <span class="nv-label">Navios Patrulha</span>
+        <div class="naval-track"><div class="naval-fill" style="width:${Math.min(100,Math.round(totalPatrulha/MAX_NAVAL.patrulha*100))}%"></div></div>
+        <span class="naval-num">${totalPatrulha} unid.</span>
+      </div>
+    </div>
+
+    <div class="section-heading" style="margin-top:1.5rem">
+      <span>Uniformes de Guerra</span>
+    </div>
+    <div class="uniform-block">
+      <div>
+        <div style="font-family:var(--font-title);font-size:0.6rem;letter-spacing:0.08em;color:var(--ink3);margin-bottom:4px">CAPITAL</div>
+        <div class="uniform-img-frame">
+          ${reino.urlArmaduraCapital
+            ? `<img src="${reino.urlArmaduraCapital}" alt="Armadura Capital" onerror="this.parentNode.innerHTML='<div class=img-placeholder>Imagem<br>pendente</div>'">`
+            : `<div class="img-placeholder">Imagem<br>pendente</div>`}
+        </div>
+        <p style="font-size:0.8rem; color:var(--ink2); margin-top:5px; font-style:italic;">${reino.descArmaduraCapital || ''}</p>
+
+        <div style="margin-top:15px;font-family:var(--font-title);font-size:0.6rem;letter-spacing:0.08em;color:var(--ink3);margin-bottom:4px">GERAL</div>
+        <div class="uniform-img-frame">
+          ${reino.urlArmaduraGeral
+            ? `<img src="${reino.urlArmaduraGeral}" alt="Armadura Geral" onerror="this.parentNode.innerHTML='<div class=img-placeholder>Imagem<br>pendente</div>'">`
+            : `<div class="img-placeholder">Imagem<br>pendente</div>`}
+        </div>
+        <p style="font-size:0.8rem; color:var(--ink2); margin-top:5px; font-style:italic;">${reino.descArmaduraGeral || ''}</p>
+      </div>
+      <div style="font-size:0.85rem;color:var(--ink3);font-style:italic;padding-top:0.3rem;line-height:1.6">
+        URLs das imagens e descrições de uniformes podem ser adicionadas ao editar as informações do reino.
+      </div>
+    </div>
+
+    <div class="section-heading">
+      <span>Cidades, Fortes e Fortalezas</span>
+      <button class="btn btn-gold btn-sm" onclick="openCidadeModal(null)">+ Adicionar</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="data-table" id="cidades-table">
+        <thead>
+          <tr>
+            <th>Nome</th><th>Tipo</th><th>Comércio/Função</th><th>Pop.</th><th>Mil.</th>
+            <th>N.Guerra</th><th>N.Patrulha</th><th>Observações</th><th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${cidades.length === 0
+            ? `<tr><td colspan="8" style="text-align:center;font-style:italic;color:var(--ink3);padding:1.2rem">Nenhum assentamento registrado.</td></tr>`
+            : cidades.map(c => cidadeRow(c)).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-heading">
+      <span>Áreas de Instabilidade e Conflito</span>
+      <button class="btn btn-gold btn-sm" onclick="openInstModal(null)">+ Adicionar</button>
+    </div>
+    <div id="instabilidades-list">
+      ${instabilidades.length === 0
+        ? `<div style="font-size:0.88rem;color:var(--ink3);font-style:italic;padding:0.8rem 0">Nenhuma área instável registrada.</div>`
+        : instabilidades.map(inst => instCard(inst)).join('')}
+    </div>
+  `;
+}
+
+function comercos_html(list) {
+  if (!list.length) return '';
+  return `<div class="commerce-tags" style="margin-top:0.7rem">
+    ${list.map(t => `<span class="commerce-tag">${t}</span>`).join('')}
+  </div>`;
+}
+
+function badgeClass(tipo) {
+  if (!tipo) return 'badge-outros';
+  const t = tipo.toLowerCase();
+  if (t.includes('capital')) return 'badge-capital';
+  if (t.includes('fortaleza')) return 'badge-fortaleza';
+  if (t.includes('forte')) return 'badge-forte';
+  if (t.includes('porto')) return 'badge-porto';
+  if (t.includes('ruin')) return 'badge-ruinas';
+  if (t.includes('cidade')) return 'badge-cidade';
+  return 'badge-outros';
+}
+
+function cidadeRow(c) {
+return `<tr>
+    <td><strong>${c.cidade}</strong></td>
+    <td><span class="type-badge ${badgeClass(c.tipo)}">${c.tipo || '—'}</span></td>
+    <td>${c.comercio || '—'}</td> <td>${(parseInt(c.pop)||0).toLocaleString('pt-BR')}</td>
+    <td>${(parseInt(c.mil)||0).toLocaleString('pt-BR')}</td>
+    <td>${c.naviosGuerra || '—'}</td>
+    <td>${c.naviosPatrulha || '—'}</td>
+    <td style="max-width:200px;font-size:0.8rem;font-style:italic;color:var(--ink3)">${c.obs || '—'}</td>
+    <td><div class="row-actions">
+      <button class="btn btn-ghost btn-xs" onclick="openCidadeModal(${JSON.stringify(c).replace(/"/g,'&quot;')})">✏</button>
+      <button class="btn btn-danger btn-xs" onclick="confirmDeleteCidade(${c.rowIndex},'${c.cidade.replace(/'/g,"\\'")}')">✕</button>
+    </div></td>
+  </tr>`;
+}
+
+function instCard(inst) {
+  return `<div class="instability-card" id="inst-row-${inst.rowIndex}">
+    <div class="inst-type">
+      <span>${inst.area}</span>
+      <div class="row-actions">
+        <button class="btn btn-ghost btn-xs" onclick="openInstModal(${JSON.stringify(inst).replace(/"/g,'&quot;')})">✏</button>
+        <button class="btn btn-danger btn-xs" onclick="confirmDeleteInst(${inst.rowIndex},'${inst.area.replace(/'/g,"\\'")}')">✕</button>
+      </div>
+    </div>
+    <div class="inst-desc">${inst.descricao}</div>
+  </div>`;
+}
+
+/* ══════════════════════════════════════════════════
+   MODAL HELPERS
+══════════════════════════════════════════════════ */
+function showModal(html) {
+  const mc = document.getElementById('modal-container');
+  mc.innerHTML = `<div class="modal-backdrop" id="active-backdrop">${html}</div>`;
+  document.getElementById('active-backdrop').addEventListener('click', e => {
+    if (e.target.id === 'active-backdrop') closeModal();
+  });
+}
+
+function closeModal() {
+  document.getElementById('modal-container').innerHTML = '';
+}
+
+/* ══════════════════════════════════════════════════
+   MODAL: NEW KINGDOM
+══════════════════════════════════════════════════ */
+function openNewKingdomModal() {
+  showModal(`
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Registrar Novo Reino</h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field-group">
+          <label>Nome do Reino</label>
+          <input type="text" id="new-reino-nome" placeholder="Ex: Romanovos" autofocus>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-gold" onclick="createReino()">Criar Reino</button>
+      </div>
+    </div>
+  `);
+}
+
+async function createReino() {
+  const nome = document.getElementById('new-reino-nome').value.trim();
+  if (!nome) { toast('Informe o nome do reino', 'error'); return; }
+  try {
+    await apiFetch('/api/reinos', { method: 'POST', body: JSON.stringify({ nome }) });
+    toast(`Reino "${nome}" criado com sucesso!`);
+    closeModal();
+    await loadReinoList();
+    selectReino(nome);
+  } catch (e) {
+    toast('Erro: ' + e.message, 'error');
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   MODAL: EDIT REINO INFO
+══════════════════════════════════════════════════ */
+function openInfoModal() {
+  const r = currentData.parsed.reino;
+  showModal(`
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Editar Informações — ${currentReinoName}</h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field-group">
+          <label>Descrição do Reino</label>
+          <textarea id="fi-desc" rows="4">${r.descricao || ''}</textarea>
+        </div>
+        <div class="field-group">
+          <label>Principais Comércios (separe por vírgula)</label>
+          <input type="text" id="fi-comercio" value="${r.comercio || ''}" placeholder="Ex: Madeira, Peles, Minério de Ferro">
+        </div>
+        <div class="field-group">
+          <label>URL do Emblema (Imgur ou similar)</label>
+          <input type="text" id="fi-emblema" value="${r.urlEmblema || ''}" placeholder="https://i.imgur.com/...">
+        </div>
+        
+        <div class="field-row">
+          <div class="field-group">
+            <label>URL Armadura — Capital</label>
+            <input type="text" id="fi-arm-cap" value="${r.urlArmaduraCapital || ''}" placeholder="https://i.imgur.com/...">
+          </div>
+          <div class="field-group">
+            <label>Descrição Armadura — Capital</label>
+            <input type="text" id="fi-desc-cap" value="${r.descArmaduraCapital || ''}" placeholder="Detalhes da armadura...">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label>URL Armadura — Geral</label>
+            <input type="text" id="fi-arm-ger" value="${r.urlArmaduraGeral || ''}" placeholder="https://i.imgur.com/...">
+          </div>
+          <div class="field-group">
+            <label>Descrição Armadura — Geral</label>
+            <input type="text" id="fi-desc-ger" value="${r.descArmaduraGeral || ''}" placeholder="Detalhes da armadura...">
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-gold" onclick="saveReinoInfo()">Salvar</button>
+      </div>
+    </div>
+  `);
+}
+
+async function saveReinoInfo() {
+  const body = {
+    descricao:           document.getElementById('fi-desc').value,
+    comercio:            document.getElementById('fi-comercio').value,
+    urlEmblema:          document.getElementById('fi-emblema').value,
+    urlArmaduraCapital:  document.getElementById('fi-arm-cap').value,
+    descArmaduraCapital: document.getElementById('fi-desc-cap').value, // NOVO
+    urlArmaduraGeral:    document.getElementById('fi-arm-ger').value,
+    descArmaduraGeral:   document.getElementById('fi-desc-ger').value  // NOVO
+  };
+  try {
+    await apiFetch(`/api/reinos/${encodeURIComponent(currentReinoName)}/info`, {
+      method: 'PATCH', body: JSON.stringify(body)
+    });
+    toast('Informações salvas!');
+    closeModal();
+    selectReino(currentReinoName);
+  } catch (e) {
+    toast('Erro: ' + e.message, 'error');
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   MODAL: ADD/EDIT CIDADE
+══════════════════════════════════════════════════ */
+function openCidadeModal(c) {
+  const isEdit = c !== null;
+  showModal(`
+    <div class="modal">
+      <div class="modal-header">
+        <h3>${isEdit ? 'Editar Assentamento' : 'Novo Assentamento'}</h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field-row">
+          <div class="field-group">
+            <label>Nome</label>
+            <input type="text" id="c-nome" value="${isEdit ? c.cidade : ''}" placeholder="Nome do assentamento">
+          </div>
+          <div class="field-group">
+            <label>Tipo</label>
+            <select id="c-tipo">
+              ${['Capital','Cidade','Cidade-Porto','Porto','Forte','Fortaleza','Ruínas','Aldeias e Outros'].map(t =>
+                `<option value="${t}" ${isEdit && c.tipo === t ? 'selected' : ''}>${t}</option>`
+              ).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Comércio Principal</label>
+          <input type="text" id="c-comercio" value="${isEdit ? c.comercio : ''}" placeholder="Ex: Pesca, Construção, Madeira">
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label>População</label>
+            <input type="number" id="c-pop" value="${isEdit ? c.pop : ''}" placeholder="0">
+          </div>
+          <div class="field-group">
+            <label>Efetivo Militar</label>
+            <input type="number" id="c-mil" value="${isEdit ? c.mil : ''}" placeholder="0">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label>Navios de Guerra</label>
+            <input type="number" id="c-nguerra" value="${isEdit ? c.naviosGuerra : ''}" placeholder="0">
+          </div>
+          <div class="field-group">
+            <label>Navios Patrulha</label>
+            <input type="number" id="c-npatrulha" value="${isEdit ? c.naviosPatrulha : ''}" placeholder="0">
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Observações</label>
+          <textarea id="c-obs" rows="2" placeholder="Notas sobre este assentamento...">${isEdit ? c.obs : ''}</textarea>
+        </div>
+        ${isEdit ? `<input type="hidden" id="c-rowindex" value="${c.rowIndex}">` : ''}
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-gold" onclick="saveCidade(${isEdit})">Salvar</button>
+      </div>
+    </div>
+  `);
+}
+
+async function saveCidade(isEdit) {
+  const body = {
+    cidade:        document.getElementById('c-nome').value,
+    tipo:          document.getElementById('c-tipo').value,
+    comercio:      document.getElementById('c-comercio').value,
+    pop:           document.getElementById('c-pop').value,
+    mil:           document.getElementById('c-mil').value,
+    naviosGuerra:  document.getElementById('c-nguerra').value,
+    naviosPatrulha:document.getElementById('c-npatrulha').value,
+    obs:           document.getElementById('c-obs').value,
+  };
+  if (!body.cidade.trim()) { toast('Informe o nome do assentamento', 'error'); return; }
+  try {
+    if (isEdit) {
+      const ri = document.getElementById('c-rowindex').value;
+      await apiFetch(`/api/reinos/${encodeURIComponent(currentReinoName)}/cidades/${ri}`, {
+        method: 'PUT', body: JSON.stringify(body)
+      });
+      toast('Assentamento atualizado!');
+    } else {
+      await apiFetch(`/api/reinos/${encodeURIComponent(currentReinoName)}/cidades`, {
+        method: 'POST', body: JSON.stringify(body)
+      });
+      toast('Assentamento adicionado!');
+    }
+    closeModal();
+    selectReino(currentReinoName);
+  } catch (e) {
+    toast('Erro: ' + e.message, 'error');
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   MODAL: ADD/EDIT INSTABILIDADE
+══════════════════════════════════════════════════ */
+function openInstModal(inst) {
+  const isEdit = inst !== null;
+  showModal(`
+    <div class="modal">
+      <div class="modal-header">
+        <h3>${isEdit ? 'Editar Área Instável' : 'Nova Área Instável'}</h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field-group">
+          <label>Nome / Tipo da Área</label>
+          <input type="text" id="inst-area" value="${isEdit ? inst.area : ''}" placeholder="Ex: Fronteira Norte">
+        </div>
+        <div class="field-group">
+          <label>Descrição da Instabilidade</label>
+          <textarea id="inst-desc" rows="4" placeholder="Descreva os conflitos, tensões e ameaças da região...">${isEdit ? inst.descricao : ''}</textarea>
+        </div>
+        ${isEdit ? `<input type="hidden" id="inst-rowindex" value="${inst.rowIndex}">` : ''}
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-gold" onclick="saveInst(${isEdit})">Salvar</button>
+      </div>
+    </div>
+  `);
+}
+
+async function saveInst(isEdit) {
+  const body = {
+    area:     document.getElementById('inst-area').value,
+    descricao:document.getElementById('inst-desc').value,
+  };
+  if (!body.area.trim()) { toast('Informe o nome da área', 'error'); return; }
+  try {
+    if (isEdit) {
+      const ri = document.getElementById('inst-rowindex').value;
+      await apiFetch(`/api/reinos/${encodeURIComponent(currentReinoName)}/instabilidades/${ri}`, {
+        method: 'PUT', body: JSON.stringify(body)
+      });
+      toast('Área instável atualizada!');
+    } else {
+      await apiFetch(`/api/reinos/${encodeURIComponent(currentReinoName)}/instabilidades`, {
+        method: 'POST', body: JSON.stringify(body)
+      });
+      toast('Área instável adicionada!');
+    }
+    closeModal();
+    selectReino(currentReinoName);
+  } catch (e) {
+    toast('Erro: ' + e.message, 'error');
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   CONFIRM DIALOGS
+══════════════════════════════════════════════════ */
+function confirmDeleteReino(nome) {
+  showModal(`
+    <div class="confirm-dialog">
+      <h4>⚠ Remover Reino</h4>
+      <p>Tem certeza que deseja remover o reino <strong>${nome}</strong> e todos os seus registros? Esta ação é irreversível.</p>
+      <div class="confirm-btns">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-danger" onclick="deleteReino('${nome}')">Remover</button>
+      </div>
+    </div>
+  `);
+}
+
+async function deleteReino(nome) {
+  try {
+    await apiFetch(`/api/reinos/${encodeURIComponent(nome)}`, { method: 'DELETE' });
+    toast(`Reino "${nome}" removido.`);
+    closeModal();
+    currentReinoName = null;
+    document.getElementById('reino-detail').style.display = 'none';
+    document.getElementById('welcome-state').style.display = 'block';
+    await loadReinoList();
+  } catch (e) {
+    toast('Erro: ' + e.message, 'error');
+  }
+}
+
+function confirmDeleteCidade(rowIndex, nome) {
+  showModal(`
+    <div class="confirm-dialog">
+      <h4>⚠ Remover Assentamento</h4>
+      <p>Remover <strong>${nome}</strong> dos registros?</p>
+      <div class="confirm-btns">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-danger" onclick="deleteCidade(${rowIndex})">Remover</button>
+      </div>
+    </div>
+  `);
+}
+
+async function deleteCidade(rowIndex) {
+  try {
+    await apiFetch(`/api/reinos/${encodeURIComponent(currentReinoName)}/cidades/${rowIndex}`, { method: 'DELETE' });
+    toast('Assentamento removido.');
+    closeModal();
+    selectReino(currentReinoName);
+  } catch (e) {
+    toast('Erro: ' + e.message, 'error');
+  }
+}
+
+function confirmDeleteInst(rowIndex, nome) {
+  showModal(`
+    <div class="confirm-dialog">
+      <h4>⚠ Remover Área Instável</h4>
+      <p>Remover <strong>${nome}</strong> dos registros?</p>
+      <div class="confirm-btns">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-danger" onclick="deleteInst(${rowIndex})">Remover</button>
+      </div>
+    </div>
+  `);
+}
+
+async function deleteInst(rowIndex) {
+  try {
+    await apiFetch(`/api/reinos/${encodeURIComponent(currentReinoName)}/instabilidades/${rowIndex}`, { method: 'DELETE' });
+    toast('Área instável removida.');
+    closeModal();
+    selectReino(currentReinoName);
+  } catch (e) {
+    toast('Erro: ' + e.message, 'error');
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════ */
+loadReinoList();
+</script>
+</body>
+</html>
