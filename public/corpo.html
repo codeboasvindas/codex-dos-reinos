@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elvilia — Sangue, Terra e Fera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#16100a;--ink2:#2e1f08;--ink3:#6b4a1c;--ink4:#9a7040;
+  --parch:#f8f2e2;--parch2:#f0e8d0;--parch3:#e5d8b8;--cream:#fefaf2;
+  --gold:#8a6510;--gold2:#c49618;--gold3:#e2c250;--gold4:#f5e090;
+  --rust:#7a2a0e;--rust2:#b04018;
+  --blood:#5a0808;--bone:#d8ceb0;
+  --ft:'Cinzel',Georgia,serif;
+  --fd:'Cinzel Decorative',serif;
+  --fb:'Crimson Pro',Georgia,serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.7}
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 30px,rgba(139,101,16,.025) 30px,rgba(139,101,16,.025) 31px),
+  repeating-linear-gradient(90deg,transparent,transparent 30px,rgba(139,101,16,.015) 30px,rgba(139,101,16,.015) 31px)}
+
+/* HEADER */
+.site-header{position:relative;background:linear-gradient(180deg,#0d0804,#1e1208 70%,#2a1808);
+  border-bottom:3px solid var(--gold2);padding:2.8rem 2rem 2rem;text-align:center;overflow:hidden}
+.site-header::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,transparent,transparent 18px,rgba(196,150,24,.035) 18px,rgba(196,150,24,.035) 19px)}
+.h-ornament{font-family:var(--ft);font-size:.58rem;letter-spacing:.5em;color:rgba(226,194,80,.4);margin-bottom:.6rem}
+.h-title{font-family:var(--fd);font-size:2.1rem;color:var(--gold3);letter-spacing:.06em;text-shadow:0 2px 20px rgba(196,150,24,.35)}
+.h-sub{font-family:var(--ft);font-size:.68rem;letter-spacing:.18em;color:rgba(226,194,80,.55);margin-top:.5rem}
+.h-desc{max-width:600px;margin:.8rem auto 0;font-size:.9rem;color:rgba(240,232,208,.55);font-style:italic;line-height:1.7}
+
+/* NAV */
+.sticky-nav{position:sticky;top:0;z-index:50;background:rgba(20,12,4,.97);
+  border-bottom:1px solid rgba(196,150,24,.3);backdrop-filter:blur(6px);
+  padding:.45rem .8rem;display:flex;flex-wrap:wrap;gap:3px;justify-content:center}
+.nb{font-family:var(--ft);font-size:.56rem;letter-spacing:.07em;padding:5px 11px;
+  border-radius:3px;cursor:pointer;background:transparent;border:1px solid transparent;
+  color:rgba(226,194,80,.5);transition:all .18s;white-space:nowrap}
+.nb:hover{background:rgba(196,150,24,.1);color:var(--gold3);border-color:rgba(196,150,24,.28)}
+.nb.active{background:rgba(196,150,24,.16);color:var(--gold3);border-color:var(--gold2)}
+
+/* LAYOUT */
+.body{max-width:960px;margin:0 auto;padding:2.5rem 1.5rem 6rem}
+
+/* SECTION */
+.reino{margin-bottom:4.5rem;border-bottom:1px solid rgba(139,101,16,.18);padding-bottom:3.5rem}
+.reino-head{padding:1.1rem 1.4rem;border-radius:4px 4px 0 0;display:flex;align-items:center;gap:.9rem;position:relative;overflow:hidden}
+.reino-head::after{content:'';position:absolute;right:0;top:0;bottom:0;width:35%;
+  background:linear-gradient(90deg,transparent,rgba(0,0,0,.3));pointer-events:none}
+.rnum{font-family:var(--fd);font-size:1.8rem;color:rgba(255,255,255,.1);flex-shrink:0;line-height:1;user-select:none}
+.rname{font-family:var(--fd);font-size:1.15rem;letter-spacing:.05em;color:rgba(255,255,255,.9);line-height:1.1}
+.rcap{font-family:var(--ft);font-size:.56rem;letter-spacing:.1em;color:rgba(255,255,255,.45);margin-top:.15rem}
+
+/* CONTENT AREA */
+.ca{background:var(--parch);border:1px solid rgba(139,101,16,.26);border-top:none;border-radius:0 0 4px 4px;padding:0}
+
+/* TABS */
+.tab-bar{display:flex;border-bottom:1px solid rgba(139,101,16,.2);padding:0 1rem;gap:2px;flex-wrap:wrap}
+.tb{font-family:var(--ft);font-size:.58rem;letter-spacing:.08em;padding:8px 14px;
+  cursor:pointer;background:transparent;border:none;border-bottom:2px solid transparent;
+  color:var(--ink4);transition:all .18s;white-space:nowrap}
+.tb:hover{color:var(--ink2);border-bottom-color:rgba(196,150,24,.4)}
+.tb.on{color:var(--gold);border-bottom-color:var(--gold2);font-weight:600}
+
+.tab-content{display:none;padding:1.4rem 1.5rem}
+.tab-content.on{display:block;animation:fi .25s ease}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* SECTION LABEL */
+.slabel{font-family:var(--ft);font-size:.58rem;letter-spacing:.14em;color:var(--gold);
+  border-bottom:1px solid rgba(139,101,16,.22);padding-bottom:4px;margin:1.4rem 0 .7rem;
+  display:flex;align-items:center;gap:.4rem}
+.slabel::before{content:'⁜';color:var(--gold2);font-size:.65rem}
+.slabel:first-child{margin-top:0}
+
+/* BODY TEXT */
+.bt{font-size:.92rem;color:var(--ink2);line-height:1.8}
+.bt p{margin-bottom:.75rem}.bt p:last-child{margin-bottom:0}
+.bt strong{color:var(--ink);font-weight:600}
+.bt em{color:var(--ink3)}
+
+/* FAMILY TREE BLOCK */
+.ftree{background:var(--parch2);border:1px solid rgba(139,101,16,.2);border-radius:4px;padding:1rem 1.1rem;margin-bottom:.8rem}
+.ftree-name{font-family:var(--fd);font-size:.8rem;letter-spacing:.05em;color:var(--ink2);margin-bottom:.15rem}
+.ftree-motto{font-style:italic;font-size:.78rem;color:var(--ink3);margin-bottom:.7rem;
+  border-left:2px solid var(--gold2);padding-left:.6rem}
+.gen{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem;margin-bottom:.5rem}
+.gen-label{font-family:var(--ft);font-size:.55rem;letter-spacing:.12em;color:var(--ink4);
+  margin-bottom:.4rem;grid-column:1/-1;display:flex;align-items:center;gap:.4rem}
+.gen-label::before{content:'';display:inline-block;height:1px;width:30px;background:rgba(139,101,16,.3)}
+.person{background:var(--cream);border:1px solid rgba(139,101,16,.18);border-radius:3px;
+  padding:.55rem .7rem;font-size:.82rem;color:var(--ink2);line-height:1.45}
+.person strong{font-family:var(--ft);font-size:.65rem;letter-spacing:.03em;color:var(--ink);display:block;margin-bottom:1px}
+.person .age{color:var(--ink3);font-size:.75rem}
+.person.dead{opacity:.62;background:var(--parch3);border-style:dashed}
+.person.dead strong{text-decoration:line-through;text-decoration-color:rgba(90,8,8,.4)}
+.person .note{font-size:.72rem;color:var(--rust);margin-top:2px;font-style:italic}
+.person .house-note{font-size:.72rem;color:var(--ink3);margin-top:2px}
+
+/* ALLIANCE BLOCK */
+.alliance{background:rgba(196,150,24,.07);border:1px solid rgba(196,150,24,.22);
+  border-radius:3px;padding:.6rem .9rem;margin:.4rem 0;font-size:.86rem;color:var(--ink2)}
+.alliance .at{font-family:var(--ft);font-size:.56rem;letter-spacing:.08em;color:var(--gold);margin-bottom:3px}
+
+/* DISEASE CARD */
+.disease{background:rgba(90,8,8,.05);border-left:3px solid var(--blood);
+  padding:.6rem .9rem;border-radius:0 3px 3px 0;margin-bottom:.5rem}
+.disease .dt{font-family:var(--ft);font-size:.6rem;letter-spacing:.08em;color:var(--blood);margin-bottom:3px}
+.disease p{font-size:.86rem;color:var(--ink2);line-height:1.55}
+
+/* FAUNA CARD */
+.fauna{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.4rem}
+@media(max-width:600px){.fauna{grid-template-columns:1fr}}
+.fcard{background:var(--parch2);border:1px solid rgba(139,101,16,.2);border-radius:3px;padding:.65rem .85rem}
+.fcard .fn{font-family:var(--ft);font-size:.62rem;letter-spacing:.06em;color:var(--ink2);margin-bottom:2px}
+.fcard .fs{font-size:.82rem;color:var(--ink3);font-style:italic;margin-bottom:.3rem;font-size:.75rem}
+.fcard p{font-size:.82rem;color:var(--ink2);line-height:1.5}
+.fcard .ftag{display:inline-block;font-family:var(--ft);font-size:.5rem;letter-spacing:.06em;
+  padding:1px 7px;border-radius:2px;margin-top:.3rem;border:1px solid}
+.ftag-danger{background:rgba(90,8,8,.08);border-color:rgba(90,8,8,.25);color:var(--blood)}
+.ftag-icon{background:rgba(139,101,16,.1);border-color:rgba(139,101,16,.28);color:var(--gold)}
+.ftag-rare{background:rgba(12,30,56,.08);border-color:rgba(12,30,56,.25);color:#0c1e38}
+
+/* QUOTE */
+.quote{border-left:2px solid var(--gold2);padding:.5rem 1rem;margin:.9rem 0;
+  font-style:italic;font-size:.88rem;color:var(--ink3);background:rgba(196,150,24,.04)}
+
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin:.3rem 0}
+.tag{font-family:var(--ft);font-size:.53rem;letter-spacing:.05em;padding:2px 8px;
+  border-radius:2px;border:1px solid rgba(139,101,16,.28);
+  background:rgba(139,101,16,.08);color:var(--ink3)}
+
+/* GRID 2 */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.5rem}
+@media(max-width:600px){.g2{grid-template-columns:1fr}}
+.gblock{background:var(--parch2);border:1px solid rgba(139,101,16,.2);border-radius:3px;padding:.7rem .9rem}
+.gblock .gl{font-family:var(--ft);font-size:.56rem;letter-spacing:.1em;color:var(--ink4);margin-bottom:3px}
+.gblock .gv{font-size:.88rem;color:var(--ink2);line-height:1.5}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="h-ornament">ELVILIA · SANGUE, TERRA E FERA</div>
+  <h1 class="h-title">Famílias, Fauna e Doenças</h1>
+  <div class="h-sub">Três Gerações · Alianças · Peculiaridades · Mundo Natural</div>
+  <p class="h-desc">As casas que governam, os animais que habitam e as doenças que matam — o tecido vivo de cada reino.</p>
+</header>
+
+<nav class="sticky-nav" id="snav">
+  <button class="nb active" onclick="goTo('romanovos')">Romanovos</button>
+  <button class="nb" onclick="goTo('medicia')">Medícia</button>
+  <button class="nb" onclick="goTo('borgiath')">Borgiath</button>
+  <button class="nb" onclick="goTo('bourbon')">Bourbon</button>
+  <button class="nb" onclick="goTo('tudoria')">Tudória</button>
+  <button class="nb" onclick="goTo('graosgerais')">Grãos-Gerais</button>
+  <button class="nb" onclick="goTo('valos')">Valos</button>
+  <button class="nb" onclick="goTo('zolernia')">Zolernia</button>
+  <button class="nb" onclick="goTo('trastara')">Trastara</button>
+  <button class="nb" onclick="goTo('orsini')">Orsini</button>
+  <button class="nb" onclick="goTo('braganza')">Braganza</button>
+</nav>
+
+<div class="body">
+
+<!-- ════════════════════════════════════════
+     I · TERRAS DE ROMANOVOS
+════════════════════════════════════════ -->
+<section class="reino" id="romanovos">
+  <div class="reino-head" style="background:linear-gradient(135deg,#2a1000,#180800)">
+    <div class="rnum">I</div>
+    <div><div class="rname">Terras de Romanovos</div><div class="rcap">CLÃS DO NORTE · ALVORADA</div></div>
+  </div>
+  <div class="ca">
+    <div class="tab-bar">
+      <button class="tb on" onclick="tab(this,'rom-fam')">Famílias e Sangue</button>
+      <button class="tb" onclick="tab(this,'rom-fauna')">Fauna</button>
+      <button class="tb" onclick="tab(this,'rom-disease')">Doenças</button>
+    </div>
+
+    <!-- FAMÍLIAS -->
+    <div class="tab-content on" id="rom-fam">
+      <!-- CLÃ ROVANOV -->
+      <div class="ftree">
+        <div class="ftree-name">Clã Rovanov — Real</div>
+        <div class="ftree-motto">"O frio não mata quem nasce nele."</div>
+        <div class="bt"><p>O clã real domina Alvorada e os seis maiores clãs há três gerações. Sua peculiaridade é a tradição do <strong>Casamento de Neblina</strong>: cerimônias realizadas em dias de névoa espessa na baía, quando se acredita que os deuses da lua estão presentes. Nenhum casamento feito em dia claro é considerado abençoado pelos Veskari.</p></div>
+
+        <div class="gen-label">Geração dos Avós (mortos)</div>
+        <div class="gen">
+          <div class="person dead"><strong>Rovar Rovanov</strong><span class="age">† aos 71 — morreu de frio em campanha</span><span class="house-note">Unificou os 5 clãs maiores pela força e pelo casamento. Fundador de facto do poder centralizado.</span></div>
+          <div class="person dead"><strong>Silka Halgir-Rovanov</strong><span class="age">† aos 64 — doença pulmonar</span><span class="house-note">Do Clã Halgir (juramentado). Seu casamento consolidou o primeiro grande pacto inter-clã.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Pais (ativos)</div>
+        <div class="gen">
+          <div class="person"><strong>Kael Rovanov</strong><span class="age">56 anos — Rei atual</span><span class="house-note">Filho mais velho de Rovar. Guerreiro capaz, mas envelhecendo. Tem uma cicatriz que corta o queixo esquerdo — orgulho de batalha.</span></div>
+          <div class="person"><strong>Mira Duvorn-Rovanov</strong><span class="age">49 anos — Rainha-consorte</span><span class="house-note">Do Clã Duvorn. Seu casamento foi calculado para neutralizar a disputa entre Vrask e Duvorn. Inteligente e discreta — muitos dizem que governa de fato.</span></div>
+          <div class="person dead"><strong>Hord Rovanov</strong><span class="age">† aos 38 — morto em batalha contra Medícia</span><span class="house-note">Irmão mais novo de Kael. Vordkai carismático. Sua morte é um trauma político não resolvido — Kael culpa o Príncipe Sormand de Medícia.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Filhos (herdeiros)</div>
+        <div class="gen">
+          <div class="person"><strong>Varro Rovanov</strong><span class="age">28 anos — Herdeiro principal</span><span class="house-note">Primogênito. Forte, mas impulsivo. Desprezado pelos anciões por considerar que age antes de pensar.</span></div>
+          <div class="person"><strong>Lessa Rovanov</strong><span class="age">24 anos — Filha</span><span class="house-note">Mais inteligente que o irmão. Foi prometida ao Clã Vrask em casamento — ela recusa, criando tensão. Aprendeu os ritos dos Veskari sem permissão.</span></div>
+          <div class="person"><strong>Dren Rovanov</strong><span class="age">19 anos — Filho mais novo</span><span class="house-note">Favorito da rainha. Discreto e observador. Os Veskari dizem que a Lua Cinzenta fala nele — o que o rei ignora deliberadamente por medo do que isso significa.</span></div>
+        </div>
+      </div>
+
+      <!-- CLÃ VRASK -->
+      <div class="ftree">
+        <div class="ftree-name">Clã Vrask — Porto dos Afazeres</div>
+        <div class="ftree-motto">"O peixe que não se move, apodrece."</div>
+        <div class="bt"><p>Os Vrask são os mais ricos dos clãs subjugados por controle do principal porto comercial. Têm tradição de enviar filhos primogênitos para servir um ano na frota de pesca profunda — ninguém governa Porto dos Afazeres sem ter dormido no convés de um barco.</p></div>
+        <div class="gen">
+          <div class="person dead"><strong>Brak Vrask</strong><span class="age">† aos 78 — velhice</span><span class="house-note">Ancião que jurou ao Rei Rovar. Respeitado mesmo pelos inimigos. Fundou o mercado de âmbar.</span></div>
+          <div class="person"><strong>Sord Vrask</strong><span class="age">61 anos — Ancião atual</span><span class="house-note">Filho de Brak. Calmo e calculista. Quer o casamento de Lessa Rovanov com seu neto Kel — isso tornaria os Vrask quase intocáveis.</span></div>
+          <div class="person"><strong>Kel Vrask</strong><span class="age">26 anos — Neto e herdeiro</span><span class="house-note">O prometido de Lessa. Habilidoso com o arpão, desajeitado com a política. Genuinamente não sabe que ela o detesta.</span></div>
+        </div>
+      </div>
+
+      <div class="alliance">
+        <div class="at">Aliança Atual</div>
+        Clã Rovanov + Clã Vrask mantêm o pacto pelo casamento prometido (Lessa/Kel). Se Lessa continuar recusando, o pacto pode ruir — e Vrask tem navios suficientes para causar problemas sérios ao comércio do norte.
+      </div>
+    </div>
+
+    <!-- FAUNA -->
+    <div class="tab-content" id="rom-fauna">
+      <div class="slabel">Fauna Característica</div>
+      <div class="fauna">
+        <div class="fcard"><div class="fn">Alce de Chifre Ramado</div><div class="fs">Cervus rovanis</div><p>Imensos, com chifres que chegam a 2 metros de envergadura. Símbolo de status: nobre que caça um alce adulto exibe o chifre sobre o portal de sua cabana. Pele usada em cerimonial.</p><span class="ftag ftag-icon">Símbolo do Clã Rovanov</span></div>
+        <div class="fcard"><div class="fn">Lobo Cinza do Norte</div><div class="fs">Lupus geladas</div><p>Maior que os lobos do sul, pelagem cinza-esbranquiçada no inverno. Caçam em alcateias de até 20 indivíduos. Os Rovanovi não os matam sem necessidade — acreditam que os lobos são familiares dos antepassados.</p><span class="ftag ftag-icon">Sagrado nos ritos</span></div>
+        <div class="fcard"><div class="fn">Foca de Baía</div><div class="fs">Phoca precipitados</div><p>Abundante na Baía dos Precipitados. Principal fonte de óleo para iluminação e impermeabilização de barcos. Pele usada em equipamento de inverno.</p><span class="ftag ftag-icon">Comercial</span></div>
+        <div class="fcard"><div class="fn">Águia Pálida</div><div class="fs">Aquila nivea</div><p>Ave de rapina de plumagem quase branca. Rara. Usada como mensageira pelos Veskari — uma águia pálida pousando em uma cabana é considerada sinal dos deuses.</p><span class="ftag ftag-rare">Muito rara</span></div>
+        <div class="fcard"><div class="fn">Urso Negro de Ombros</div><div class="fs">Ursus dorsalis</div><p>Menor que os ursos pardos de Braganza, mas agressivo e imprevisível. Habita a Floresta Fria. Atacaram assentamentos em anos de colheita ruim de peixes.</p><span class="ftag ftag-danger">Perigoso</span></div>
+        <div class="fcard"><div class="fn">Bacalhau do Abismo</div><div class="fs">Gadus profundus</div><p>Peixe de águas profundas único da região. Salgado, é o principal produto de exportação alimentar. Um único barco pode trazer trezentos exemplares em uma boa pesca.</p><span class="ftag ftag-icon">Exportação</span></div>
+      </div>
+    </div>
+
+    <!-- DOENÇAS -->
+    <div class="tab-content" id="rom-disease">
+      <div class="slabel">Doenças e Males Comuns</div>
+      <div class="disease"><div class="dt">Pulmão da Neblina</div><p>Infecção respiratória crônica causada pela inalação constante da neblina fria e úmida de Alvorada. Afeta principalmente idosos e crianças. Sintomas: tosse seca persistente, expectoração cinzenta. Mortal em invernos severos.</p></div>
+      <div class="disease"><div class="dt">Febre do Âmbar</div><p>Doença febril ligada ao contato prolongado com resinas de âmbar bruto não tratado. Afeta principalmente os coletores. Causa alucinações, febre alta e manchas amareladas na pele. Os Veskari a chamam de "visita da Lua Cinzenta".</p></div>
+      <div class="disease"><div class="dt">Escorbuto do Pescador</div><p>Deficiência nutricional comum entre tripulações de pesca de longa duração que ficam semanas sem frutas ou vegetais. Gengivas inflamadas, perda de dentes, fraturas espontâneas. Tratado com caldo de algas marinhas.</p></div>
+      <div class="disease"><div class="dt">Podridão do Frio (Gangrenamento)</div><p>Resultado de exposição extrema ao frio — comum em guerreiros que marcham no inverno sem proteção adequada. Perda de dedos dos pés e mãos. Amputação ritual pelos Veskari, que queimam o membro removido como oferenda.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     II · PRINCIPADO DE MEDÍCIA
+════════════════════════════════════════ -->
+<section class="reino" id="medicia">
+  <div class="reino-head" style="background:linear-gradient(135deg,#2a1040,#160820)">
+    <div class="rnum">II</div>
+    <div><div class="rname">Principado de Medícia</div><div class="rcap">COLEGIADO DE PRÍNCIPES · SENTINELA</div></div>
+  </div>
+  <div class="ca">
+    <div class="tab-bar">
+      <button class="tb on" onclick="tab(this,'med-fam')">Famílias e Sangue</button>
+      <button class="tb" onclick="tab(this,'med-fauna')">Fauna</button>
+      <button class="tb" onclick="tab(this,'med-disease')">Doenças</button>
+    </div>
+
+    <div class="tab-content on" id="med-fam">
+      <div class="ftree">
+        <div class="ftree-name">Casa Medísio — Colegiado Real</div>
+        <div class="ftree-motto">"Cinco vozes. Uma só pode estar errada."</div>
+        <div class="bt"><p>A Casa Medísio é incomum em Elvilia: cinco príncipes de igual poder formal, filhos do mesmo rei. O rei Aldéric Medísio Pai — chamado Aldéric o Cuidadoso — governou por 34 anos e deliberadamente recusou designar um herdeiro único, temendo que a disputa destruísse o reino antes de sua morte. Dividiu o poder e morreu esperando que os filhos aprendessem a governar juntos. Não aprenderam completamente.</p></div>
+
+        <div class="gen-label">Geração dos Avós</div>
+        <div class="gen">
+          <div class="person dead"><strong>Aldéric Medísio Pai</strong><span class="age">† aos 69 — ataque cardíaco</span><span class="house-note">Fundador do Colegiado. Governou 34 anos com mão firme mas mente aberta. Iniciou os Círculos de Composição como projeto de estado.</span></div>
+          <div class="person dead"><strong>Veria Sent-Medísio</strong><span class="age">† aos 55 — envenenamento (não esclarecido)</span><span class="house-note">Rainha. Filha da família Sent, de Sentinela. Sua morte nunca foi oficialmente investigada — os cinco filhos eram adolescentes.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Pais — Os Cinco Príncipes</div>
+        <div class="gen">
+          <div class="person"><strong>Aldric Medísio</strong><span class="age">47 anos — Sentinela</span><span class="house-note">Mais velho. Expansionista. Casado com Lena Forvar, filha de comerciante rico. Dois filhos. Tem o maior exército dos cinco.</span></div>
+          <div class="person"><strong>Casven Medísio</strong><span class="age">45 anos — Gadanha</span><span class="house-note">Segundo. Controla a zona comercial mais rica. Solteiro por escolha — diz que casamento cria obrigações que atrapalham negócios. Suspeito de comprar informações de espiões de outros reinos.</span></div>
+          <div class="person"><strong>Iovel Medísio</strong><span class="age">44 anos — Ukaw</span><span class="house-note">Terceiro. O mais estudioso. Passou dois anos nas Galerias Profundas. Casado com uma Compositora — escândalo na época, aceito hoje. Sem filhos declarados.</span></div>
+          <div class="person"><strong>Sormand Medísio</strong><span class="age">42 anos — Forte Travessia</span><span class="house-note">Quarto. O mais agressivo. Controla a fronteira com Borgiath e cobra taxas além do acordado. Há rumores de que tem um filho ilegítimo em Borgiath com uma mulher da Casa Irad.</span></div>
+          <div class="person"><strong>Tirel Medísio</strong><span class="age">40 anos — Marvão do Bosque</span><span class="house-note">Mais novo. O mais amado pelo povo. Governa a zona da Floresta Ancestral. Casado com Osa Vrennk, de família humilde de lenhadores — escolha que irritou os outros quatro irmãos.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Filhos (seleção)</div>
+        <div class="gen">
+          <div class="person"><strong>Aldric-Menor</strong><span class="age">22 anos — filho de Aldric</span><span class="house-note">Herdeiro da zona norte. Treinado como cavaleiro. Arrogante, mas competente.</span></div>
+          <div class="person"><strong>Veira Medísio</strong><span class="age">18 anos — filha de Aldric</span><span class="house-note">Prometida ao filho do Chefe de Gadanha — aliança entre os territórios de Aldric e Casven que os outros três irmãos observam com desconfiança.</span></div>
+          <div class="person"><strong>Renk Medísio</strong><span class="age">16 anos — filho de Tirel</span><span class="house-note">Cresceu na borda da Floresta Ancestral. Conhece mais plantas que a maioria dos Compositores adultos. Os Veskari de Romanovos dizem que tem "o dom" — o que ninguém sabe exatamente o que significa.</span></div>
+        </div>
+      </div>
+
+      <div class="ftree">
+        <div class="ftree-name">Soraia das Cinzas — Voz das Galerias</div>
+        <div class="ftree-motto">"O que não tem nome ainda, tem mais poder."</div>
+        <div class="bt"><p><strong>Soraia das Cinzas</strong> (53 anos) não é nobre por nascimento — é a filha de um oleiro de Ukaw que entrou nas Galerias aos 14 anos como servente e emergiu 10 anos depois como a Compositora mais capaz de sua geração. Não tem família conhecida na política — o que a torna paradoxalmente mais poderosa, pois não deve favores a ninguém. Os cinco príncipes a temem e a consultam. O Príncipe Iovel é o único que a trata como igual.</p>
+        <p>Ela tem dois aprendizes: <strong>Daven</strong> (28 anos, metódico, filho de nobres de Gadanha) e <strong>Rysse</strong> (21 anos, intuitiva, de origem desconhecida — Soraia a encontrou nos limites da Floresta Ancestral). Rysse inquieta os príncipes porque Soraia recusa revelar sua origem.</p></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="med-fauna">
+      <div class="fauna">
+        <div class="fcard"><div class="fn">Corvo da Floresta Ancestral</div><div class="fs">Corvus ancestris</div><p>Corvos de tamanho incomum que habitam exclusivamente a Floresta Ancestral. Plumagem preta com reflexo esverdeado. Os Compositores os usam como cobaias — dizem que reagem a compostos antes que qualquer outro animal. Considerados sagrados pelos místicos.</p><span class="ftag ftag-icon">Usado em pesquisa</span></div>
+        <div class="fcard"><div class="fn">Serpente Leitosa</div><div class="fs">Vipera lactea</div><p>Serpente de veneno poderoso que produz uma toxina esbranquiçada única. Em pequenas doses, os Compositores usam o veneno como base para compostos medicinais. Mordida sem tratamento é fatal em seis horas. Habita a Floresta Ancestral.</p><span class="ftag ftag-danger">Venenosa</span><span class="ftag ftag-icon">Uso medicinal</span></div>
+        <div class="fcard"><div class="fn">Veado de Pêlo Branco</div><div class="fs">Cervus albinus</div><p>Mutação albina rara do veado comum. Avistá-lo é considerado presságio de mudança política. Há registros de que cada morte de um príncipe Medísio foi precedida por avistamento de um veado branco.</p><span class="ftag ftag-rare">Omen</span></div>
+        <div class="fcard"><div class="fn">Gato das Ruínas</div><div class="fs">Felis ruinalis</div><p>Espécie felina selvagem que habita as Tríadas Ruínas. Olhos amarelos, pelagem manchada de cinza e ocre. Quase impossível de domesticar. Os Compositores tentam há décadas.</p><span class="ftag ftag-rare">Não domesticável</span></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="med-disease">
+      <div class="disease"><div class="dt">Mal das Composições</div><p>Doença ocupacional dos Compositores causada por inalação crônica de vapores dos experimentos das Galerias. Sintomas progressivos: tremores nas mãos, perda de olfato, coloração esverdeada nas unhas. Incurável. Soraia das Cinzas apresenta os primeiros sinais.</p></div>
+      <div class="disease"><div class="dt">Febre da Floresta (Maleita Ancestral)</div><p>Doença febril contraída por quem entra profundamente na Floresta Ancestral sem proteção. Causa febre alta e visões vívidas durante dias. Alguns nunca se recuperam completamente — ficam com episódios de "visão clara" pelo resto da vida. Os místicos buscam a doença deliberadamente.</p></div>
+      <div class="disease"><div class="dt">Cegueira da Neblina</div><p>Perda gradual da visão periférica causada por anos de viver em zonas de neblina densa próximas à Baía dos Precipitados. Afeta pescadores e guardas costeiros. Irreversível além de certo ponto.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     III · BORGIATH
+════════════════════════════════════════ -->
+<section class="reino" id="borgiath">
+  <div class="reino-head" style="background:linear-gradient(135deg,#1a3020,#0e1e12)">
+    <div class="rnum">III</div>
+    <div><div class="rname">Borgiath</div><div class="rcap">MONARQUIA DE CASAS NOBRES · ARWIN</div></div>
+  </div>
+  <div class="ca">
+    <div class="tab-bar">
+      <button class="tb on" onclick="tab(this,'bor-fam')">Famílias e Sangue</button>
+      <button class="tb" onclick="tab(this,'bor-fauna')">Fauna</button>
+      <button class="tb" onclick="tab(this,'bor-disease')">Doenças</button>
+    </div>
+
+    <div class="tab-content on" id="bor-fam">
+      <div class="ftree">
+        <div class="ftree-name">Casa Brenn — Real</div>
+        <div class="ftree-motto">"Compramos o direito. Forjamos a honra."</div>
+        <div class="bt"><p>Os Brenn chegaram a Borgiath como investidores externos há quatro gerações. Em duas gerações compraram forjas; na terceira, compraram títulos; na quarta, compraram o trono. A peculiaridade da família é que todos os homens Brenn são obrigados a trabalhar pelo menos um ano em uma forja antes dos 18 anos — tradição iniciada pelo bisavô para não "esquecer de onde viemos". O atual rei raramente menciona isso.</p></div>
+
+        <div class="gen-label">Geração dos Avós</div>
+        <div class="gen">
+          <div class="person dead"><strong>Holt Brenn</strong><span class="age">† aos 80 — velhice</span><span class="house-note">Fundou a Casa Brenn em Borgiath. Comerciante de ferro que comprou terras e prestígio. Nunca usou armadura — dizia que quem precisa de proteção já perdeu.</span></div>
+          <div class="person dead"><strong>Marta Sorlen-Brenn</strong><span class="age">† aos 72 — doença pulmonar das forjas</span><span class="house-note">Do Clã Sorlen. Seu casamento selou a aliança que permitiu aos Brenn ascender à realeza. Mulher de ferro, diziam — e não era elogio.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Pais</div>
+        <div class="gen">
+          <div class="person"><strong>Aldavar Brenn</strong><span class="age">52 anos — Rei atual</span><span class="house-note">Filho de Holt Junior. Rei de 18 anos de reinado. Competente, frio, pragmático. Tem uma longa cicatriz no antebraço esquerdo de seu "ano de forja".</span></div>
+          <div class="person"><strong>Sera Irad-Brenn</strong><span class="age">46 anos — Rainha</span><span class="house-note">Da Casa Irad. Casamento político que uniu a família real com os melhores ferreiros. Ela pessoalmente entende mais de metalurgia que a maioria dos ferreiros do reino.</span></div>
+          <div class="person dead"><strong>Caven Brenn</strong><span class="age">† aos 35 — acidente de forja</span><span class="house-note">Irmão do rei. Morreu durante o "ano de forja" obrigatório em circunstâncias suspeitas — um acidente improvável com metal fundido. A Casa Velk era inimiga dele.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Filhos</div>
+        <div class="gen">
+          <div class="person"><strong>Drenn Brenn</strong><span class="age">24 anos — Herdeiro</span><span class="house-note">Completou o ano de forja sem incidentes — o pai nunca dormiu durante aquele ano. Coronel aos 22. Frio como o pai, mais sanguinário. Apoia solução militar para Medícia.</span></div>
+          <div class="person"><strong>Lira Brenn</strong><span class="age">20 anos — Filha</span><span class="house-note">Prometida ao filho da Casa Dorn para fortalecer a fronteira. Ela aceitou sem questionar — diferente das Rovanov. Aprende espionagem com um agente discreto de Casven Medísio, sem que o pai saiba.</span></div>
+          <div class="person"><strong>Taver Brenn</strong><span class="age">16 anos — Filho mais novo</span><span class="house-note">Ainda no "ano de forja". O mais talentoso dos três — tem dom natural para o metal. Os Forjadores da Fé dizem que Vrak fala nele.</span></div>
+        </div>
+      </div>
+
+      <div class="ftree">
+        <div class="ftree-name">Casa Irad — Monsanto</div>
+        <div class="ftree-motto">"Melhor metal, melhor homem."</div>
+        <div class="bt"><p>Os Irad são os mestres ferreiros de Borgiath — seus ancestrais já viviam na região antes dos Brenn chegarem. A aliança por casamento (Sera Irad) foi custosa para os Irad: eles ganharam prestígio real, mas perderam autonomia. Ressentem-se disso silenciosamente.</p></div>
+        <div class="gen">
+          <div class="person dead"><strong>Vrak Irad</strong><span class="age">† aos 77 — complicações de ferimentos de guerra</span><span class="house-note">Lorde histórico. Nomeado em honra ao Deus do Ferro. Forjou a espada do rei Aldavar com as próprias mãos como presente de casamento.</span></div>
+          <div class="person"><strong>Oren Irad</strong><span class="age">58 anos — Lorde atual</span><span class="house-note">Irmão de Sera (rainha). Ressentido pela influência perdida. Mantém correspondência secreta com a Casa Velk — que o rei sabe mas não prova.</span></div>
+          <div class="person"><strong>Daven Irad</strong><span class="age">30 anos — Filho de Oren</span><span class="house-note">Herdeiro. Diferente do pai, admira o rei Aldavar. Quer ser general — o que requer aprovação do pai, que recusa por princípio.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="bor-fauna">
+      <div class="fauna">
+        <div class="fcard"><div class="fn">Javali de Ferro</div><div class="fs">Sus ferrugineus</div><p>Javali de pelagem avermelhada pelo contato com solo rico em óxido de ferro. Dentes enormes. Considerado sagrado pelos Forjadores da Fé como criatura de Vrak. Caçado apenas em rituais específicos.</p><span class="ftag ftag-icon">Sagrado a Vrak</span></div>
+        <div class="fcard"><div class="fn">Águia de Presa Negra</div><div class="fs">Aquila nigra</div><p>Ave de rapina com garras enegrecidas pelo ferro da região. Pousa em chaminés de forjas ativas — os Forjadores da Fé veem isso como bênção de Ignar. Ninhos encontrados dentro de forjas abandonadas.</p><span class="ftag ftag-icon">Símbolo de Ignar</span></div>
+        <div class="fcard"><div class="fn">Rato das Minas</div><div class="fs">Rattus minalis</div><p>Espécie única que habita os túneis de mineração. Pele escura, dentes que roem metal mole. Os mineiros os usam como detectores — quando os ratos fogem em massa, há colapso iminente.</p><span class="ftag ftag-icon">Útil nas minas</span></div>
+        <div class="fcard"><div class="fn">Cobra de Minério</div><div class="fs">Coluber ferrus</div><p>Serpente não-venenosa que habita os veios de minério. Pele com manchas que imitam a textura do ferro. Inofensiva mas venenosa nos dentes de leite — apenas filhotes mordem com efeito.</p><span class="ftag ftag-danger">Filhotes perigosos</span></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="bor-disease">
+      <div class="disease"><div class="dt">Pulmão de Forja</div><p>A doença mais comum de Borgiath. Causada por inalação crônica de partículas metálicas nas forjas e minas. Sintomas: tosse com expectoração escura, dificuldade respiratória progressiva. Ironia cruel: os mais dedicados ferreiros morrem da própria dedicação.</p></div>
+      <div class="disease"><div class="dt">Envenenamento por Ferro (Ferremia)</div><p>Excesso de ferro no sangue causado por contato dérmico prolongado com água de mina rica em minerais. Pele adquire tom acinzentado. Causa deterioração hepática lenta. Endêmica em famílias de mineradores de múltiplas gerações.</p></div>
+      <div class="disease"><div class="dt">Queimadura da Fé</div><p>Não é doença comum — é resultado dos rituais de marcação penal dos Forjadores da Fé. Infecções graves das marcas de ferro em criminosos, especialmente quando realizadas em condições não-assépticas. Frequentemente fatal se não tratada.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     IV · BOURBON
+════════════════════════════════════════ -->
+<section class="reino" id="bourbon">
+  <div class="reino-head" style="background:linear-gradient(135deg,#1a2040,#0c1228)">
+    <div class="rnum">IV</div>
+    <div><div class="rname">Bourbon</div><div class="rcap">MONARQUIA DE CASAS COM CAVALARIA · TOCA DA ONÇA</div></div>
+  </div>
+  <div class="ca">
+    <div class="tab-bar">
+      <button class="tb on" onclick="tab(this,'bou-fam')">Famílias e Sangue</button>
+      <button class="tb" onclick="tab(this,'bou-fauna')">Fauna</button>
+      <button class="tb" onclick="tab(this,'bou-disease')">Doenças</button>
+    </div>
+
+    <div class="tab-content on" id="bou-fam">
+      <div class="ftree">
+        <div class="ftree-name">Casa Orbel — Real</div>
+        <div class="ftree-motto">"No galho, o escudo. No galope, a vitória."</div>
+        <div class="bt"><p>Os Orbel governam Toca da Onça há cinco gerações como criadores de cavalos e cavaleiros. A tradição da família é que cada rei Orbel deve ter um cavalo pessoal que nenhum outro monta — e quando o rei morre, o cavalo é sacrificado e enterrado junto. Cada rei nomeia seu cavalo com o mesmo nome: <strong>Galho</strong>. Atualmente é a quinta geração do nome.</p></div>
+
+        <div class="gen-label">Geração dos Avós</div>
+        <div class="gen">
+          <div class="person dead"><strong>Varden Orbel</strong><span class="age">† aos 66 — ferida de batalha infeccionada</span><span class="house-note">Conquistou Quebra-Maré dos piratas da costa norte. Iniciou a parceria com Valos em troca de garantia de não-pirataria. Fundou a rota comercial de madeira.</span></div>
+          <div class="person dead"><strong>Cessa Tavar-Orbel</strong><span class="age">† aos 60 — parto complicado</span><span class="house-note">Da Casa Tavar. Morreu no quinto parto. Sua morte fez Varden promover a Casa Tavar ao controle de Quebra-Maré como compensação à família dela.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Pais</div>
+        <div class="gen">
+          <div class="person"><strong>Severn Orbel</strong><span class="age">54 anos — Rei atual</span><span class="house-note">Cavaleiro de Galho aos 17. Caçou sozinho um javali gigante do Dossel aos 15 — um ano antes do permitido. Seu pai o castigou e o celebrou ao mesmo tempo. Governa com firmeza mas resolve disputas pessoalmente.</span></div>
+          <div class="person"><strong>Roxa Rend-Orbel</strong><span class="age">48 anos — Rainha</span><span class="house-note">Da Casa Rend — caçadores e artesãos. Uma das poucas rainhas em Elvilia que acompanha o marido nas caçadas. Exímia com o arco curto.</span></div>
+          <div class="person dead"><strong>Aldren Orbel</strong><span class="age">† aos 31 — morto por javali do Dossel</span><span class="house-note">Irmão mais novo de Severn. O mais amado da família. Morreu em uma caçada que foi além do limite seguro do Dossel. Seu filho Menor foi adotado pelo rei.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Filhos</div>
+        <div class="gen">
+          <div class="person"><strong>Cael Orbel</strong><span class="age">26 anos — Herdeiro</span><span class="house-note">Cavaleiro de Galho. Melhor cavaleiro da geração. Casado com Isel Veld — filha da Casa Veld — aliança que o rei orquestrou para conter a agressividade dos Veld nos pedágios fluviais.</span></div>
+          <div class="person"><strong>Drenne Orbel</strong><span class="age">22 anos — Filha</span><span class="house-note">A mais inteligente dos filhos. Gerencia pessoalmente as negociações com os navios de Valos em Quebra-Maré. O Tubarão de Atoleiro a trata como igual — raro para uma mulher continental.</span></div>
+          <div class="person"><strong>Fen Orbel</strong><span class="age">18 anos — Filho adotado (sobrinho)</span><span class="house-note">Filho do irmão morto. Criado como filho. Obcecado em descobrir exatamente o que matou seu pai — suspeita que a morte não foi acidental. Ninguém leva a sério, exceto Drenne.</span></div>
+        </div>
+      </div>
+
+      <div class="alliance">
+        <div class="at">Casamento Estratégico Recente</div>
+        Cael Orbel + Isel Veld: o casamento foi condição do rei para que a Casa Veld reduzisse as cobranças de pedágio sobre Grãos-Gerais. Isel Veld tem 20 anos e claramente não gosta do marido — os dois vivem diplomaticamente sob o mesmo teto.
+      </div>
+    </div>
+
+    <div class="tab-content" id="bou-fauna">
+      <div class="fauna">
+        <div class="fcard"><div class="fn">Javali Gigante do Dossel</div><div class="fs">Sus maximus silvae</div><p>Javali de porte excepcional — adultos chegam a 400 kg. Presas curvadas que podem perfurar armadura. Matar um sozinho é o rito de iniciação da cavalaria. Habita as profundezas do Dossel. Três cavaleiros morreram caçando-os nos últimos dez anos.</p><span class="ftag ftag-danger">Altamente perigoso</span><span class="ftag ftag-icon">Rito de cavalaria</span></div>
+        <div class="fcard"><div class="fn">Alca de Chifres Ramados</div><div class="fs">Alces ramosus</div><p>Alca gigante cujos chifres ramificam-se como galhos de carvalho — daí o nome. Símbolo de Bourbon. Imagem estampada nos estandartes da Casa Orbel. Mansas fora do período de cio, letais durante ele.</p><span class="ftag ftag-icon">Símbolo do reino</span></div>
+        <div class="fcard"><div class="fn">Onça do Rio</div><div class="fs">Panthera fluvialis</div><p>Felino de grande porte que habita as margens do rio que corta Toca da Onça. Adaptado a nadar. Deu nome à capital. Raro — avistado apenas ao amanhecer. Considerado protetor da cidade.</p><span class="ftag ftag-rare">Rara — protetora da capital</span></div>
+        <div class="fcard"><div class="fn">Coruja do Dossel</div><div class="fs">Strix dosselus</div><p>Coruja de grande envergadura com plumagem que mimetiza casca de carvalho. Usada pelos nobres como mensageiras de curta distância — mais confiável que pombos em floresta densa onde pombos se perdem.</p><span class="ftag ftag-icon">Mensageira</span></div>
+        <div class="fcard"><div class="fn">Urso Negro de Ombros</div><div class="fs">Ursus dorsalis</div><p>Mesmo urso das Terras de Romanovos — habita também as bordas do Dossel. Os de Bourbon são menores que os do norte. Caçados por sua pele e pelo valor social de enfrentá-los.</p><span class="ftag ftag-danger">Perigoso</span></div>
+        <div class="fcard"><div class="fn">Peixe-Espada de Rio</div><div class="fs">Xiphias fluvius</div><p>Peixe de água doce com rostro afiado. Único em Elvilia. Habita o rio que corta Toca da Onça. Carne muito valorizada — servida apenas em banquetes nobres. Difícil de pescar por ser extremamente rápido.</p><span class="ftag ftag-rare">Iguaria nobre</span></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="bou-disease">
+      <div class="disease"><div class="dt">Febre do Dossel</div><p>Doença febril causada por parasita transportado por mosquitos nas áreas úmidas profundas do Dossel. Ciclos de febre alta e calafrios. Comum entre lenhadores e caçadores que penetram longe da borda da floresta. Tratado com casca de uma árvore específica chamada pelos locais de Casca-Amarga.</p></div>
+      <div class="disease"><div class="dt">Podridão das Feridas de Caça</div><p>Infecções graves de ferimentos por presas de javali ou chifres de alca. A mordida do javali gigante é particularmente propensa a infecção por bactéria específica de seu intestino. Muitos cavaleiros sobrevivem ao javali mas morrem da ferida uma semana depois.</p></div>
+      <div class="disease"><div class="dt">Tosse dos Lenhadores</div><p>Condição respiratória crônica causada pela inalação de serragem de madeiras resinosas do Dossel. Irreversível após anos de exposição. Considerada "marca de trabalho honesto" pelos lenhadores — recusam tratamento por questão de orgulho.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     V · TUDÓRIA
+════════════════════════════════════════ -->
+<section class="reino" id="tudoria">
+  <div class="reino-head" style="background:linear-gradient(135deg,#5a2808,#2a1004)">
+    <div class="rnum">V</div>
+    <div><div class="rname">Tudória</div><div class="rcap">MONARQUIA CONSELHISTA · NOVA ESPERANÇA</div></div>
+  </div>
+  <div class="ca">
+    <div class="tab-bar">
+      <button class="tb on" onclick="tab(this,'tud-fam')">Famílias e Sangue</button>
+      <button class="tb" onclick="tab(this,'tud-fauna')">Fauna</button>
+      <button class="tb" onclick="tab(this,'tud-disease')">Doenças</button>
+    </div>
+
+    <div class="tab-content on" id="tud-fam">
+      <div class="ftree">
+        <div class="ftree-name">Casa Holt — Real</div>
+        <div class="ftree-motto">"A maré não pede permissão. Tampouco nós."</div>
+        <div class="bt"><p>Os Holt são uma família de origem portuária — o bisavô era Mestre de Convés antes de se tornar o primeiro rei de Tudória. Essa origem humilde é ao mesmo tempo orgulho e vulnerabilidade: as casas antigas de Vila Antiga nunca aceitaram completamente uma família "de cais" no trono.</p></div>
+
+        <div class="gen-label">Geração dos Avós</div>
+        <div class="gen">
+          <div class="person dead"><strong>Renn Holt</strong><span class="age">† aos 68 — ferida de batalha anos depois</span><span class="house-note">Fundador do reino. Mestre de Convés que liderou a revolta contra o último governador de Zolernia. Construiu Nova Esperança do zero. Seu diário é texto sagrado do reino.</span></div>
+          <div class="person dead"><strong>Ola Drenn-Holt</strong><span class="age">† aos 71 — velhice</span><span class="house-note">Esposa de Renn. Da família Drenn — marinheiros de Marialva. Manteve o Conselho unido nos primeiros anos turbulentos com força de vontade pura.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Pais</div>
+        <div class="gen">
+          <div class="person"><strong>Cael Holt</strong><span class="age">49 anos — Rei atual</span><span class="house-note">Neto de Renn. Administrador competente, sem o carisma do avô. Sabe que Vila Antiga o detesta. Lorde Caen Holt do Conselho é seu primo distante — não seu aliado.</span></div>
+          <div class="person"><strong>Vera Fell-Holt</strong><span class="age">44 anos — Rainha</span><span class="house-note">Da família Fell de Conceição. Casamento que aproximou o trono da fronteira sul — politicamente importante dada a pressão de Zolernia. Pragmática e sem ilusões.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Filhos</div>
+        <div class="gen">
+          <div class="person"><strong>Tave Holt</strong><span class="age">23 anos — Herdeiro</span><span class="house-note">Capitão de navio aos 20 — o pai o enviou para aprender antes de governar. Retornou há dois anos. Mais popular que o pai em Nova Esperança, o que o pai nota com orgulho misturado a insegurança.</span></div>
+          <div class="person"><strong>Senn Holt</strong><span class="age">19 anos — Filha</span><span class="house-note">Prometida ao filho do Conselheiro Ossian Fell para manter a aliança com Conceição. Ela aceitou mas exigiu que o noivo passe um ano no mar antes do casamento — ele nunca navegou. Aprendeu a conduzir barco com 12 anos.</span></div>
+        </div>
+      </div>
+
+      <div class="ftree">
+        <div class="ftree-name">Casa Tirk — Vila Antiga (Oposição)</div>
+        <div class="ftree-motto">"O que foi fundado antes, governa por direito."</div>
+        <div class="bt"><p><strong>Saven Tirk</strong> (55 anos) representa tudo que Vila Antiga resente: a família Tirk governava a região antes de Renn Holt existir. São fidalgos de terra, não de mar — e nunca perdoaram a ascensão dos Holt. Saven bloqueia sistematicamente toda proposta da coroa no Conselho. Seus filhos <strong>Drenk Tirk</strong> (28) e <strong>Ossa Tirk</strong> (24) são treinados para continuar o bloqueio por mais uma geração.</p>
+        <p>O suspeito de correspondência com Zolernia é Saven — o rei Cael sabe, mas não tem a carta em mãos.</p></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tud-fauna">
+      <div class="fauna">
+        <div class="fcard"><div class="fn">Golfinho do Rio Cinza</div><div class="fs">Delphinus cinereus</div><p>Golfinho de água doce que habita a foz do Rio Cinza. Considerado protetor dos navios de Tudória — marinheiros que veem golfinhos na proa acreditam que a viagem será segura. Matar um é tabu absoluto.</p><span class="ftag ftag-icon">Protetor dos marinheiros</span></div>
+        <div class="fcard"><div class="fn">Garça de Ferro</div><div class="fs">Ardea ferrea</div><p>Ave costeira de bico excecionalmente robusto que captura peixes na costa. Símbolo de Nova Esperança — estampada nos estandartes da cidade por sua postura ereta e olhar direto, que os fundadores consideraram inspirador.</p><span class="ftag ftag-icon">Símbolo da capital</span></div>
+        <div class="fcard"><div class="fn">Enguia Saltadora</div><div class="fs">Anguilla saltatrix</div><p>Enguia de rio que migra ao mar e de volta. Capturada em enormes quantidades durante a migração — evento chamado "Grande Subida" que acontece a cada dois anos e é celebrado como festival.</p><span class="ftag ftag-icon">Festival cultural</span></div>
+        <div class="fcard"><div class="fn">Raia do Mar Cinza</div><div class="fs">Raja cineris</div><p>Raia de tamanho considerável encontrada nas águas do Mar Cinza. Não agressiva, mas o ferrão caudal causa ferimento sério. Carne muito apreciada salgada e seca.</p><span class="ftag ftag-danger">Ferrão perigoso</span></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tud-disease">
+      <div class="disease"><div class="dt">Febre das Águas Paradas</div><p>Doença febril causada por parasita de águas costeiras estagnadas nas docas e canais de Nova Esperança. Epidemias ocasionais no verão quando o calor para o movimento das águas. Mata principalmente crianças abaixo de cinco anos.</p></div>
+      <div class="disease"><div class="dt">Afogamento Branco</div><p>Nome local para pneumonia por aspiração de água salgada — comum entre marinheiros resgatados de naufrágios. Pulmões preenchidos gradualmente mesmo depois do resgate. Mortal em 48 horas se não tratado. Os médicos de Orsini são buscados para casos graves.</p></div>
+      <div class="disease"><div class="dt">Mal dos Portos</div><p>Conjunto de doenças venéreas trazidas por marinheiros de outros reinos, especialmente de Valos. Endêmico nos bairros portuários de Nova Esperança. A corte finge que não existe; os marinheiros fingem que não importa.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     VI · GRÃOS-GERAIS
+════════════════════════════════════════ -->
+<section class="reino" id="graosgerais">
+  <div class="reino-head" style="background:linear-gradient(135deg,#2a4008,#162404)">
+    <div class="rnum">VI</div>
+    <div><div class="rname">Grãos-Gerais</div><div class="rcap">MONARQUIA CLÂNICA DE MONTANHA · TORRE AGULHA</div></div>
+  </div>
+  <div class="ca">
+    <div class="tab-bar">
+      <button class="tb on" onclick="tab(this,'gg-fam')">Famílias e Sangue</button>
+      <button class="tb" onclick="tab(this,'gg-fauna')">Fauna</button>
+      <button class="tb" onclick="tab(this,'gg-disease')">Doenças</button>
+    </div>
+
+    <div class="tab-content on" id="gg-fam">
+      <div class="ftree">
+        <div class="ftree-name">Casa Agulha — Real</div>
+        <div class="ftree-motto">"Iverth não move. Nós também não."</div>
+        <div class="bt"><p>Os Needle governam Torre Agulha há seis gerações. São a única família nobre de Elvilia que obrigatoriamente envia todos os filhos — homens e mulheres — para a escalada de Iverth, diferente do costume geral que exige apenas os guerreiros masculinos. A matriarca da família é sempre chamada de <strong>Voz da Pedra</strong> — título honorífico sem poder formal, mas com influência enorme junto às Vozes de Iverth.</p></div>
+
+        <div class="gen-label">Geração dos Avós</div>
+        <div class="gen">
+          <div class="person dead"><strong>Dren Needle</strong><span class="age">† aos 74 — coração</span><span class="house-note">Estabeleceu o sistema dos Aseiros como guilda formal do estado. Criou os gaviões de combate a partir de uma ideia dos pastores de altitude. Nunca desceu da montanha depois dos 60 anos.</span></div>
+          <div class="person dead"><strong>Iva Colina-Needle</strong><span class="age">† aos 70 — Voz da Pedra</span><span class="house-note">Primeira mulher a escalar Iverth até o Polegar. As Vozes de Iverth dizem que ela chegou ao cume — o que nunca foi confirmado. Considerada santa não-oficial.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Pais</div>
+        <div class="gen">
+          <div class="person"><strong>Savar Needle</strong><span class="age">55 anos — Rei atual</span><span class="house-note">Escalou Iverth duas vezes — a segunda aos 40 anos, sozinho, sem motivo declarado. Voltou diferente. As Vozes de Iverth o tratam com respeito incomum.</span></div>
+          <div class="person"><strong>Lena Élen-Needle</strong><span class="age">50 anos — Rainha e Voz da Pedra</span><span class="house-note">Do Clã Élen, que governa Pico de Élen. Sua escalada de Iverth aos 16 anos é considerada a mais elegante registrada — chegou ao Polegar em dois dias, sozinha, sem gastar as provisões.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Filhos</div>
+        <div class="gen">
+          <div class="person"><strong>Kael Needle</strong><span class="age">27 anos — Herdeiro</span><span class="house-note">Mestre do Arco (Arqûen) aos 22. Comanda As Garras de Iverth. Escalou Iverth — chegou ao Polegar e ficou três dias com as Vozes. Voltou com o emblema do Polegar tatuado no pulso.</span></div>
+          <div class="person"><strong>Reva Needle</strong><span class="age">22 anos — Filha</span><span class="house-note">Aseira — passou dois anos treinando gaviões. Seu gavião de combate é o mais preciso já registrado. Recusou um pedido de casamento do filho do Lorde de Sabugal sem dar explicações.</span></div>
+          <div class="person"><strong>Torn Needle</strong><span class="age">15 anos — Filho mais novo</span><span class="house-note">Ano da escalada de Iverth. Partiu há três semanas. Nenhuma notícia ainda — o que é normal, mas a rainha não dorme.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="gg-fauna">
+      <div class="fauna">
+        <div class="fcard"><div class="fn">Gavião de Iverth</div><div class="fs">Falco iverthi</div><p>Espécie única das alturas da Cadeia das Agulhas. Plumagem cinza-pedra com manchas brancas nas asas. Velocidade de mergulho extraordinária. Treinados pelos Aseiros desde filhotes — processo que leva três anos para gaviões de mensagem, cinco para gaviões de combate.</p><span class="ftag ftag-icon">Exclusivo do reino</span><span class="ftag ftag-icon">Arma de guerra</span></div>
+        <div class="fcard"><div class="fn">Cabra de Pedra</div><div class="fs">Capra rupestris</div><p>Cabra selvagem das alturas, adaptada a terrenos verticais impossíveis. Carne muito valorizada — consegui-la exige escalar até onde elas vivem. Fonte de lã de alta altitude extremamente quente e densa.</p><span class="ftag ftag-icon">Lã de exportação</span></div>
+        <div class="fcard"><div class="fn">Salamandra dos Olhos Amargos</div><div class="fs">Salamandra acida</div><p>Anfíbio único que habita as margens dos lagos ácidos. Pele alaranjada com manchas negras — coloração de aviso. Contato dérmico causa irritação severa. Os montanhistas a usam como indicador: se há salamandras, o lago é ácido.</p><span class="ftag ftag-danger">Indicadora de perigo</span></div>
+        <div class="fcard"><div class="fn">Lince das Agulhas</div><div class="fs">Lynx rupestris</div><p>Felino das alturas, pelagem creme-acinzentada. Caçador solitário e silencioso. Os montanhistas respeitam o lince — dizem que ele conhece cada trilha segura da montanha.</p><span class="ftag ftag-rare">Raro — guia mítico</span></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="gg-disease">
+      <div class="disease"><div class="dt">Mal da Altitude (Respiro Branco)</div><p>Edema pulmonar causado por ascensão rápida a grande altitude sem aclimatação. Comum nos jovens que sobem Iverth pela primeira vez sem preparação adequada. As Vozes de Iverth no Polegar tratam casos graves. Mortal se o escalador continuar subindo com sintomas.</p></div>
+      <div class="disease"><div class="dt">Queimadura dos Olhos Amargos</div><p>Contato acidental com água de lago ácido. Queimaduras na pele e olhos. Perda de visão permanente em casos de contato ocular direto. Uma das maiores causas de morte não-violenta nas rotas de montanha. Tratado imediatamente com água pura em grande quantidade.</p></div>
+      <div class="disease"><div class="dt">Ergotismo das Alturas</div><p>Intoxicação por fungo que afeta grãos cultivados acima de certa altitude — especialmente em anos chuvosos. Causa contrações musculares, alucinações e gangrena seca das extremidades. Epidemias ocorrem esporadicamente e eram confundidas no passado com possessão demoníaca.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     VII · ILHAS DE VALOS
+════════════════════════════════════════ -->
+<section class="reino" id="valos">
+  <div class="reino-head" style="background:linear-gradient(135deg,#28104a,#140828)">
+    <div class="rnum">VII</div>
+    <div><div class="rname">Ilhas de Valos</div><div class="rcap">ARQUIPÉLAGO SOBERANO · AETHELGARD</div></div>
+  </div>
+  <div class="ca">
+    <div class="tab-bar">
+      <button class="tb on" onclick="tab(this,'val-fam')">Famílias e Sangue</button>
+      <button class="tb" onclick="tab(this,'val-fauna')">Fauna</button>
+      <button class="tb" onclick="tab(this,'val-disease')">Doenças</button>
+    </div>
+
+    <div class="tab-content on" id="val-fam">
+      <div class="ftree">
+        <div class="ftree-name">Casa Real de Valos — Sem Nome de Casa</div>
+        <div class="ftree-motto">"Rei não é título. É o homem que o mar respeita."</div>
+        <div class="bt"><p>A família real de Valos não tem nome de casa — apenas o nome do rei se torna o nome da linhagem enquanto reina. O atual rei é chamado simplesmente <strong>Rei Edvar</strong> — e seus filhos são "filhos de Edvar" até que um deles suba ao trono e passe a dar nome à família. Essa tradição reflete o ethos de Valos: a casa não faz o homem, o homem faz a casa.</p></div>
+
+        <div class="gen-label">Geração dos Avós</div>
+        <div class="gen">
+          <div class="person dead"><strong>Rei Kael (Kael o Largo)</strong><span class="age">† aos 62 — afogamento (tempestade)</span><span class="house-note">Fundou o título de Tubarão. Morreu em tempestade ao insistir em navegar quando nenhum piloto aceitou o risco. Considerado o maior rei de Valos por sua coragem e o mais estúpido por sua morte.</span></div>
+          <div class="person dead"><strong>Mira (Consorte)</strong><span class="age">† aos 58 — doença do pulmão</span><span class="house-note">Não era da nobreza — era filha de um carpinteiro de navios. Casamento por amor que escandalizou o arquipélago e estabeleceu o precedente de que qualidade supera sangue.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Pais</div>
+        <div class="gen">
+          <div class="person"><strong>Rei Edvar</strong><span class="age">67 anos — Rei atual</span><span class="house-note">Envelhecendo. Não nomeia herdeiro porque os dois filhos são igualmente capazes e ele não quer criar um perdedor ainda em vida. Erro político que todos veem exceto ele.</span></div>
+          <div class="person dead"><strong>Vossa (Primeira Consorte)</strong><span class="age">† aos 45 — parto</span><span class="house-note">Mãe de Aldren. Filha do primeiro Tubarão de Sintra. Sua morte no parto do segundo filho criou culpa que o rei nunca resolveu.</span></div>
+          <div class="person"><strong>Geira Voss</strong><span class="age">58 anos — Almirante</span><span class="house-note">Não é consorte do rei — é sua Almirante. A confusão sobre o relacionamento deles é deliberadamente mantida por ambos como vantagem política. 22 anos sem derrota naval.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Filhos — Os Dois Pretendentes</div>
+        <div class="gen">
+          <div class="person"><strong>Aldren (filho de Edvar e Vossa)</strong><span class="age">38 anos</span><span class="house-note">Capitão de Frota. Mais experiente. Conta com apoio dos Tubarões de Sintra e Lingard. Tem dois filhos — continuidade garantida. Conservador.</span></div>
+          <div class="person"><strong>Kael-Menor (filho de Edvar)</strong><span class="age">31 anos</span><span class="house-note">Mais jovem, mais ousado. Conta com apoio do Tubarão de Atoleiro. Solteiro. Defende expansão agressiva das taxas de passagem. Amado pelos corsários.</span></div>
+        </div>
+      </div>
+
+      <div class="ftree">
+        <div class="ftree-name">Os Tubarões — Nobreza de Valos</div>
+        <div class="ftree-motto">"Tubarão não pede mar. Toma."</div>
+        <div class="gen">
+          <div class="person"><strong>Tubarão Vorn (Sintra)</strong><span class="age">54 anos</span><span class="house-note">O mais antigo dos Tubarões. Apoia Aldren para o trono. Tem três filhas — nenhum filho. Uma das filhas comanda sua frota local.</span></div>
+          <div class="person"><strong>Tubarão Essa (Lingard)</strong><span class="age">46 anos — Mulher</span><span class="house-note">Única Tubarão mulher na história de Valos. Ganhou o título por herança e manteve-o por ser mais competente que qualquer desafiante. Neutra na disputa de sucessão — o que a torna a mais cortejada pelos dois lados.</span></div>
+          <div class="person"><strong>Tubarão Dreck (Atoleiro)</strong><span class="age">42 anos</span><span class="house-note">O mais agressivo. Defende guerra contra Orsini. Apoiou Kael-Menor publicamente — o que alguns consideram imprudente.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="val-fauna">
+      <div class="fauna">
+        <div class="fcard"><div class="fn">Tubarão-Touro de Aethelgard</div><div class="fs">Carcharhinus aethelgardis</div><p>Espécie de tubarão que habita as águas profundas ao redor do arquipélago. Agressivo em águas rasas. Os marinheiros de Valos aprenderam a identificar seu padrão de nado — e respeitá-lo. Oferendas da Dádiva ao Fundo são parcialmente direcionadas a "acalmar os Tubarões".</p><span class="ftag ftag-danger">Perigoso</span><span class="ftag ftag-icon">Título nobiliárquico inspirado neles</span></div>
+        <div class="fcard"><div class="fn">Foca de Orelha</div><div class="fs">Otaria insularis</div><p>Foca de grande porte com "orelhas" cartilaginosas visíveis. Vivem em colônias nas ilhas menores. Usadas como fonte de óleo e pele. Quando uma colônia abandona uma ilha, os pescadores de Valos também a abandonam — sinal de que o peixe acabou.</p><span class="ftag ftag-icon">Indicadora de pesca</span></div>
+        <div class="fcard"><div class="fn">Polvo Gigante de Profundeza</div><div class="fs">Octopus colossus</div><p>Polvo de tamanho excepcional encontrado apenas nas águas mais profundas do arquipélago. Avistamentos raros. A religião de Valos o considera um dos Monstros das Profundezas que deve ser respeitado. Caçá-lo intencionalmente é tabu.</p><span class="ftag ftag-rare">Sagrado — não caçar</span></div>
+        <div class="fcard"><div class="fn">Alcatraz do Norte</div><div class="fs">Morus septentrionalis</div><p>Ave marinha de mergulho. Os marinheiros seguem bandos de alcatrazes para encontrar cardumes. Uma das ferramentas de navegação mais antigas de Valos.</p><span class="ftag ftag-icon">Guia de navegação</span></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="val-disease">
+      <div class="disease"><div class="dt">Sarna do Mar</div><p>Infecção fúngica cutânea causada por exposição prolongada à água salgada. Extremamente comum em marinheiros. Manchas avermelhadas que coçam intensamente. Raramente fatal, mas debilitante. Ironicamente, os marinheiros mais experientes são os mais afetados — passam mais tempo na água.</p></div>
+      <div class="disease"><div class="dt">Mal dos Navios (Doença de Kael)</div><p>Síndrome de desorientação neurológica que afeta marinheiros que passaram décadas no mar. Alucinações de terra firme estando em alto mar, e de alto mar estando em terra. Nomeada em memória do Rei Kael, que mostrou sinais nos últimos anos. Considera-se honra entre velhos marujos.</p></div>
+      <div class="disease"><div class="dt">Febre das Profundezas</div><p>Doença misteriosa que afeta mergulhadores que vão profundamente para inspecionar cascos de navios. Causa convulsões e morte rápida — hoje entendido como resultado do nitrogênio no sangue, mas os Valosianos atribuem à punição dos Monstros das Profundezas por se aproximar demais.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     VIII · ZOLERNIA
+════════════════════════════════════════ -->
+<section class="reino" id="zolernia">
+  <div class="reino-head" style="background:linear-gradient(135deg,#600a0a,#300404)">
+    <div class="rnum">VIII</div>
+    <div><div class="rname">Império de Zolernia</div><div class="rcap">IMPÉRIO CENTRALIZADO · TORRE DO CREPÚSCULO</div></div>
+  </div>
+  <div class="ca">
+    <div class="tab-bar">
+      <button class="tb on" onclick="tab(this,'zol-fam')">Famílias e Sangue</button>
+      <button class="tb" onclick="tab(this,'zol-fauna')">Fauna</button>
+      <button class="tb" onclick="tab(this,'zol-disease')">Doenças</button>
+    </div>
+
+    <div class="tab-content on" id="zol-fam">
+      <div class="ftree">
+        <div class="ftree-name">Casa Imperial Cassivorn</div>
+        <div class="ftree-motto">"O Império não termina. Apenas se expande."</div>
+        <div class="bt"><p>Os Cassivorn governam Zolernia há seis imperadores. A família tem uma peculiaridade genética notável: os homens da linha principal tendem a ter cabelos prematuramente brancos — o Imperador Cassivorn III tem cabelos completamente brancos aos 44 anos, assim como seu pai os tinha aos 38. Os zolernenses chamam isso de <strong>Marca do Trono</strong> e o consideram sinal de sabedoria acelerada pelo peso do poder.</p></div>
+
+        <div class="gen-label">Geração dos Avós</div>
+        <div class="gen">
+          <div class="person dead"><strong>Imperador Cassivorn I</strong><span class="age">† aos 71 — assassinado</span><span class="house-note">Fundador da linha. Conquistou três reinos menores que hoje são províncias de Zolernia. Assassinado por um legionário pago pela facção que resistia à centralização. Mártir imperial.</span></div>
+          <div class="person dead"><strong>Imperatriz Vera Holt-Cassivorn</strong><span class="age">† aos 68 — velhice</span><span class="house-note">Da família Holt — nenhuma relação com os Holt de Tudória. Governou como regente por doze anos enquanto Cassivorn II crescia. Considerada a governante mais competente da história imperial.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Pais</div>
+        <div class="gen">
+          <div class="person dead"><strong>Imperador Cassivorn II</strong><span class="age">† aos 60 — doença dos pulmões</span><span class="house-note">Conservador. Manteve o Império sem expandir, o que os militares nunca perdoaram. Morreu amado pelo povo e desprezado pelo exército — combinação comum em Zolernia.</span></div>
+          <div class="person"><strong>Lorda Sena (Irmã do imperador)</strong><span class="age">58 anos — viva</span><span class="house-note">A tia do Imperador atual. Sem poder formal. Toda influência informal. É ela quem escolhe as esposas dos imperadores há duas gerações. Cassivorn III a teme.</span></div>
+        </div>
+
+        <div class="gen-label">Geração Atual</div>
+        <div class="gen">
+          <div class="person"><strong>Imperador Cassivorn III</strong><span class="age">44 anos</span><span class="house-note">Cabelos brancos desde os 36. Ambicioso, metódico, saudável. Tem um plano de dez anos para cercar Tudória economicamente antes de absorvê-la militarmente. O General Draven é o único que sabe o plano completo.</span></div>
+          <div class="person"><strong>Imperatriz Lora Seros-Cassivorn</strong><span class="age">38 anos</span><span class="house-note">Filha do Almirante-Imperial Seros. Casamento que uniu a linha imperial com o controle naval. Ciente do plano para Tudória — não aprova, mas não se opõe abertamente.</span></div>
+          <div class="person"><strong>Príncipe Cassivorn IV</strong><span class="age">17 anos — Herdeiro</span><span class="house-note">Cabelos já começando a embranquecer nas têmporas. Estudado, calmo. Mais parecido com Cassivorn II que com III — o que o pai observa com preocupação.</span></div>
+          <div class="person"><strong>Princesa Ola</strong><span class="age">14 anos</span><span class="house-note">A tia Sena já tem planos de casamento para ela. O Imperador ainda não sabe quais.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="zol-fauna">
+      <div class="fauna">
+        <div class="fcard"><div class="fn">Águia Imperial</div><div class="fs">Aquila imperialis</div><p>Águia bicéfala — mutação natural única em Elvilia que aparece com frequência incomum nas planícies de Zolernia. Considerada sinal dos deuses do Império. Capturada viva e mantida em gaiolas na corte imperial como símbolo de poder.</p><span class="ftag ftag-icon">Símbolo imperial</span><span class="ftag ftag-rare">Mutação rara</span></div>
+        <div class="fcard"><div class="fn">Touro das Planícies</div><div class="fs">Bos imperialis</div><p>Boi selvagem de grande porte que habita a planície central. Domesticado parcialmente para trabalho agrícola — os exemplares selvagens são enormes e perigosos. Caçar um touro adulto é prova de coragem para jovens legionários.</p><span class="ftag ftag-danger">Selvagem perigoso</span><span class="ftag ftag-icon">Domesticado para agricultura</span></div>
+        <div class="fcard"><div class="fn">Cobra Imperial</div><div class="fs">Naja imperialis</div><p>Cobra de veneno neurotóxico que habita as regiões quentes do sul do Império. Capaz de levantar um terço do corpo verticalmente. Venerada como símbolo de poder — mas não sagrada. Usada em execuções públicas pelos Forjadores da Fé locais.</p><span class="ftag ftag-danger">Veneno mortal</span></div>
+        <div class="fcard"><div class="fn">Abutre das Batalhas</div><div class="fs">Gyps imperialis</div><p>Abutre de grande porte que segue os exércitos de Zolernia em campanha. Os legionários os chamam de "o exército de limpeza". Presença de abutres no horizonte é sinal de batalha recente.</p><span class="ftag ftag-icon">Segue as legiões</span></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="zol-disease">
+      <div class="disease"><div class="dt">Febre Imperial (Praga das Legiões)</div><p>Doença infecciosa que se propaga rapidamente entre soldados em acampamentos. Febre alta, erupções vermelhas e falência de órgãos em casos graves. Historicamente responsável por mais mortes que batalhas. Os centuriões são treinados para identificar os primeiros sintomas e isolar afetados.</p></div>
+      <div class="disease"><div class="dt">Doença do Rio Imperial</div><p>Parasita transmitido por água do Rio Imperial não tratada. Causa disenteria grave. Endêmico nas cidades ribeirinhas mais pobres. A corte tem acesso a água filtrada; os pobres não. Principal diferença de expectativa de vida entre classes.</p></div>
+      <div class="disease"><div class="dt">Letargia Branca</div><p>Doença misteriosa que afeta principalmente burocratas e escribas — perda progressiva de energia, palidez extrema, morte lenta. Possivelmente relacionada ao chumbo usado nas tintas de escrita de documentos imperiais, mas nenhum médico de Zolernia fez a conexão.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     IX · TRASTARA
+════════════════════════════════════════ -->
+<section class="reino" id="trastara">
+  <div class="reino-head" style="background:linear-gradient(135deg,#2a3808,#141c04)">
+    <div class="rnum">IX</div>
+    <div><div class="rname">Confederação de Trastara</div><div class="rcap">TEOCRACIA SOLAR CONFEDERADA · SANTA FLORENÇA</div></div>
+  </div>
+  <div class="ca">
+    <div class="tab-bar">
+      <button class="tb on" onclick="tab(this,'tra-fam')">Famílias e Sangue</button>
+      <button class="tb" onclick="tab(this,'tra-fauna')">Fauna</button>
+      <button class="tb" onclick="tab(this,'tra-disease')">Doenças</button>
+    </div>
+
+    <div class="tab-content on" id="tra-fam">
+      <div class="ftree">
+        <div class="ftree-name">Casa Solenne — Real e Divina</div>
+        <div class="ftree-motto">"Somos a sombra do Sol entre os homens."</div>
+        <div class="bt"><p>A Casa Solenne não apenas governa — ela <em>é</em> divina por doutrina. Cada rei Solenne é a reencarnação de Solvar na terra. Isso cria uma peculiaridade política única: o rei não pode ser deposto, apenas o Sol pode "recolhê-lo" através da morte. E é a Alta Cúpula quem interpreta se uma morte foi o Sol recolhendo ou um assassinato — distinção com enormes implicações políticas.</p></div>
+
+        <div class="gen-label">Geração dos Avós</div>
+        <div class="gen">
+          <div class="person dead"><strong>Rei Solvar-Drenk I</strong><span class="age">† aos 58 — Pôr do Sol repentino</span><span class="house-note">O rei mais amado da história de Trastara. Morreu subitamente — a Alta Cúpula declarou Pôr do Sol natural; três nobles do sul dizem que foi envenenado. Nunca provado.</span></div>
+          <div class="person dead"><strong>Rainha-Mãe Essa</strong><span class="age">† aos 72 — velhice</span><span class="house-note">A única mulher que governou Trastara de fato — como regente pelo filho menor. A Alta Cúpula tentou remover seu poder; ela removeu dois Solares da Cúpula primeiro. Respeitada até hoje.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Pais</div>
+        <div class="gen">
+          <div class="person"><strong>Rei Solvar-Varen II</strong><span class="age">45 anos — Rei atual</span><span class="house-note">Encarnação atual de Solvar. Homem sincero que genuinamente acredita em sua divindade — o que o torna ao mesmo tempo mais honesto e mais perigoso que um político calculista. O Spada-Lorde é seu único confidente real.</span></div>
+          <div class="person"><strong>Rainha Solar Iva</strong><span class="age">40 anos</span><span class="house-note">A rainha é chamada de Rainha Solar — não esposa do deus, mas "portadora da luz". Cerimonial mas não sem influência. Vem de Lordelo — cidade do norte ameaçada por Zolernia, o que lhe dá interesse pessoal na questão.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Filhos</div>
+        <div class="gen">
+          <div class="person"><strong>Príncipe Solen</strong><span class="age">20 anos — Herdeiro</span><span class="house-note">O próximo Nascer de Solvar. Treinado desde a infância para acreditar em sua natureza divina. Sincero como o pai, mas tem o temperamento da avó — pode remover um Solar sem piscar.</span></div>
+          <div class="person"><strong>Varen Solenne (Spada-Lorde)</strong><span class="age">39 anos</span><span class="house-note">Não é filho do rei — é primo distante. O melhor espadachim de Trastara. Seu cargo é hereditário desde que prove excelência. Celibatário por escolha — diz que família cria fraquezas que inimigos exploram.</span></div>
+        </div>
+      </div>
+
+      <div class="ftree">
+        <div class="ftree-name">Alta Cúpula de Solvar — Os Sete Solares</div>
+        <div class="ftree-motto">"Interpretamos a vontade do Sol. Quem contesta, contesta o Sol."</div>
+        <div class="bt"><p>Os sete Solares são nomeados vitaliciamente pela própria Cúpula quando uma vaga abre. O Solar mais poderoso atualmente é <strong>Solar Drenk do Norte</strong> (68 anos) — arquiteto da política de ignorar as provocações de Zolernia. O Solar mais jovem é <strong>Solar Rysse</strong> (34 anos, mulher) — nomeada há dois anos, vinda de Santa Florença, e claramente uma agente do rei dentro da Cúpula.</p></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tra-fauna">
+      <div class="fauna">
+        <div class="fcard"><div class="fn">Leão das Planícies Solares</div><div class="fs">Panthera solaris</div><p>Leão de juba dourada que habita as planícies abertas de Trastara. Considerado animal sagrado de Solvar — nenhum pode ser morto sem permissão da Alta Cúpula. A punição é excomunhão. Ataques a rebanhos são tratados como "sinal de Solvar".</p><span class="ftag ftag-icon">Sagrado a Solvar</span></div>
+        <div class="fcard"><div class="fn">Boi Sagrado Branco</div><div class="fs">Bos solaris</div><p>Boi albino que aparece ocasionalmente nos rebanhos de Trastara. Considerado mensageiro de Solvar — não pode ser sacrificado nem trabalhado. Mantido em pastagem especial junto à Catedral do Solstício. Atualmente há três exemplares vivos.</p><span class="ftag ftag-rare">Sagrado intocável</span></div>
+        <div class="fcard"><div class="fn">Cegonha Solar</div><div class="fs">Ciconia solaris</div><p>Ave migratória que chega a Trastara exatamente no solstício de verão — sua chegada marca o início das celebrações de Solvar. Considerada portadora do olhar do deus. Nidifica nos telhados da Catedral do Solstício todos os anos.</p><span class="ftag ftag-icon">Marcador do calendário sagrado</span></div>
+        <div class="fcard"><div class="fn">Escorpião Dourado</div><div class="fs">Buthus aureus</div><p>Escorpião de coloração dourada encontrado nas regiões secas do sul de Trastara. Veneno moderado — doloroso mas raramente fatal em adultos saudáveis. Crianças e idosos: risco de vida. Ironia: a cor sagrada de Solvar é dourada.</p><span class="ftag ftag-danger">Veneno — risco em crianças</span></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tra-disease">
+      <div class="disease"><div class="dt">Praga Solar (Doença das Colheitas)</div><p>Doença causada por fungo que infecta os grãos em anos de sol excessivo sem chuva. Causa alucinações coletivas, convulsões e morte. Historicamente interpretada como castigo de Solvar por pecados da comunidade — o que levava a julgamentos religiosos e execuções ao invés de tratamento médico.</p></div>
+      <div class="disease"><div class="dt">Febre da Conversão</div><p>Doença febril que afeta novos convertidos à fé de Solvar que passam por rituais de iniciação que incluem longos períodos de jejum e exposição ao sol. Desidratação severa mascarada como experiência mística. A Alta Cúpula conhece o risco e o ignora.</p></div>
+      <div class="disease"><div class="dt">Mal dos Escribas</div><p>Mesma Letargia Branca de Zolernia — chumbo nas tintas. Trastara exporta papel e usa muito mais tinta que outros reinos. Mais comum aqui que em qualquer outro lugar. A Alta Cúpula atribui a fraqueza dos escribas a "falta de fé".</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     X · VASTO DE ORSINI
+════════════════════════════════════════ -->
+<section class="reino" id="orsini">
+  <div class="reino-head" style="background:linear-gradient(135deg,#0c2838,#061418)">
+    <div class="rnum">X</div>
+    <div><div class="rname">Vasto de Orsini</div><div class="rcap">REINO NATURALISTA COSTEIRO · NOVA LUA</div></div>
+  </div>
+  <div class="ca">
+    <div class="tab-bar">
+      <button class="tb on" onclick="tab(this,'ors-fam')">Famílias e Sangue</button>
+      <button class="tb" onclick="tab(this,'ors-fauna')">Fauna</button>
+      <button class="tb" onclick="tab(this,'ors-disease')">Doenças</button>
+    </div>
+
+    <div class="tab-content on" id="ors-fam">
+      <div class="ftree">
+        <div class="ftree-name">Casa Orsini — Real</div>
+        <div class="ftree-motto">"A raposa encontra o caminho. O rei, o mesmo."</div>
+        <div class="bt"><p>Os Orsini têm uma tradição única: cada membro da família real recebe uma raposa domesticada ao nascer, criada junto com a criança. Quando a raposa morre, diz-se que parte do rei morre com ela — e de fato os monarcas de Orsini tendem a adoecer depois da morte de suas raposas. A explicação prosaica é que a perda do animal de companhia de toda uma vida causa depressão profunda; a explicação local é que as raposas guardam a saúde do rei.</p></div>
+
+        <div class="gen-label">Geração dos Avós</div>
+        <div class="gen">
+          <div class="person dead"><strong>Rei Saven Orsini</strong><span class="age">† aos 63 — morte três meses após a raposa</span><span class="house-note">Descobriu e mapeou as rotas de caverna que dão acesso a Nova Lua. Sua raposa, Noite, viveu 22 anos — incomum para raposas. Ele morreu noventa dias depois dela.</span></div>
+          <div class="person dead"><strong>Rainha Mora</strong><span class="age">† aos 58 — acidente em caverna</span><span class="house-note">Física da Costa ela mesma — a única rainha de Orsini que também era médica. Morreu explorando uma nova rota de caverna que ela havia descoberto.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Pais</div>
+        <div class="gen">
+          <div class="person"><strong>Rei Aldren Orsini</strong><span class="age">51 anos — Rei atual</span><span class="house-note">A melhor Passeiro vivo. Sua raposa, Cinza, tem 18 anos — velha para a espécie. Aldren recusa pensar no que vem depois. Os Físicos da Costa monitoram sua saúde com atenção dobrada.</span></div>
+          <div class="person"><strong>Rainha Vela</strong><span class="age">46 anos</span><span class="house-note">Da família de Senhores da Baía de Sírius. Não tem raposa própria — casou-se adulta, fora do ritual de nascimento. Única da família sem o vínculo. Os nobres costeiros veem isso como sinal de que ela nunca será verdadeiramente da casa.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Filhos</div>
+        <div class="gen">
+          <div class="person"><strong>Sora Orsini</strong><span class="age">26 anos — Herdeira</span><span class="house-note">Física da Costa treinada e Passeira. Sua raposa, Bruma, tem 8 anos — em plena forma. Considera que Valos precisa aprender uma lição e pressiona o pai por expansão naval.</span></div>
+          <div class="person"><strong>Kael Orsini</strong><span class="age">22 anos — Filho</span><span class="house-note">Domador especializado — sua raposa, Sombra, é o animal mais bem treinado de toda a guilda. Sombra encontrou três rotas de caverna novas que nenhum Passeiro havia descoberto.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="ors-fauna">
+      <div class="fauna">
+        <div class="fcard"><div class="fn">Raposa Costeira de Orsini</div><div class="fs">Vulpes orsinii</div><p>Subespécie única de raposa costeira, menor que as continentais, com coloração que muda de laranja a cinza conforme a estação. Extraordinariamente inteligente. Única espécie de raposa no mundo com domesticação formal e sistemática. Vivem até 20 anos quando bem cuidadas.</p><span class="ftag ftag-icon">Domesticada — exclusivo</span><span class="ftag ftag-icon">Guia nas cavernas</span></div>
+        <div class="fcard"><div class="fn">Lontra das Cavernas</div><div class="fs">Lutra cavernosa</div><p>Lontra que habita as cavernas costeiras de Nova Lua. Adapted a nadar em água salgada dentro das cavernas. As raposas Guias da Névoa e as lontras das cavernas interagem sem hostilidade — o único caso conhecido de coexistência pacífica entre as duas espécies.</p><span class="ftag ftag-rare">Exclusiva das cavernas de Nova Lua</span></div>
+        <div class="fcard"><div class="fn">Polvo da Costa</div><div class="fs">Octopus littoralis</div><p>Polvo de tamanho moderado encontrado nas piscinas de maré de Orsini. Capturado pelos Físicos da Costa por sua tinta — usada em preparados medicinais para febre. Única fonte conhecida deste tipo de tinta em Elvilia.</p><span class="ftag ftag-icon">Medicinal</span></div>
+        <div class="fcard"><div class="fn">Morcego da Caverna</div><div class="fs">Chiroptera novaelunae</div><p>Colônias de morcegos habitam as cavernas de acesso a Nova Lua. Os Passeiros usam o som das colônias como mapa auditivo das cavernas — o silêncio repentino de morcegos indica colapso ou intruso. As raposas os caçam ocasionalmente.</p><span class="ftag ftag-icon">Alerta natural dos Passeiros</span></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="ors-disease">
+      <div class="disease"><div class="dt">Febre da Caverna</div><p>Infecção causada por fungo que habita as cavernas de Nova Lua. Afeta principalmente pessoas que passam muito tempo nas rotas subterrâneas. Sintomas: febre baixa persistente, fraqueza, tosse seca. Os Físicos da Costa são os únicos em Elvilia que sabem tratá-la eficazmente com preparado de algas específicas.</p></div>
+      <div class="disease"><div class="dt">Mal do Sal</div><p>Hipertensão severa causada por dieta excessivamente salgada — endêmica em populações pesqueiras de longa data. Causa infartos repentinos. Curiosamente, os Físicos da Costa são excelentes em tratar os sintomas mas recusam-se a recomendar menos sal nas refeições — considerado heresia cultural.</p></div>
+      <div class="disease"><div class="dt">Mordida de Raposa (Raiva)</div><p>A raiva transmitida por raposas selvagens (não domesticadas) é o maior perigo de saúde pública de Orsini. As raposas domesticadas são tratadas preventivamente pelos Domadores. Mas raposas selvagens na periferia das cidades atacam quando doentes. Fatal se não tratada imediatamente pelos Físicos.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     XI · BRAGANZA
+════════════════════════════════════════ -->
+<section class="reino" id="braganza">
+  <div class="reino-head" style="background:linear-gradient(135deg,#380a50,#1a0428)">
+    <div class="rnum">XI</div>
+    <div><div class="rname">Braganza</div><div class="rcap">MONARQUIA MERCANTIL EM CRISE · PASSO FUNDO</div></div>
+  </div>
+  <div class="ca">
+    <div class="tab-bar">
+      <button class="tb on" onclick="tab(this,'bra-fam')">Famílias e Sangue</button>
+      <button class="tb" onclick="tab(this,'bra-fauna')">Fauna</button>
+      <button class="tb" onclick="tab(this,'bra-disease')">Doenças</button>
+    </div>
+
+    <div class="tab-content on" id="bra-fam">
+      <div class="ftree">
+        <div class="ftree-name">Casa Braganz — Real e os Ursos</div>
+        <div class="ftree-motto">"Quem monta o urso, doma o medo. Quem doma o medo, governa os homens."</div>
+        <div class="bt"><p>A tradição dos ursos pardos da família Braganz começou há quatro gerações com o Rei <strong>Oskar Braganz I</strong> — que encontrou um filhote órfão de urso pardo nos bosques do nordeste e o criou como companheiro, descobrindo que um urso domesticado desde filhote pode ser montado com treinamento intensivo. Cada rei desde então mantém a tradição — e os <strong>Guardas de Pelo</strong> tornaram-se a unidade de combate mais peculiar de Elvilia.</p></div>
+
+        <div class="gen-label">Geração dos Avós</div>
+        <div class="gen">
+          <div class="person dead"><strong>Rei Edvar Braganz I</strong><span class="age">† aos 69 — queda do urso</span><span class="house-note">Bisavô do atual rei. Montou urso até os 65 anos. Morreu quando o urso tropeçou em uma raiz e o jogou contra uma pedra. Considerado morte honrosa — "morreu como viveu".</span></div>
+          <div class="person dead"><strong>Rainha Cessa</strong><span class="age">† aos 61 — doença</span><span class="house-note">Nunca montou urso — recusou-se. A única rainha Braganz que não participou da tradição. Considerada "sensata" pelas outras rainhas de Elvilia.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Pais</div>
+        <div class="gen">
+          <div class="person"><strong>Rei Osvald Braganz</strong><span class="age">58 anos — Rei atual</span><span class="house-note">Monta Ferro Cinza, seu urso de 12 anos. Em todas as audiências formais, Ferro Cinza está presente — acorrentado, mas visivelmente. Ninguém reclama do cheiro. Não tem herdeiro seguro.</span></div>
+          <div class="person dead"><strong>Rainha Isel</strong><span class="age">† aos 44 — febre</span><span class="house-note">Morreu oito anos atrás. Deixou três filhos. Sua morte foi o começo do fim da estabilidade de Braganza — sem rainha, sem aliança matrimonial nova, a casa ficou isolada.</span></div>
+        </div>
+
+        <div class="gen-label">Geração dos Filhos — O Problema da Sucessão</div>
+        <div class="gen">
+          <div class="person"><strong>Edvar Braganz (Junior)</strong><span class="age">28 anos — Herdeiro formal</span><span class="house-note">Considerado inapto pelas casas nobres — não por crueldade, mas por genuína falta de talento político. Montou urso uma vez e caiu. Nunca tentou de novo. Os nobres dizem que isso resume tudo.</span></div>
+          <div class="person"><strong>Lira Braganz</strong><span class="age">24 anos — Filha</span><span class="house-note">A mais capaz dos três. Monta urso melhor que o irmão. Não pode herdar por lei sálica que a família recusa revogar. Ela sabe e governa silenciosamente através do irmão inapto.</span></div>
+          <div class="person"><strong>Kael Braganz</strong><span class="age">18 anos — Filho mais novo</span><span class="house-note">O favorito de Lira — ela o prepara para ser rei enquanto o pai não olha. Monta urso com confiança natural desde os 14 anos. Pode ser a verdadeira solução da sucessão se Lira conseguir manobrar.</span></div>
+        </div>
+      </div>
+
+      <div class="ftree">
+        <div class="ftree-name">Casa Drav — Pretendentes</div>
+        <div class="ftree-motto">"O sangue não escolhe onde corre."</div>
+        <div class="bt"><p><strong>Lorde Saven Drav</strong> (52 anos) apresentou <strong>Aldren Drav</strong> (23 anos) como pretendente ao trono — um primo distante da família Braganz que Lira imediatamente reconhece como incapaz. O perigo real é que a Casa Drav tem o apoio secreto de Zolernia, que preferiria um rei fantoche em Braganza a uma Lira governante.</p></div>
+      </div>
+
+      <div class="alliance">
+        <div class="at">Dinâmica Real do Poder</div>
+        Osvald (rei nominal) → Lira (poder real) → Kael (projeto de rei futuro). A Casa Drav sabe que Lira é o verdadeiro obstáculo — e está tentando encontrar forma legal de bloqueá-la sem provocar guerra civil aberta.
+      </div>
+    </div>
+
+    <div class="tab-content" id="bra-fauna">
+      <div class="fauna">
+        <div class="fcard"><div class="fn">Urso Pardo Gigante de Braganza</div><div class="fs">Ursus braganzensis</div><p>Subespécie de urso pardo consideravelmente maior que os ursos do norte — machos adultos chegam a 600 kg. Pelagem pardo-escura, quase negra em invernos. Domados desde filhotes pelos Guardas de Pelo em processo que leva cinco anos. Monta cavaleiro sem arreio convencional — treinamento de equilíbrio puro. Ferro Cinza, o urso do rei, pesa 580 kg.</p><span class="ftag ftag-icon">Montaria real</span><span class="ftag ftag-danger">Selvagem: extremamente perigoso</span></div>
+        <div class="fcard"><div class="fn">Texugo de Passo</div><div class="fs">Meles passensis</div><p>Texugo de grande porte que habita os arredores do Passo Fundo. Docilmente constrói tocas nos fundos das paredes da cidade — o que causou colapso de um trecho de muro há vinte anos. Considerado símbolo de persistência. Não é domesticado mas é tolerado.</p><span class="ftag ftag-icon">Símbolo de Passo Fundo</span></div>
+        <div class="fcard"><div class="fn">Corvo Comercial</div><div class="fs">Corvus mercantilis</div><p>Corvo de inteligência excepcionalmente alta que habita as cidades comerciais de Braganza. Aprende padrões de movimento de caravanas e é usado por ladrões para sinalizar guardas que se afastam. A guarda da cidade treina corvos para o lado oposto — reconhecer ladrões específicos.</p><span class="ftag ftag-icon">Usado em ambos os lados da lei</span></div>
+        <div class="fcard"><div class="fn">Veado de Passo</div><div class="fs">Cervus passensis</div><p>Veado de médio porte com chifres incomumente ramificados que habita os bosques do nordeste de Braganza — mesma região dos ursos. Ironicamente, os ursos domesticados ignoram os veados; os selvagens os caçam. Os Guardas de Pelo usam veados mortos como treino para os ursos filhotes.</p><span class="ftag ftag-icon">Presa dos ursos selvagens</span></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="bra-disease">
+      <div class="disease"><div class="dt">Ferida de Garra (Sepse do Urso)</div><p>Infecção bacteriana específica das garras de urso que torna qualquer arranhão ou mordida potencialmente fatal. Os Guardas de Pelo têm o maior índice de morte por infecção de qualquer unidade militar de Elvilia. Os Físicos da Costa de Orsini são buscados a alto custo para tratar casos graves.</p></div>
+      <div class="disease"><div class="dt">Febre do Comerciante</div><p>Doença febril que circula pelas rotas de Braganza trazida por comerciantes de diferentes reinos — uma combinação de doenças diferentes que os locais chamam coletivamente pelo mesmo nome. Epidemias no outono quando o tráfego comercial é mais intenso.</p></div>
+      <div class="disease"><div class="dt">Melancolia do Trono</div><p>Nome local para depressão severa — documentada com incomum honestidade pelos médicos de Braganza. Afeta principalmente nobres da corte durante períodos de crise política. O rei Osvald apresenta sintomas desde a morte da rainha. Tratada com ervas sedativas e, cada vez mais, com vinho em excesso.</p></div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /body -->
+
+<script>
+function tab(btn, contentId){
+  const ca = btn.closest('.ca');
+  ca.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  ca.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById(contentId).classList.add('on');
+}
+
+function goTo(id){
+  const el=document.getElementById(id);
+  if(el){const t=el.getBoundingClientRect().top+window.pageYOffset-58;window.scrollTo({top:t,behavior:'smooth'})}
+  document.querySelectorAll('.nb').forEach(b=>{
+    const ids=['romanovos','medicia','borgiath','bourbon','tudoria','graosgerais','valos','zolernia','trastara','orsini','braganza'];
+    b.classList.toggle('active',ids[document.querySelectorAll('.nb').prototype?0:Array.from(document.querySelectorAll('.nb')).indexOf(b)]===id);
+  });
+}
+
+const sections=['romanovos','medicia','borgiath','bourbon','tudoria','graosgerais','valos','zolernia','trastara','orsini','braganza'];
+window.addEventListener('scroll',()=>{
+  let cur=sections[0];
+  sections.forEach(s=>{const el=document.getElementById(s);if(el&&el.getBoundingClientRect().top<120)cur=s});
+  document.querySelectorAll('.nb').forEach((b,i)=>b.classList.toggle('active',sections[i]===cur));
+},{passive:true});
+</script>
+</body>
+</html>

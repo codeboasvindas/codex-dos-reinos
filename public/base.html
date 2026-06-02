@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elvilia — Codex dos Reinos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+/* ══════════════ RESET & ROOT ══════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#16100a; --ink2:#2e1f08; --ink3:#6b4a1c; --ink4:#9a7040;
+  --parch:#f8f2e2; --parch2:#f0e8d0; --parch3:#e5d8b8; --cream:#fefaf2;
+  --gold:#8a6510; --gold2:#c49618; --gold3:#e2c250; --gold4:#f5e090;
+  --rust:#7a2a0e; --rust2:#b04018;
+  --navy:#0c1e38; --moss:#253d18; --plum:#2a1038;
+  --ft: 'Cinzel', Georgia, serif;
+  --fd: 'Cinzel Decorative', serif;
+  --fb: 'Crimson Pro', Georgia, serif;
+  --r: 5px;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--cream);color:var(--ink);
+  font-family:var(--fb);font-size:16px;line-height:1.7;
+}
+
+/* parchment texture overlay */
+body::before{
+  content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  background-repeat:repeat;
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 30px,rgba(139,101,16,.028) 30px,rgba(139,101,16,.028) 31px),
+    repeating-linear-gradient(90deg,transparent,transparent 30px,rgba(139,101,16,.018) 30px,rgba(139,101,16,.018) 31px);
+}
+
+/* ══════════════ HEADER ══════════════ */
+.site-header{
+  position:relative;
+  background:linear-gradient(180deg,#0d0804 0%,#1e1208 60%,#2a1a08 100%);
+  border-bottom:3px solid var(--gold2);
+  padding:3rem 2rem 2.5rem;
+  text-align:center;
+  overflow:hidden;
+}
+.site-header::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,transparent,transparent 18px,rgba(196,150,24,.04) 18px,rgba(196,150,24,.04) 19px);
+}
+.site-header::after{
+  content:'✦ ELVILIA ✦';
+  position:absolute;bottom:8px;right:2rem;
+  font-family:var(--ft);font-size:.6rem;letter-spacing:.3em;
+  color:rgba(196,150,24,.3);
+}
+.header-ornament{
+  font-family:var(--fd);font-size:.65rem;letter-spacing:.4em;
+  color:rgba(226,194,80,.5);margin-bottom:.8rem;
+}
+.header-title{
+  font-family:var(--fd);font-size:2.4rem;
+  color:var(--gold3);letter-spacing:.06em;line-height:1.1;
+  text-shadow:0 2px 20px rgba(196,150,24,.4);
+}
+.header-subtitle{
+  font-family:var(--ft);font-size:.75rem;letter-spacing:.18em;
+  color:rgba(226,194,80,.6);margin-top:.6rem;font-weight:400;
+}
+.header-desc{
+  max-width:640px;margin:.9rem auto 0;
+  font-size:.95rem;color:rgba(240,232,208,.6);
+  font-style:italic;line-height:1.7;
+}
+
+/* ══════════════ NAV ══════════════ */
+.sticky-nav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(20,12,4,.96);
+  border-bottom:1px solid rgba(196,150,24,.35);
+  backdrop-filter:blur(6px);
+  padding:.5rem 1rem;
+  display:flex;flex-wrap:wrap;gap:3px;justify-content:center;
+}
+.nav-btn{
+  font-family:var(--ft);font-size:.58rem;letter-spacing:.08em;
+  padding:5px 12px;border-radius:3px;cursor:pointer;
+  background:transparent;border:1px solid transparent;
+  color:rgba(226,194,80,.55);transition:all .18s;white-space:nowrap;
+}
+.nav-btn:hover{background:rgba(196,150,24,.12);color:var(--gold3);border-color:rgba(196,150,24,.3)}
+.nav-btn.active{background:rgba(196,150,24,.18);color:var(--gold3);border-color:var(--gold2)}
+
+/* ══════════════ LAYOUT ══════════════ */
+.codex-body{max-width:940px;margin:0 auto;padding:2.5rem 1.5rem 6rem}
+
+/* ══════════════ KINGDOM SECTION ══════════════ */
+.reino-section{
+  margin-bottom:4rem;
+  animation:fadeIn .4s ease;
+  border-bottom:1px solid rgba(139,101,16,.2);
+  padding-bottom:3rem;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.reino-banner{
+  display:flex;align-items:center;gap:1rem;
+  padding:1.2rem 1.5rem;
+  border-radius:var(--r) var(--r) 0 0;
+  margin-bottom:0;
+  position:relative;overflow:hidden;
+}
+.reino-banner::after{
+  content:'';position:absolute;right:0;top:0;bottom:0;width:30%;
+  background:linear-gradient(90deg,transparent,rgba(0,0,0,.25));
+  pointer-events:none;
+}
+.banner-number{
+  font-family:var(--fd);font-size:2rem;
+  color:rgba(255,255,255,.12);
+  flex-shrink:0;line-height:1;
+  user-select:none;
+}
+.banner-text h2{
+  font-family:var(--fd);font-size:1.25rem;letter-spacing:.06em;
+  color:rgba(255,255,255,.92);line-height:1.1;
+}
+.banner-text .capital-tag{
+  font-family:var(--ft);font-size:.6rem;letter-spacing:.1em;
+  color:rgba(255,255,255,.5);margin-top:.2rem;
+}
+.banner-text .lema-tag{
+  font-family:var(--fb);font-size:.85rem;font-style:italic;
+  color:rgba(255,255,255,.65);margin-top:.1rem;
+}
+
+/* ══════════════ CONTENT GRID ══════════════ */
+.content-area{
+  background:var(--parch);
+  border:1px solid rgba(139,101,16,.28);
+  border-top:none;
+  border-radius:0 0 var(--r) var(--r);
+  padding:1.5rem;
+}
+
+.section-label{
+  font-family:var(--ft);font-size:.6rem;letter-spacing:.14em;
+  color:var(--gold);border-bottom:1px solid rgba(139,101,16,.25);
+  padding-bottom:4px;margin:1.5rem 0 .8rem;display:flex;
+  align-items:center;gap:.5rem;
+}
+.section-label::before{content:'⁜';color:var(--gold2)}
+
+.body-text{font-size:.95rem;color:var(--ink2);line-height:1.8}
+.body-text p{margin-bottom:.8rem}
+.body-text p:last-child{margin-bottom:0}
+
+/* ══════════════ DETAIL GRIDS ══════════════ */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.5rem}
+.detail-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
+@media(max-width:640px){.detail-grid,.detail-grid-3{grid-template-columns:1fr}}
+
+.detail-block{
+  background:var(--parch2);
+  border:1px solid rgba(139,101,16,.2);
+  border-radius:3px;padding:.7rem .9rem;
+}
+.detail-block .db-label{
+  font-family:var(--ft);font-size:.56rem;letter-spacing:.1em;
+  color:var(--ink4);margin-bottom:3px;text-transform:uppercase;
+}
+.detail-block .db-value{
+  font-size:.92rem;color:var(--ink2);line-height:1.5;
+}
+.detail-block .db-value strong{color:var(--ink);font-weight:600}
+
+/* ══════════════ TAGS ══════════════ */
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;margin:.4rem 0}
+.tag{
+  font-family:var(--ft);font-size:.56rem;letter-spacing:.06em;
+  padding:2px 9px;border-radius:2px;border:1px solid;
+}
+.tag-gold{background:rgba(139,101,16,.1);border-color:rgba(139,101,16,.3);color:var(--ink3)}
+.tag-rust{background:rgba(122,42,14,.08);border-color:rgba(122,42,14,.25);color:var(--rust2)}
+.tag-navy{background:rgba(12,30,56,.1);border-color:rgba(12,30,56,.25);color:var(--navy)}
+.tag-moss{background:rgba(37,61,24,.1);border-color:rgba(37,61,24,.25);color:var(--moss)}
+
+/* ══════════════ NAMED LIST ══════════════ */
+.named-list{list-style:none;margin:.3rem 0}
+.named-list li{
+  padding:.35rem 0 .35rem .9rem;
+  border-bottom:1px dashed rgba(139,101,16,.12);
+  font-size:.9rem;color:var(--ink2);
+  position:relative;
+}
+.named-list li::before{
+  content:'›';position:absolute;left:0;
+  color:var(--gold2);font-weight:700;
+}
+.named-list li:last-child{border-bottom:none}
+.named-list li strong{color:var(--ink);font-family:var(--ft);font-size:.7rem;letter-spacing:.04em}
+.named-list li em{color:var(--ink3);font-size:.85rem}
+
+/* ══════════════ CONFLICT BLOCK ══════════════ */
+.conflict-block{
+  border-left:3px solid var(--rust);
+  background:rgba(122,42,14,.05);
+  padding:.6rem .9rem;border-radius:0 3px 3px 0;
+  margin:.4rem 0;
+}
+.conflict-block .ct{
+  font-family:var(--ft);font-size:.58rem;letter-spacing:.08em;
+  color:var(--rust2);margin-bottom:3px;
+}
+.conflict-block p{font-size:.88rem;color:var(--ink2);line-height:1.55}
+
+/* ══════════════ QUOTE ══════════════ */
+.lore-quote{
+  border-left:2px solid var(--gold2);
+  padding:.5rem 1rem;margin:1rem 0;
+  font-style:italic;font-size:.9rem;color:var(--ink3);
+  background:rgba(196,150,24,.04);
+}
+
+/* ══════════════ INTRO SECTION ══════════════ */
+.world-intro{
+  background:linear-gradient(135deg,var(--parch) 0%,var(--parch3) 100%);
+  border:1px solid rgba(139,101,16,.3);border-radius:var(--r);
+  padding:1.5rem;margin-bottom:3rem;
+}
+.world-intro h3{
+  font-family:var(--fd);font-size:1rem;color:var(--ink2);
+  margin-bottom:.8rem;letter-spacing:.04em;
+}
+.world-intro p{font-size:.92rem;color:var(--ink2);line-height:1.8;margin-bottom:.7rem}
+.world-intro p:last-child{margin-bottom:0}
+
+/* ══════════════ INLINE COLOR DOT ══════════════ */
+.cor-dot{display:inline-block;width:10px;height:10px;border-radius:50%;border:1px solid rgba(0,0,0,.2);vertical-align:middle;margin-right:4px}
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-ornament">COMPÊNDIO OFICIAL · REGIÃO ELVILIENSE</div>
+  <h1 class="header-title">Elvilia</h1>
+  <div class="header-subtitle">Codex dos Reinos — Dinâmica, Lore e Estrutura</div>
+  <p class="header-desc">
+    Onze reinos que se erguem, se aliam, trairão e destruirão uns aos outros
+    em ciclos que raramente chegam a quinze anos de paz. Este é o registro de quem são, como pensam e por que jamais cessam de guerrear.
+  </p>
+</header>
+
+<!-- NAV -->
+<nav class="sticky-nav" id="sticky-nav">
+  <button class="nav-btn active" onclick="scrollTo('intro')">Mundo</button>
+  <button class="nav-btn" onclick="scrollTo('romanovos')">Romanovos</button>
+  <button class="nav-btn" onclick="scrollTo('medicia')">Medícia</button>
+  <button class="nav-btn" onclick="scrollTo('borgiath')">Borgiath</button>
+  <button class="nav-btn" onclick="scrollTo('bourbon')">Bourbon</button>
+  <button class="nav-btn" onclick="scrollTo('tudoria')">Tudória</button>
+  <button class="nav-btn" onclick="scrollTo('graosgerais')">Grãos-Gerais</button>
+  <button class="nav-btn" onclick="scrollTo('valos')">Valos</button>
+  <button class="nav-btn" onclick="scrollTo('zolernia')">Zolernia</button>
+  <button class="nav-btn" onclick="scrollTo('trastara')">Trastara</button>
+  <button class="nav-btn" onclick="scrollTo('orsini')">Orsini</button>
+  <button class="nav-btn" onclick="scrollTo('braganza')">Braganza</button>
+</nav>
+
+<div class="codex-body">
+
+<div style="display: flex; justify-content: center; width: 100%; padding: 15px 0;">
+  <a href="https://ibb.co/fVk0rVyG">
+    <img src="https://i.ibb.co/8nr8Pnf4/Untitled-2.jpg" alt="Untitled-2" style="border: 2px solid #6c757d; border-radius: 8px; max-width: 100%; display: block;">
+  </a>
+</div>
+
+<!-- INTRO -->
+<div class="world-intro" id="intro">
+  <h3>A Região de Elvilia</h3>
+  <p>Elvilia é o nome que os próprios habitantes deram ao conjunto de reinos que habitam este continente fragmentado — um nome que nenhum rei elegeu formalmente, mas que os mercadores, bardos e escribas adotaram com naturalidade para distinguir esta região das terras desconhecidas além dos mares. Não é uma nação, não é uma aliança. É apenas um nome para a ferida sempre aberta que é este mapa.</p>
+  <p>Os onze reinos de Elvilia compartilham língua base, mas dialetos tão distintos que um Rovanovo e um Trastara dificilmente se entendem sem intérprete. Compartilham também a mesma história de guerras intermináveis: períodos de paz raramente ultrapassam quinze anos, e quando chegam a tanto, os mais velhos já começam a desconfiar. A média real, registrada pelos cronistas de Medícia, é de sete anos entre conflitos declarados.</p>
+  <p>Cada reino se organiza de forma radicalmente distinta — clãs, principados colegiados, monarquias com casas nobres, confederações religiosas, arquipélagos de piratas leais. O que os une é apenas a geografia, a ambição e a memória de que nenhum deles conseguiu, até hoje, subjugar todos os outros.</p>
+  <div class="tag-row">
+    <span class="tag tag-rust">11 Reinos</span>
+    <span class="tag tag-gold">Paz média: 5–15 anos</span>
+    <span class="tag tag-navy">Sem hegemon permanente</span>
+    <span class="tag tag-moss">Língua base comum com dialetos</span>
+    <span class="tag tag-gold">Alianças voláteis</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     1. TERRAS DE ROMANOVOS
+══════════════════════════════════════════════ -->
+<section class="reino-section" id="romanovos">
+  <div class="reino-banner" style="background:linear-gradient(135deg,#2a1000 0%,#1a0a00 100%)">
+    <div class="banner-number">I</div>
+    <div class="banner-text">
+      <h2>Terras de Romanovos</h2>
+      <div class="capital-tag">CAPITAL · ALVORADA · CLÃS DO NORTE</div>
+      <div class="lema-tag">"A neblina cobre os fracos. Nós ficamos."</div>
+    </div>
+  </div>
+  <div class="content-area">
+
+    <div class="section-label">Natureza e Território</div>
+    <div class="body-text">
+      <p>As Terras de Romanovos estendem-se pelo norte frio de Elvilia, onde as planícies abertas se fundem a pastagens cobertas de grama rígida, costas abruptas e densas florestas de coníferas que os de fora chamam de Floresta Fria. O inverno dura oito meses e define tudo: arquitetura, dieta, temperamento e guerra. Os Vanovis, como chamam a si mesmos, adaptaram-se ao frio de forma tão completa que o veem como aliado — suas campanhas militares preferem o inverno, quando os inimigos do sul enfraquecem e eles ainda marcham.</p>
+      <p>Alvorada, a capital, fica encravada entre a Baía dos Precipitados e os contrafortes da Floresta Fria. Em certos períodos do ano, uma neblina marítima espessa desce da baía e cobre a cidade por dias inteiros — às vezes submergindo até a Grande Casa do Clã Real, que domina o centro da cidade de cima de uma plataforma de pedra. Os Rovanovi dizem que a neblina vem quando os deuses da lua precisam escutar em silêncio.</p>
+    </div>
+
+    <div class="section-label">Estrutura de Poder</div>
+    <div class="detail-grid">
+      <div class="detail-block">
+        <div class="db-label">Forma de Governo</div>
+        <div class="db-value"><strong>Monarquia de Clã Dominante</strong><br>O Rei do Clã Rovanov subjugou os 5 maiores clãs há três gerações. Cada clã subjugado mantém território e autonomia interna, mas deve tributos e guerreiros ao rei.</div>
+      </div>
+      <div class="detail-block">
+        <div class="db-label">Os Seis Clãs Maiores</div>
+        <div class="db-value">
+          <strong>Clã Rovanov</strong> — Real, domina Alvorada<br>
+          <strong>Clã Vrask</strong> — Porto dos Afazeres<br>
+          <strong>Clã Duvorn</strong> — Penso Caminho<br>
+          <strong>Clã Halgir</strong> — Pedra Negra<br>
+          <strong>Clã Sorva</strong> — Noiva do Cordeiro<br>
+          <strong>Clã karev</strong> — Caraíva (costeiro)
+        </div>
+      </div>
+    </div>
+
+    <div class="lore-quote">"Cada clã possui um clã secundário — o clã juramentado — que serve, protege e interlaça sua linhagem ao clã principal através de casamentos. Apenas mulheres ascendem ao clã primário pelo sobrenome do marido. Homens que casam com mulheres de clã superior permanecem no seu clã de origem."</div>
+
+    <div class="section-label">Hierarquia Militar</div>
+    <ul class="named-list">
+      <li><strong>O Rei</strong> — <em>Comandante supremo. Acima de todos em guerra.</em></li>
+      <li><strong>Os Cinco Anciões dos Clãs</strong> — <em>Representam os clãs subjugados. Comandam seus próprios guerreiros. Em guerra, operam como generais, mas devem obediência ao rei.</em></li>
+      <li><strong>Comandantes da Batalha (Vordkai)</strong> — <em>Um por clã maior, escolhido pelo ancião — homem jovem, porém endurecido em combate. Dirige o exército no campo enquanto o ancião observa. Título: Vordkai (literalmente "o que vai na frente").</em></li>
+      <li><strong>Chefes de Grupo (Halvord)</strong> — <em>Líderes de bandos de 20 a 50 guerreiros. Normalmente parentes próximos do Vordkai ou veteranos respeitados.</em></li>
+      <li><strong>Guerreiros</strong> — <em>Sem título. Identificados apenas pelo símbolo do clã pintado no escudo ou tatuado no antebraço.</em></li>
+    </ul>
+    <div class="body-text"><p>Não existe título de cavaleiro, nem mestre. Aqui, quem monta a cavalo em batalha não recebe nome distinto — cavalaria é simplesmente quem tem cavalo e coragem suficiente para carregá-lo para a frente. O prestígio vem de cicatrizes, não de títulos.</p></div>
+
+    <div class="section-label">Religião — O Culto da Lua Cinzenta</div>
+    <div class="body-text">
+      <p>A religião dos Rovanovi centra-se em três divindades sem nome — referidas apenas como <strong>A Lua que Escuta</strong>, <strong>O Deus dos Ossos</strong> e <strong>A Chama que Come</strong>. Sacerdotes chamados <strong>Veskari</strong> (os que queimam) realizam ritos ao amanhecer e ao pôr do sol, queimando ossos de animais e, em ocasiões sagradas, de prisioneiros de guerra voluntários ou condenados. A fumaça e as formas das cinzas são lidas como mensagens dos deuses — especialmente quando a lua está visível.</p>
+      <p>O sacrifício humano não é feito de forma trivial: é reservado para momentos de extrema necessidade — colheitas fracas, doenças, guerras que demoram demais. O consentimento da vítima é considerado sagrado; matar alguém que resiste é deshonra, não oferenda.</p>
+    </div>
+
+    <div class="section-label">Comércio e Economia</div>
+    <div class="tag-row">
+      <span class="tag tag-gold">Pesca de alto mar</span>
+      <span class="tag tag-gold">Pastoreio de ovelhas (lã e carne)</span>
+      <span class="tag tag-gold">Madeira de coníferas</span>
+      <span class="tag tag-gold">Âmbar bruto</span>
+      <span class="tag tag-gold">Sal marinho</span>
+      <span class="tag tag-rust">Escambo com Bourbon via Quebra-Maré</span>
+    </div>
+
+    <div class="section-label">Tensões e Conflitos</div>
+    <div class="conflict-block">
+      <div class="ct">Baía dos Precipitados — Disputa com Medícia</div>
+      <p>O controle da saída da Baía dos Precipitados é contestado. Medícia reivindica que a margem sul da baía é seu território histórico; Romanovos pesca e patrulha aquelas águas há gerações. Escaramuças navais menores acontecem todo verão.</p>
+    </div>
+    <div class="conflict-block">
+      <div class="ct">Tensão Interna — Clãs Vrask e Duvorn</div>
+      <p>Os clãs Vrask (Porto dos Afazeres) e Duvorn (Penso Caminho) disputam silenciosamente influência sobre o comércio das rotas internas. O Clã Real tem ignorado estrategicamente o atrito — enquanto os dois se desgastam mutuamente, nenhum ameaça o trono.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     2. PRINCIPADO DE MEDÍCIA
+══════════════════════════════════════════════ -->
+<section class="reino-section" id="medicia">
+  <div class="reino-banner" style="background:linear-gradient(135deg,#2a1040 0%,#180828 100%)">
+    <div class="banner-number">II</div>
+    <div class="banner-text">
+      <h2>Principado de Medícia</h2>
+      <div class="capital-tag">CAPITAL · SENTINELA · COLEGIADO DE PRÍNCIPES</div>
+      <div class="lema-tag">"O que não se vê, já foi estudado."</div>
+    </div>
+  </div>
+  <div class="content-area">
+
+    <div class="section-label">Natureza e Território</div>
+    <div class="body-text">
+      <p>Medícia ocupa uma posição geográfica única: a Floresta Ancestral ao norte funciona como uma muralha verde quase impenetrável, os Picos Talhados e a Floresta Gelada a nordeste fecham outra fronteira natural, e ao sul e leste o território dá para rotas comerciais essenciais que todo reino quer usar. Esse posicionamento tornou Medícia ao mesmo tempo uma potência de passagem — cobra pelo trânsito — e um território de intensa espionagem, pois quem controla as rotas também sabe quem passa por elas.</p>
+      <p>A Floresta Ancestral é tratada com reverência quase religiosa: acredita-se que seus galhos mais velhos guardem memórias das civilizações anteriores a Elvilia, e os místicos de Trancoso frequentemente adentravam seus limites em busca de plantas e materiais para seus experimentos. A floresta também serve de barreira ao norte — desguardada militarmente porque ninguém com juízo atravessa a Floresta Ancestral com um exército.</p>
+    </div>
+
+    <div class="section-label">Estrutura de Poder</div>
+    <div class="detail-grid">
+      <div class="detail-block">
+        <div class="db-label">Forma de Governo</div>
+        <div class="db-value"><strong>Colegiado de Príncipes</strong><br>Após a morte do rei sem herdeiro único designado, os cinco filhos gêmeos dividiram o poder em partes iguais. Cada príncipe governa uma zona e tem assento no Conselho dos Cinco. Decisões de guerra e política externa exigem maioria de três votos.</div>
+      </div>
+      <div class="detail-block">
+        <div class="db-label">Os Cinco Príncipes Atuais</div>
+        <div class="db-value">
+          <strong>Aldric Medísio</strong> — Sentinela (zona norte)<br>
+          <strong>Casven Medísio</strong> — Gadanha (zona comercial)<br>
+          <strong>Iovel Medísio</strong> — Ukaw (zona comercial)<br>
+          <strong>Sormand Medísio</strong> — Forte Travessia (fronteira leste)<br>
+          <strong>Tirel Medísio</strong> — Marvão do Bosque (zona da floresta)
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Os Círculos Místicos</div>
+    <div class="body-text">
+      <p>Em cada cidade de alguma importância existe um <strong>Círculo de Composição</strong> — um espaço parte laboratório, parte templo, onde homens e mulheres chamados <strong>Compositores</strong> tentam combinar materiais orgânicos, minerais e substâncias extraídas da Floresta Ancestral em busca de novas propriedades. Alguns Círculos são respeitados como centros de saber; outros têm reputação sombria de experimentos que resultaram em mortes inexplicadas. O maior e mais antigo Círculo fica sob Sentinela, em câmaras subterrâneas chamadas as <strong>Galerias Profundas</strong>.</p>
+      <p>Os Compositores não são sacerdotes, mas têm influência semelhante — os príncipes frequentemente os consultam antes de tomar decisões importantes. Há um Compositor-Mor em Sentinela, cargo chamado <strong>Voz das Galerias</strong>, que atualmente é ocupado por uma mulher de nome <strong>Soraia das Cinzas</strong>, temida e respeitada em igual medida.</p>
+    </div>
+
+    <div class="section-label">Hierarquia Militar</div>
+    <ul class="named-list">
+      <li><strong>Cavaleiros de Príncipe</strong> — <em>Ordenados diretamente por um dos cinco príncipes. Lealdade ao príncipe, não ao colegiado. Em caso de guerra civil, isso cria um problema.</em></li>
+      <li><strong>Capitão da Guarnição (Gardevan)</strong> — <em>Comanda a defesa de uma cidade. Nomeado pelo chefe da cidade e confirmado pelo príncipe da zona.</em></li>
+      <li><strong>Chefes de Cidade (Provost)</strong> — <em>Administram e defendem cada cidade. Cargo civil com poder militar delegado.</em></li>
+      <li><strong>Soldados de Guarnição</strong> — <em>Sem título de cavaleiro. Armados moderadamente. Cada cidade mantém sua própria guarnição independente.</em></li>
+    </ul>
+
+    <div class="section-label">Comércio e Economia</div>
+    <div class="tag-row">
+      <span class="tag tag-gold">Carne de gado</span>
+      <span class="tag tag-gold">Pesca (costas norte)</span>
+      <span class="tag tag-gold">Madeira da Floresta Ancestral</span>
+      <span class="tag tag-gold">Taxas de passagem (rotas estratégicas)</span>
+      <span class="tag tag-gold">Compostos e substâncias dos Círculos</span>
+      <span class="tag tag-rust">Informação — espionagem vendida discretamente</span>
+    </div>
+
+    <div class="section-label">Tensões</div>
+    <div class="conflict-block">
+      <div class="ct">Fronteira com Borgiath — Taxas de Passagem</div>
+      <p>Borgiath necessita das rotas de Medícia para escoar seus minérios ao interior. Medícia cobra taxas que Borgiath considera extorsão. O Príncipe Sormand, que governa a fronteira, é notoriamente mais agressivo em suas demandas que os outros príncipes — há suspeita de que ele esteja acumulando recursos pessoais dessa tensão.</p>
+    </div>
+    <div class="conflict-block">
+      <div class="ct">Divisão Interna do Colegiado</div>
+      <p>Os Príncipes Aldric e Tirel raramente concordam em política externa. Aldric quer expandir influência; Tirel prefere fortalecer fronteiras internas. Os demais três se alternam entre as posições conforme interessa a cada momento. Decisões importantes estão paralisadas há meses.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     3. BORGIATH
+══════════════════════════════════════════════ -->
+<section class="reino-section" id="borgiath">
+  <div class="reino-banner" style="background:linear-gradient(135deg,#1a3020 0%,#0e1e12 100%)">
+    <div class="banner-number">III</div>
+    <div class="banner-text">
+      <h2>Borgiath</h2>
+      <div class="capital-tag">CAPITAL · ARWIN · MONARQUIA DE CASAS NOBRES</div>
+      <div class="lema-tag">"O ferro não mente. O homem que o faz, tampouco."</div>
+    </div>
+  </div>
+  <div class="content-area">
+
+    <div class="section-label">Natureza e Território</div>
+    <div class="body-text">
+      <p>Borgiath é pequeno em extensão mas grande em densidade econômica. Encostado ao Mar Solitário a leste e limitado a norte por Medícia, o reino se desenvolveu em torno de uma característica geológica singular: o subsolo de Borgiath é extraordinariamente rico em ferro de alta qualidade. Veios de minério que os geólogos chamam informalmente de <strong>Veia Negra</strong> cruzam a região inteira, tornando cada metro de chão potencialmente valioso.</p>
+      <p>Foi essa riqueza que atraiu, há quatro gerações, os <strong>Investidores das Casas</strong> — famílias ricas de regiões externas que compraram terras, forjarias e prestígio em Borgiath, elevando-se a casas nobres e, eventualmente, fazendo um dos seus próprios ascender ao trono. O rei atual, <strong>Aldavar Brenn</strong>, é da Casa Brenn, que foi a primeira e mais bem-sucedida dessas famílias investidoras.</p>
+    </div>
+
+    <div class="section-label">Estrutura de Poder</div>
+    <div class="detail-grid">
+      <div class="detail-block">
+        <div class="db-label">Forma de Governo</div>
+        <div class="db-value"><strong>Monarquia apoiada por Casas Nobres Ricas e Prestigiosas</strong><br>O rei governa com autoridade formal mas depende da aprovação tácita das Casas para manter o exército abastecido e as forjas funcionando. Um rei que perde três Casas grandes perde o trono.</div>
+      </div>
+      <div class="detail-block">
+        <div class="db-label">As Grandes Casas</div>
+        <div class="db-value">
+          <strong>Casa Brenn</strong> — Real. Arwin.<br>
+          <strong>Casa Irad</strong> — Monsanto. Melhor ferraria do reino.<br>
+          <strong>Casa Sorlen</strong> — Forte Corumbau. Militar.<br>
+          <strong>Casa Velk</strong> — Pouso da Coruja. Minério e comércio.<br>
+          <strong>Casa Dorn</strong> — Forte Barreira. Fronteira e cavalaria.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Hierarquia Militar — Sistema Graduado</div>
+    <ul class="named-list">
+      <li><strong>General (Lorde-Geral)</strong> — <em>Máximo de 6 no exército inteiro. Reservado às Grandes Casas. Raramente alcançado por mérito — quase sempre por nascimento e patrocínio.</em></li>
+      <li><strong>Coronel</strong> — <em>Comanda um regimento. Ainda fortemente ligado às casas nobres, mas ocasionalmente alcançado por um soldado de carreira excepcional.</em></li>
+      <li><strong>Capitão</strong> — <em>Comanda uma companhia de 80–120 homens. Ponto mais alto regularmente alcançado por mérito.</em></li>
+      <li><strong>Tenente</strong> — <em>Segundo do capitão. Gerencia logística e disciplina da companhia.</em></li>
+      <li><strong>Sargento</strong> — <em>Líder de pelotão (10–20 homens). O espinhaço real do exército — os sargentos de Borgiath são temidos por sua eficiência.</em></li>
+      <li><strong>Soldado</strong> — <em>Bem armado, bem treinado, bem equipado. O soldado comum de Borgiath supera em equipamento o oficial médio de outros reinos.</em></li>
+    </ul>
+
+    <div class="section-label">Religião — Os Gêmeos do Forjamento</div>
+    <div class="body-text">
+      <p>Borgiath reverencia dois deuses chamados coletivamente de <strong>Os Gêmeos do Forjamento</strong>: <strong>Vrak</strong>, o Deus do Ferro (calmo, metódico, perfeito) e <strong>Ignar</strong>, o Deus do Fogo (impetuoso, criativo, destruidor) Possue o ideal de marcar os criminosos com ferro conforme o crime, quando não são condenados a queimar vivos. A teologia de Borgiath ensina que nenhum trabalho de qualidade existe sem os dois — o ferro sem fogo é pedra inútil; o fogo sem ferro não cria nada que dure. Os sacerdotes da religião são chamados <strong>Forjadores da Fé</strong> e exercem ofício duplo: são religiosos e metalúrgicos treinados.</p>
+    </div>
+
+    <div class="section-label">Comércio e Economia</div>
+    <div class="tag-row">
+      <span class="tag tag-gold">Ferro e aço de alta qualidade</span>
+      <span class="tag tag-gold">Armamentos e armas forjadas</span>
+      <span class="tag tag-gold">Ferramentas e peças de precisão</span>
+      <span class="tag tag-gold">Agricultura de subsistência</span>
+      <span class="tag tag-rust">Dependência das rotas de Medícia</span>
+    </div>
+
+    <div class="section-label">Tensões</div>
+    <div class="conflict-block">
+      <div class="ct">Dependência Estrutural de Medícia</div>
+      <p>Borgiath não consegue escoar minério ao interior sem passar por Medícia. As taxas cobradas são crescentes e humilhantes para um reino militarmente superior. A Casa Sorlen pressiona o rei por uma solução militar; a Casa Velk prefere negociação. O impasse alimenta a tensão há décadas.</p>
+    </div>
+    <div class="conflict-block">
+      <div class="ct">Mar Solitário — Ameaça Desconhecida</div>
+      <p>Avistamentos de embarcações não identificadas no Mar Solitário aumentaram nos últimos três anos. A Casa Dorn, que guarda a fronteira costeira, não consegue identificar a origem. O rei Aldavar recusa-se a declarar ameaça oficial enquanto não houver prova de intenção hostil.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     4. BOURBON
+══════════════════════════════════════════════ -->
+<section class="reino-section" id="bourbon">
+  <div class="reino-banner" style="background:linear-gradient(135deg,#1a2040 0%,#0c1228 100%)">
+    <div class="banner-number">IV</div>
+    <div class="banner-text">
+      <h2>Bourbon</h2>
+      <div class="capital-tag">CAPITAL · TOCA DA ONÇA · MONARQUIA DE CASAS COM CAVALARIA</div>
+      <div class="lema-tag">"Todo caminho passa pela floresta. A floresta é nossa."</div>
+    </div>
+  </div>
+  <div class="content-area">
+
+    <div class="section-label">Natureza e Território</div>
+    <div class="body-text">
+      <p>Bourbon é o reino das grandes florestas centrais de Elvilia — imensas manchas de árvores seculares que os nativos chamam coletivamente de <strong>O Dossel</strong>. As florestas de Bourbon não são apenas recurso econômico: são habitat de criaturas selvagens de porte impressionante que habitam as profundezas menos exploradas — javalis gigantes, alcas de chifres alastrantes, ursos negros de ombros largos. A caça dessas criaturas é o passatempo mais valorizado entre os nobres, e um nobre que nunca caçou no Dossel dificilmente é levado a sério.</p>
+      <p>Toca da Onça fica em uma clareira natural onde um rio largo divide a cidade ao meio. As muralhas da capital são uma das engenharias mais impressionantes de Elvilia: dois arcos de pedra de 18 metros de vão atravessam o rio dentro do perímetro defensivo, com portões de ferro que fecham abaixo da linha d'água, permitindo ou bloqueando passagem de barcos. A cidade foi construída ao redor dessas passagens fluviais — são ao mesmo tempo sua glória e sua maior vulnerabilidade.</p>
+    </div>
+
+    <div class="section-label">Estrutura de Poder</div>
+    <div class="detail-grid">
+      <div class="detail-block">
+        <div class="db-label">Forma de Governo</div>
+        <div class="db-value"><strong>Monarquia de Casas Nobres Territoriais</strong><br>O rei governa Toca da Onça diretamente. As cidades são governadas por nobres de casas que juraram à casa capital, que por sua vez tem casas menores juramentadas abaixo delas — uma pirâmide de lealdades.</div>
+      </div>
+      <div class="detail-block">
+        <div class="db-label">Casas Notáveis</div>
+        <div class="db-value">
+          <strong>Casa Orbel</strong> — Real. Toca da Onça. Criadores de cavalos.<br>
+          <strong>Casa Maren</strong> — Griswood. Madeireiros.<br>
+          <strong>Casa Tavar</strong> — Quebra-Maré. Porto e comércio norte.<br>
+          <strong>Casa Rend</strong> — Recanto Verde. Caçadores e artesãos.<br>
+          <strong>Casa Veld</strong> — Sussurro do Bosque. Rio e pedágios internos.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Cavalaria e Cultura da Caça</div>
+    <div class="body-text">
+      <p>Bourbon possui a maior e mais refinada cavalaria de Elvilia em proporção ao tamanho do reino. A Casa Orbel é criadora de cavalos há cinco gerações, e suas fazendas de cavalos nos campos abertos ao sul da Toca da Onça são consideradas as melhores do continente. Cavaleiros de Bourbon são ordenados formalmente — um jovem nobre recebe o título de <strong>Cavaleiro da Floresta</strong> após completar os três ritos: matar sozinho um javali do Dossel, cavalgar a noite inteira sem parar e vencer um duelo de lança. Os cavaleiros mais experientes recebem o título adicional de <strong>Cavaleiro de Galho</strong> — uma referência à armadura decorada com ramagens entalhadas na placa que é tradição da casa real.</p>
+      <p>Quebra-Maré é a cidade mais importante depois da capital — uma fortaleza-porto protegida por faixas de terra que formam algo próximo a um delta. Navios de Valos chegam regularmente em busca de madeira, e de lá partem em direção a Romanovos para escambo. É a cidade mais movimentada do reino em termos de tráfego externo.</p>
+    </div>
+
+    <div class="section-label">Comércio e Economia</div>
+    <div class="tag-row">
+      <span class="tag tag-gold">Madeira nobre (principal exportação)</span>
+      <span class="tag tag-gold">Pecuária e criação de cavalos</span>
+      <span class="tag tag-gold">Pedágios fluviais</span>
+      <span class="tag tag-gold">Artesanato de madeira</span>
+      <span class="tag tag-gold">Caça comercial (couro, chifres)</span>
+      <span class="tag tag-rust">Parceria estratégica com Valos (madeira × navios)</span>
+    </div>
+
+    <div class="section-label">Tensões</div>
+    <div class="conflict-block">
+      <div class="ct">Disputa Fluvial com Grãos-Gerais</div>
+      <p>Os rios que cruzam Bourbon descem dos planaltos de Grãos-Gerais. Bourbon cobra pedágio de tudo que desce pelo rio; Grãos-Gerais alega que rios naturais não podem ser cobrados. A Casa Veld é especialmente agressiva em suas cobranças — milícias dos dois lados já trocaram flechas em pelo menos duas ocasiões nos últimos cinco anos.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     5. TUDÓRIA
+══════════════════════════════════════════════ -->
+<section class="reino-section" id="tudoria">
+  <div class="reino-banner" style="background:linear-gradient(135deg,#5a2808 0%,#2a1004 100%)">
+    <div class="banner-number">V</div>
+    <div class="banner-text">
+      <h2>Tudória</h2>
+      <div class="capital-tag">CAPITAL · NOVA ESPERANÇA · MONARQUIA CONSELHISTA</div>
+      <div class="lema-tag">"A ordem não se impõe — se cultiva."</div>
+    </div>
+  </div>
+  <div class="content-area">
+
+    <div class="section-label">Natureza e Território</div>
+    <div class="body-text">
+      <p>Tudória é um reino pequeno mas de posição costeira estratégica — seu litoral sul e sua foz de rio oferecem acesso a rotas marítimas que outros reinos do interior precisam usar. O reino capitalizou isso ao desenvolver uma vocação de <strong>frete e transporte</strong>: os navios de Tudória são conhecidos por cumprir acordos, não piratear e cobrar preços razoáveis — uma reputação rara em Elvilia que vale mais do que qualquer armada.</p>
+      <p>Nova Esperança, a capital, é literalmente jovem — foi construída há menos de cem anos quando o rei fundador escolheu a foz do Rio Cinza como ponto de fundação. Vila Antiga, a cidade mais velha do reino, resiste culturalmente à capital: seus habitantes, os <strong>Antigos</strong>, consideram Nova Esperança arrogante e Nova esperança considera Vila Antiga estagnada. Essa tensão permeia a política interna.</p>
+    </div>
+
+    <div class="section-label">Estrutura de Poder</div>
+    <div class="detail-grid">
+      <div class="detail-block">
+        <div class="db-label">Forma de Governo</div>
+        <div class="db-value"><strong>Monarquia com Conselho das Cinco Cidades</strong><br>O rei governa com auxílio de um Conselho onde cada uma das 5 cidades principais manda um nobre representante. Decisões de guerra, impostos e tratados precisam de aprovação do Conselho. O rei tem veto, mas usá-lo duas vezes seguidas é politicamente suicida.</div>
+      </div>
+      <div class="detail-block">
+        <div class="db-label">Os Cinco Conselheiros (cargos atuais)</div>
+        <div class="db-value">
+          <strong>Lorde Caen Holt</strong> — Nova Esperança<br>
+          <strong>Lorde Saven Tirk</strong> — Vila Antiga (oposição)<br>
+          <strong>Lorda Mira Belven</strong> — Burburinho<br>
+          <strong>Lorde Ossian Fell</strong> — Conceição<br>
+          <strong>Lorde Cavan Drenn</strong> — Marialva
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Hierarquia Militar</div>
+    <ul class="named-list">
+      <li><strong>General</strong> — <em>Vem das grandes casas. Máximo de 2 ao mesmo tempo. Comanda a totalidade do exército em campo.</em></li>
+      <li><strong>Capitão de Navio</strong> — <em>Para a marinha. Posição de prestígio equivalente a capitão do exército terrestre.</em></li>
+      <li><strong>Capitão</strong> — <em>Comanda companhia. Alcançável por mérito com recomendação de nobre.</em></li>
+      <li><strong>Oficial de Frete (Mestre de Convés)</strong> — <em>Cargo exclusivo da marinha mercante-militar. Responsável pela logística de carga e combate simultâneos.</em></li>
+      <li><strong>Soldado / Marinheiro</strong> — <em>Bem disciplinados, mal equipados em comparação a Borgiath. Compensam com organização e obediência.</em></li>
+    </ul>
+
+    <div class="section-label">Comércio e Economia</div>
+    <div class="tag-row">
+      <span class="tag tag-gold">Frete e transporte marítimo</span>
+      <span class="tag tag-gold">Pesca costeira</span>
+      <span class="tag tag-gold">Construção naval leve</span>
+      <span class="tag tag-gold">Agricultura e pecuária moderadas</span>
+      <span class="tag tag-rust">Serviço de escolta de caravanas marítimas</span>
+    </div>
+
+    <div class="section-label">Tensões</div>
+    <div class="conflict-block">
+      <div class="ct">Vila Antiga vs Nova Esperança</div>
+      <p>O Conselheiro de Vila Antiga, Saven Tirk, bloqueia sistematicamente qualquer proposta que aumente o poder da capital. Rumores de que ele mantém correspondência com Zolernia — que considera Tudória um protetorado histórico — circulam há dois anos. O rei sabe, mas não tem prova suficiente para agir.</p>
+    </div>
+    <div class="conflict-block">
+      <div class="ct">Pressão de Zolernia</div>
+      <p>O Império considera Tudória território historicamente seu, perdido por "circunstâncias políticas". A fronteira em Conceição registra incidentes mensais. Zolernia nunca declara guerra formalmente — apenas pressiona, cobra tributos "históricos" e espera que Tudória imploda por dentro.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     6. GRÃOS-GERAIS
+══════════════════════════════════════════════ -->
+<section class="reino-section" id="graosgerais">
+  <div class="reino-banner" style="background:linear-gradient(135deg,#2a4008 0%,#162404 100%)">
+    <div class="banner-number">VI</div>
+    <div class="banner-text">
+      <h2>Grãos-Gerais</h2>
+      <div class="capital-tag">CAPITAL · TORRE AGULHA · MONARQUIA CLÂNICA DE MONTANHA</div>
+      <div class="lema-tag">"A montanha fala. Nós ouvimos. Os demais tropeçam."</div>
+    </div>
+  </div>
+  <div class="content-area">
+
+    <div class="section-label">Natureza e Território</div>
+    <div class="body-text">
+      <p>Grãos-Gerais é um reino de duas faces radicalmente distintas: as regiões baixas e planaltos férteis ao sul e oeste onde crescem os grãos que alimentam metade de Elvilia, e as regiões altas e montanhosas ao norte e leste onde fica a capital, Torre Agulha, encravada na encosta da <strong>Cadeia das Agulhas</strong>. A montanha mais alta, chamada pelos locais de <strong>Iverth</strong> (a Que Respira), atinge 6.800 metros e domina o horizonte norte do reino inteiro.</p>
+      <p>As regiões altas escondem perigos únicos: lagos de aparência normal cuja água é ácida o suficiente para corroer pele e metal. Os habitantes das alturas chamam esses lugares de <strong>Olhos Amargos</strong> e transmitem seu conhecimento de geração em geração com precisão quase religiosa — saber qual lago é bebível e qual é veneno pode significar vida ou morte em uma marcha de montanha.</p>
+    </div>
+
+    <div class="section-label">O Rito de Iverth e o Oráculo</div>
+    <div class="body-text">
+      <p>Aos 15 anos, todo guerreiro masculino de Grãos-Gerais deve tentar escalar Iverth. O objetivo não é necessariamente o cume — é provar que o jovem conhece o território, resiste ao frio e ao desconhecido, e tem juízo para saber quando parar. Pouco abaixo do cume existe uma formação rochosa plana chamada <strong>Polegar de Iverth</strong>, onde fica o <strong>Oráculo das Alturas</strong>: um grupo permanente de homens dedicados à religião da montanha, que interpretam ventos, formações de gelo e ecos como mensagens da montanha viva.</p>
+      <p>O Polegar de Iverth serve simultaneamente como ponto de descanso e triagem para os jovens que sobem — os Oraculistas cuidam dos que chegam exaustos, e alguns jovens que nunca chegam ao cume ficam ali por dias antes de descer. Os Oraculistas são chamados <strong>Vozes de Iverth</strong> e funcionam como conselheiros do rei, com assento informal mas poderoso na corte.</p>
+    </div>
+
+    <div class="section-label">Gaviões de Combate e Mensageiros</div>
+    <div class="body-text">
+      <p>Nenhum reino de Elvilia domina a arte de treinar gaviões como Grãos-Gerais. Os criadores reais, chamados <strong>Aseiros</strong>, passam anos com cada ave — os gaviões de mensagem são treinados para rotas específicas e reconhecem bandeiras de identificação; os gaviões de combate são maiores, condicionados a atacar cavaleiros montados, visando olhos e rédeas. A unidade de gaviões de combate do exército é chamada <strong>As Garras de Iverth</strong> e é temida desproporcionalmente ao seu tamanho.</p>
+    </div>
+
+    <div class="section-label">Hierarquia Militar</div>
+    <ul class="named-list">
+      <li><strong>Rei</strong> — <em>Comanda o exército diretamente em campo. Não delega o comando supremo.</em></li>
+      <li><strong>Lorde das Quatro Casas</strong> — <em>Cada uma das quatro cidades principais tem uma casa governante com um Lorde Comandante que comanda sua guarnição.</em></li>
+      <li><strong>Mestre do Arco (Arqûen)</strong> — <em>Título dado aos melhores arqueiros. Podem comandar unidades de até 50 atiradores. Alcançado por mérito puro.</em></li>
+      <li><strong>Aseiro de Combate</strong> — <em>Especialista em gaviões de guerra. Cargo único de Grãos-Gerais, sem equivalente em outros reinos.</em></li>
+      <li><strong>Soldado de Montanha</strong> — <em>Treinado em terreno difícil, altitude e Olhos Amargos. Não tão bem equipado quanto Borgiath, mas incomparável em mobilidade em altitudes.</em></li>
+    </ul>
+
+    <div class="section-label">Comércio e Economia</div>
+    <div class="tag-row">
+      <span class="tag tag-gold">Grãos e farinhas (principal exportação)</span>
+      <span class="tag tag-gold">Minérios de altitude (cobre, estanho)</span>
+      <span class="tag tag-gold">Gaviões treinados (exclusivo)</span>
+      <span class="tag tag-gold">Lã de altitude (fibra densa)</span>
+      <span class="tag tag-rust">Disputas de pedágio fluvial com Bourbon</span>
+    </div>
+
+    <div class="section-label">Tensões</div>
+    <div class="conflict-block">
+      <div class="ct">Fronteira Sul com Bourbon — Rios e Pedágios</div>
+      <p>Grãos-Gerais usa os rios que descem de seus planaltos para escoar grãos ao mar. Bourbon cobra por cada passagem. O Conselho dos Lordes de Grãos-Gerais aprovou uma resolução declarando os rios "patrimônio natural livre de impostos" — que Bourbon ignorou. A situação está se aproximando de um ponto de ruptura.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     7. ILHAS DE VALOS
+══════════════════════════════════════════════ -->
+<section class="reino-section" id="valos">
+  <div class="reino-banner" style="background:linear-gradient(135deg,#28104a 0%,#140828 100%)">
+    <div class="banner-number">VII</div>
+    <div class="banner-text">
+      <h2>Ilhas de Valos</h2>
+      <div class="capital-tag">CAPITAL · AETHELGARD · ARQUIPÉLAGO SOBERANO</div>
+      <div class="lema-tag">"O mar dá, o mar tira. Nós ficamos com o que ele deixa."</div>
+    </div>
+  </div>
+  <div class="content-area">
+
+    <div class="section-label">Natureza e Território</div>
+    <div class="body-text">
+      <p>Valos é um arquipélago de ilhas de tamanhos variados — quatro maiores e dezenas de menores — espalhadas pelo Mar de Aethelgard. O isolamento geográfico moldou um povo pragmático, desconfiado de continentais e absolutamente dominante nas águas profundas ao redor do arquipélago. Nenhum reino de Elvilia tenta confrontar Valos no mar por razões simples: os navios de Valos são maiores, mais rápidos e tripulados por homens que cresceram no oceano.</p>
+      <p>Aethelgard, a capital, fica na maior ilha e é ao mesmo tempo uma cidade-porto, uma fortaleza naval e o centro político do arquipélago. O rei governa de um palácio chamado <strong>A Marea</strong> — construído sobre um promontório que avança sobre a água, de modo que três de suas quatro paredes externas são banhadas pelo mar.</p>
+    </div>
+
+    <div class="section-label">Os Tubarões — Nobreza de Valos</div>
+    <div class="body-text">
+      <p>O rei de Valos concedeu o título de <strong>Tubarão</strong> aos chefes das três outras cidades-fortaleza maiores: Sintra, Lingard e Atoleiro. O título de Tubarão é a única forma de nobreza formal em Valos — não existe duque, barão, lorde. Ou você é rei, ou você é Tubarão, ou você é o resto. Os Tubarões controlam seus portos, suas frotas locais e seus piratas afiliados com quase total autonomia, desde que mantenham lealdade ao rei e compartilhem 20% dos espólios navais.</p>
+      <p>Os piratas de Valos não são criminosos perseguidos — são <strong>Corsários Leais</strong> que operam sob hospitalidade do rei. Aportam em qualquer ilha do arquipélago com imunidade, desde que não ataquem navios de Valos nem de seus aliados comerciais correntes. A lista de aliados correntes muda com tanta frequência que os corsários mantêm escriturários pagos só para se atualizar.</p>
+    </div>
+
+    <div class="section-label">Hierarquia Militar — Marinha e Guarda</div>
+    <ul class="named-list">
+      <li><strong>Almirante</strong> — <em>Comanda a frota inteira. Cargo nomeado pelo rei. Atualmente: Almirante Geira Voss, mulher de 58 anos que não perdeu uma batalha naval em 22 anos.</em></li>
+      <li><strong>Capitão de Frota (Tubarão de Mar)</strong> — <em>Comanda esquadrão de 8–15 navios. Título informal mas respeitado. Abaixo do Almirante, acima de todos os demais.</em></li>
+      <li><strong>Capitão de Navio</strong> — <em>Comanda uma embarcação. A espinha dorsal da organização naval. Pode ser ordenado Capitão pelo rei ou por um Tubarão.</em></li>
+      <li><strong>Mestre de Abordagem</strong> — <em>Especialista em combate a bordo e operações de abordagem. Cargo de elite sem paralelo em outros reinos.</em></li>
+      <li><strong>Soldado / Marinheiro</strong> — <em>Sem distinção formal. Todo marinheiro de Valos é soldado. Todo soldado sabe nadar.</em></li>
+    </ul>
+
+    <div class="section-label">Religião — O Mar que Escuta</div>
+    <div class="body-text">
+      <p>A religião de Valos reverencia o mar como entidade consciente e caprichosa. Acredita-se em <strong>Sereias</strong> — não criaturas sedutoras, mas espíritos guardiões que habitam os fundos e às vezes guiam navios para longe de recifes em troca de oferendas. Os <strong>Monstros das Profundezas</strong> são reais na fé de Valos — criaturas antigas que habitam abaixo de onde a luz do sol alcança, e que devem ser respeitadas com oferendas regulares de alimento e carne lançados ao mar. Nenhum navio de Valos parte sem a cerimônia da <strong>Dádiva ao Fundo</strong> — um baril de carne salgada despejado nas águas do porto antes de toda viagem.</p>
+    </div>
+
+    <div class="section-label">Comércio e Economia</div>
+    <div class="tag-row">
+      <span class="tag tag-gold">Construção naval (maior exportação)</span>
+      <span class="tag tag-gold">Pesca de alto mar</span>
+      <span class="tag tag-gold">Serviços de escolta marítima</span>
+      <span class="tag tag-gold">Madeira de Bourbon (reexportação naval)</span>
+      <span class="tag tag-rust">Hospedagem e proteção de corsários (renda informal)</span>
+    </div>
+
+    <div class="section-label">Tensões</div>
+    <div class="conflict-block">
+      <div class="ct">Atrito com Vasto de Orsini — Taxas de Passagem</div>
+      <p>Valos impõe taxas de passagem no Mar de Aethelgard que Orsini considera ilegítimas. Houve um confronto naval menor há seis anos. A paz atual é frágil — o Tubarão de Atoleiro abertamente defende retaliação contra navios de Orsini que "passam sem pagar".</p>
+    </div>
+    <div class="conflict-block">
+      <div class="ct">Divisão Interna entre Tubarões</div>
+      <p>Os Tubarões de Lingard e Aethelgard disputam o controle da rota comercial do extremo sul do arquipélago. O rei está envelhecendo e ainda não nomeou herdeiro — ambos os Tubarões manobram para influenciar a sucessão.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     8. IMPÉRIO DE ZOLERNIA
+══════════════════════════════════════════════ -->
+<section class="reino-section" id="zolernia">
+  <div class="reino-banner" style="background:linear-gradient(135deg,#600a0a 0%,#300404 100%)">
+    <div class="banner-number">VIII</div>
+    <div class="banner-text">
+      <h2>Império de Zolernia</h2>
+      <div class="capital-tag">CAPITAL · TORRE DO CREPÚSCULO · IMPÉRIO CENTRALIZADO</div>
+      <div class="lema-tag">"Um sol. Uma lei. Um Império."</div>
+    </div>
+  </div>
+  <div class="content-area">
+
+    <div class="section-label">Natureza e Território</div>
+    <div class="body-text">
+      <p>Zolernia é de longe o maior reino de Elvilia em poder militar bruto. Seu território central ocupa a maior planície fértil do continente, banhada pelo Rio Imperial que nasce ao norte e desemboca na Baía dos Apaixonados ao sul — uma rota fluvial que os Zolernenses usam como espinha dorsal de comércio e mobilização militar. A capital, Torre do Crepúsculo, ergue-se onde o Rio Imperial se alarga antes de entrar na baía, e sua torre central é visível a dezenas de quilômetros de distância.</p>
+      <p>O Império tenta constantemente expandir controle sobre as <strong>Águas Quentes</strong> — uma região de baías quentes ao norte que tem valor estratégico e econômico enorme. Atualmente, há um forte imperial em construção nas margens das Águas Quentes, o que preocupa Bourbon, Tudória e Medícia em igual medida.</p>
+    </div>
+
+    <div class="section-label">Estrutura de Poder</div>
+    <div class="detail-grid">
+      <div class="detail-block">
+        <div class="db-label">Forma de Governo</div>
+        <div class="db-value"><strong>Monarquia Imperial Centralizada</strong><br>O Imperador governa com autoridade absoluta sobre todo o território. Abaixo dele, Governadores Imperiais administram regiões. Cidades têm Prefeitos nomeados pela corte, não eleitos ou herdados localmente.</div>
+      </div>
+      <div class="detail-block">
+        <div class="db-label">Figuras de Poder Atual</div>
+        <div class="db-value">
+          <strong>Imperador Cassivorn III</strong> — Ambicioso, 44 anos, saudável.<br>
+          <strong>Lorde-General Draven Holt</strong> — Comandante das Legiões.<br>
+          <strong>Almirante-Imperial Seros</strong> — Frota da Baía dos Apaixonados.<br>
+          <strong>Governador das Águas Quentes</strong> — Posto contestado (vago há 2 anos).<br>
+          <strong>Prefeito de Biestall</strong> — Cidade com crescente tensão fiscal.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Hierarquia Militar — As Legiões</div>
+    <ul class="named-list">
+      <li><strong>Imperador</strong> — <em>Comandante supremo. Participa pessoalmente de campanhas importantes.</em></li>
+      <li><strong>Lorde-General (Máximo de 3)</strong> — <em>Comanda uma Legião inteira (3.000–5.000 homens). Nomeado pelo Imperador por mérito e lealdade.</em></li>
+      <li><strong>Legado</strong> — <em>Comanda uma coorte (500–600 homens). Equivalente a coronel. Alcançável por mérito.</em></li>
+      <li><strong>Centurião</strong> — <em>Comanda 80–100 homens. O núcleo disciplinar das Legiões. Carreira de longo prazo.</em></li>
+      <li><strong>Optião</strong> — <em>Segundo do Centurião. Cuida de logística e disciplina.</em></li>
+      <li><strong>Legionário</strong> — <em>Soldado padrão. Bem equipado, treinado em formação. O mais disciplinado exército convencional de Elvilia.</em></li>
+    </ul>
+
+    <div class="section-label">Comércio e Economia</div>
+    <div class="tag-row">
+      <span class="tag tag-gold">Grãos imperiais (planície central)</span>
+      <span class="tag tag-gold">Ferro e aço (Biestall)</span>
+      <span class="tag tag-gold">Impostos de trânsito (rotas imperiais)</span>
+      <span class="tag tag-gold">Vinho e azeite do sul</span>
+      <span class="tag tag-rust">Pressão econômica sobre reinos vizinhos</span>
+    </div>
+
+    <div class="section-label">Tensões</div>
+    <div class="conflict-block">
+      <div class="ct">Expansão para as Águas Quentes</div>
+      <p>A construção do forte imperial nas margens das Águas Quentes é o principal ponto de tensão atual. Bourbon, Tudória e até Medícia têm interesse em que Zolernia não controle aquela região. Nenhum deles tem força suficiente para opor-se sozinho — e nenhum confia nos outros o suficiente para se aliar.</p>
+    </div>
+    <div class="conflict-block">
+      <div class="ct">Biestall e Pevensey — Tensão Fiscal Interna</div>
+      <p>As cidades industriais do extremo do Império pagam impostos que consideram desproporcionais ao suporte que recebem da corte. Um levante de artesãos em Biestall foi suprimido há três anos. O foco voltou a crescer — o Lorde-General Draven recomendou reforço de guarnição; o Imperador considerou desnecessário.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     9. CONFEDERAÇÃO DE TRASTARA
+══════════════════════════════════════════════ -->
+<section class="reino-section" id="trastara">
+  <div class="reino-banner" style="background:linear-gradient(135deg,#2a3808 0%,#141c04 100%)">
+    <div class="banner-number">IX</div>
+    <div class="banner-text">
+      <h2>Confederação de Trastara</h2>
+      <div class="capital-tag">CAPITAL · SANTA FLORENÇA · TEOCRACIA SOLAR CONFEDERADA</div>
+      <div class="lema-tag">"O Sol vê tudo. O Rei é Sua sombra entre nós."</div>
+    </div>
+  </div>
+  <div class="content-area">
+
+    <div class="section-label">Natureza e Território</div>
+    <div class="body-text">
+      <p>Trastara ocupa planícies férteis do sul e sudeste de Elvilia — um território de campos abertos, rios calmos e cidades-estado que cresceram independentes antes de serem unidas pela fé solar. Hoje a Confederação é governada por uma estrutura de duplo poder: em cada cidade, um <strong>Chefe Civil</strong> e um <strong>Arúspice Solar</strong> (sacerdote) dividem a administração — e é comum que discordem.</p>
+      <p>Santa Florença, a capital, é ao mesmo tempo a maior cidade e o centro sagrado da fé. O templo principal, chamado <strong>Catedral do Solstício</strong>, fica no centro exato da cidade e é construído de forma que o sol do meio-dia do solstício de verão projeta sombra zero dentro de seu sanctum — uma façanha arquitetônica que os fiéis interpretam como prova da presença divina.</p>
+    </div>
+
+    <div class="section-label">O Culto do Sol e a Alta Cúpula</div>
+    <div class="body-text">
+      <p>A religião de Trastara acredita que o Deus Sol — chamado <strong>Solvar</strong> — se reencarna em cada novo rei. O rei não é apenas monarca: é literalmente deus na terra, e sua morte é chamada de <strong>Pôr do Sol</strong>, seguida por um período de luto e busca pelo <strong>Novo Nascer</strong> — a identificação do próximo rei entre os herdeiros.</p>
+      <p>A <strong>Alta Cúpula de Solvar</strong> é o conselho religioso supremo, composto por sete <strong>Solares</strong> (bispos da fé). Eles nomeiam os Arúspices Solares das cidades, interpretam os desígnios de Solvar e têm poder de questionar (mas não depor) o rei. Quando um rei morre sem herdeiro claro, é a Alta Cúpula quem decide o Novo Nascer — poder enorme que mantém o clero em posição de grande influência.</p>
+    </div>
+
+    <div class="section-label">Hierarquia Militar — Ordem dos Mestres</div>
+    <ul class="named-list">
+      <li><strong>Lorde da Espada (Spada-Lorde)</strong> — <em>Comandante supremo militar. Cargo separado do rei — o rei guerreia com o Spada-Lorde como braço direito. Atualmente: Spada-Lorde Varen Solenne, considerado o melhor espadachim de Trastara.</em></li>
+      <li><strong>Mestre da Espada (Espada-Mestre)</strong> — <em>Título concedido a combatentes de excelência excepcional, independente de origem nobre. Um artesão pode tornar-se Espada-Mestre. É o título mais respeitado militarmente em Trastara e infunde medo nos adversários.</em></li>
+      <li><strong>Senhor da Espada</strong> — <em>Um degrau abaixo do Mestre. Combatentes de alto nível que ainda não provaram maestria plena. Comandam unidades de elite.</em></li>
+      <li><strong>Capitão Solar</strong> — <em>Capitão padrão do exército. Jura ao rei e a Solvar — em teoria, se os dois conflitam, Solvar prevalece.</em></li>
+      <li><strong>Soldado da Luz</strong> — <em>Soldado comum. Bem armado, disciplinado, motivado pela fé. Considerado entre os mais corajosos em batalha por seu fervor religioso.</em></li>
+    </ul>
+
+    <div class="section-label">Comércio e Economia</div>
+    <div class="tag-row">
+      <span class="tag tag-gold">Papel e pergaminho</span>
+      <span class="tag tag-gold">Tecidos finos</span>
+      <span class="tag tag-gold">Couro trabalhado</span>
+      <span class="tag tag-gold">Carne e produtos agrícolas</span>
+      <span class="tag tag-rust">Textos religiosos exportados para missões</span>
+    </div>
+
+    <div class="section-label">Tensões</div>
+    <div class="conflict-block">
+      <div class="ct">Sul Ameaça Secessão</div>
+      <p>As cidades do sul da Confederação — Monforte, Termil de Basto, Fermil de Basto — consideram que a Alta Cúpula favorece sistematicamente o norte. O Arúspice Solar de Monforte, <strong>Draen do Sul</strong>, publicou uma tese questionando se o atual rei é de fato o Nascer legítimo de Solvar. A Alta Cúpula o silenciou formalmente, mas o texto já circula copiado.</p>
+    </div>
+    <div class="conflict-block">
+      <div class="ct">Pressão Imperial de Zolernia ao Norte</div>
+      <p>Lordelo e Sombra Tenebrosa, cidades do extremo norte da Confederação, estão em zona de pressão crescente de Zolernia. O Conselho Solar recusou-se três vezes a declarar guerra em resposta a incidentes fronteiriços — o que a população dessas cidades interpreta como abandono.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     10. VASTO DE ORSINI
+══════════════════════════════════════════════ -->
+<section class="reino-section" id="orsini">
+  <div class="reino-banner" style="background:linear-gradient(135deg,#0c2838 0%,#061418 100%)">
+    <div class="banner-number">X</div>
+    <div class="banner-text">
+      <h2>Vasto de Orsini</h2>
+      <div class="capital-tag">CAPITAL · NOVA LUA · REINO COSTEIRO DE TRADIÇÃO NATURALISTA</div>
+      <div class="lema-tag">"O mar cura. A montanha guarda. A raposa guia."</div>
+    </div>
+  </div>
+  <div class="content-area">
+
+    <div class="section-label">Natureza e Território</div>
+    <div class="body-text">
+      <p>Orsini é um reino singular em Elvilia: seu território combina costa marítima ao sul com montanhas rochosas ao norte, e sua capital, Nova Lua, fica exatamente nesse ponto de encontro — encravada na encosta de um penhasco costeiro, metade cidade portuária, metade fortaleza de pedra. O aspecto mais peculiar da capital é que seu único acesso terrestre é por um sistema de cavernas naturais que atravessam a base da montanha — rotas conhecidas apenas pelos guias locais, chamados <strong>Passeiros</strong>, tornando Nova Lua praticamente impossível de cercar por terra.</p>
+      <p>As outras cidades de Orsini são principalmente portuárias — Sírius, Dummer, Alcains — espalhadas pela costa sul quente. O interior montanhoso é habitado por comunidades pequenas e autossuficientes que desenvolveram a tradição de <strong>domadores e médicos</strong>: especialistas no trato de animais e no conhecimento de plantas medicinais que crescem nas alturas costeiras.</p>
+    </div>
+
+    <div class="section-label">Tradições Distintivas</div>
+    <div class="detail-grid">
+      <div class="detail-block">
+        <div class="db-label">Mestres da Medicina</div>
+        <div class="db-value">Orsini possui uma classe formal de <strong>Físicos da Costa</strong> — médicos que combinam conhecimento de plantas, sal marinho e técnicas de tratamento de ferimentos desenvolvidas originalmente para tripulantes de pesca. São considerados os melhores curandeiros de Elvilia e são recrutados (às vezes forçadamente) por outros reinos em tempo de guerra.</div>
+      </div>
+      <div class="detail-block">
+        <div class="db-label">Raposas Domesticadas</div>
+        <div class="db-value">Orsini é o único reino onde a domesticação e treinamento de raposas é uma tradição formal. Chamadas <strong>Guias da Névoa</strong>, as raposas treinadas são usadas para encontrar trilhas em névoa costeira densa, detectar câmaras de ar em cavernas e, ocasionalmente, para exploração em terrenos estreitos demais para humanos. Os <strong>Domadores</strong> formam uma guilda respeitada.</div>
+      </div>
+    </div>
+
+    <div class="section-label">Estrutura de Poder</div>
+    <div class="body-text">
+      <p>Orsini é governado por um rei com apoio de casas costeiras. A sucessão é patrilinear mas pode ser desafiada pelos <strong>Senhores das Baías</strong> — lords que controlam cada porto principal. O atual rei, <strong>Aldren Orsini</strong>, herdou o trono há doze anos e mantém seu poder em parte por habilidade política, em parte por ser o melhor Passeiro vivo — conhece as cavernas de Nova Lua melhor que qualquer outro, o que torna impossível tomar a cidade à força enquanto ele viver.</p>
+    </div>
+
+    <div class="section-label">Hierarquia Militar</div>
+    <ul class="named-list">
+      <li><strong>Rei</strong> — <em>Comando supremo. Pessoalmente experiente em combate costeiro.</em></li>
+      <li><strong>Senhor da Baía</strong> — <em>Comanda a frota e guarnição do seu porto. Equivalente a almirante regional.</em></li>
+      <li><strong>Capitão de Costa</strong> — <em>Comanda embarcação ou guarnição costeira. Cargo padrão da hierarquia.</em></li>
+      <li><strong>Passeiro de Combate</strong> — <em>Guias de caverna treinados para operações militares nas rotas subterrâneas. Unidade única de Orsini.</em></li>
+      <li><strong>Soldado Costeiro</strong> — <em>Adaptado a terrenos rochosos e combate em embarcações. Habilidoso em arco curto e faca.</em></li>
+    </ul>
+
+    <div class="section-label">Comércio e Economia</div>
+    <div class="tag-row">
+      <span class="tag tag-gold">Pesca profunda e salgamento</span>
+      <span class="tag tag-gold">Serviços médicos (Físicos da Costa)</span>
+      <span class="tag tag-gold">Raposas treinadas (exclusivo)</span>
+      <span class="tag tag-gold">Azeite e vinho do sul</span>
+      <span class="tag tag-rust">Taxas de passagem marítima (conflito com Valos)</span>
+    </div>
+
+    <div class="section-label">Tensões</div>
+    <div class="conflict-block">
+      <div class="ct">Disputa Naval com Valos</div>
+      <p>Valos cobra taxas de passagem no Mar de Aethelgard que afetam diretamente as rotas comerciais de Orsini. O confronto naval menor de seis anos atrás terminou mal para Orsini — mas Aldren investe silenciosamente em construção naval. Quando estiver pronto, a tentação de uma retaliação será grande.</p>
+    </div>
+    <div class="conflict-block">
+      <div class="ct">Fronteira Cultural com Trastara</div>
+      <p>A zona entre Orsini e Trastara tem populações de origem mista que não reconhecem a fronteira administrativa. Os dois reinos trocam acusações de "assimilação forçada" regularmente — nenhum tem força para resolver o problema militarmente, então ele simplesmente persiste.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     11. BRAGANZA
+══════════════════════════════════════════════ -->
+<section class="reino-section" id="braganza">
+  <div class="reino-banner" style="background:linear-gradient(135deg,#380a50 0%,#1a0428 100%)">
+    <div class="banner-number">XI</div>
+    <div class="banner-text">
+      <h2>Braganza</h2>
+      <div class="capital-tag">CAPITAL · PASSO FUNDO · MONARQUIA MERCANTIL EM CRISE</div>
+      <div class="lema-tag">"Quem controla o ouro, controla a memória."</div>
+    </div>
+  </div>
+  <div class="content-area">
+
+    <div class="section-label">Natureza e Território</div>
+    <div class="body-text">
+      <p>Braganza ocupa o sudeste de Elvilia, espremido entre Zolernia ao norte e Trastara ao sul, com uma faixa de costa na Baía dos Apaixonados a oeste. Sua posição geográfica de cruzamento comercial foi o motor de seu enriquecimento histórico — quase tudo que vai de Zolernia a Trastara ou de Borgiath à costa passa por Braganza, e o reino sempre cobrou por isso.</p>
+      <p>A capital, Passo Fundo, fica numa posição estratégica de vale que dá nome à cidade — um passo natural por onde as principais rotas terrestres convergem antes de seguir sul. A cidade cresceu ao redor dessa posição, e Forte Tutshil, o castelo central, domina visualmente o passo inteiro de cima de uma formação rochosa.</p>
+    </div>
+
+    <div class="section-label">A Família Real e os Ursos</div>
+    <div class="body-text">
+      <p>Braganza tem uma tradição que é simultaneamente o item mais famoso e mais ridiculizado do reino: a família real de Braganza <strong>adestra e monta ursos</strong>. Não é metáfora. Os soberanos de Braganza há quatro gerações mantêm ursos pardos gigantes dos bosques do nordeste, criados desde filhotes, como montarias cerimoniais e, ocasionalmente, como arma de terror em batalha.</p>
+      <p>O atual rei, <strong>Osvald Braganz</strong>, monta seu urso — chamado <strong>Ferro Cinza</strong> — em todas as aparições públicas importantes. Diplomaticamente, isso é útil: ninguém quer negociar contra alguém sentado em cima de um urso. Militarmente, os ursos de combate de Braganza — chamados <strong>Guardas de Pelo</strong> — são unidades de choque que precedem a cavalaria em terrenos estreitos onde cavalos não conseguem manobrar. São lentos para escalar e manter, mas o impacto psicológico em formações inimigas é enorme.</p>
+    </div>
+
+    <div class="section-label">Crise Dinástica</div>
+    <div class="body-text">
+      <p>O reino está em crise silenciosa. O rei Osvald não tem herdeiro reconhecido — dois filhos morreram jovens, e o terceiro, <strong>Edvar Braganz</strong>, é considerado inapto por boa parte das casas nobres. Três casas nobres menores já declararam informalmente candidatos alternativos. O rei sabe que está negociando tempo, não solução. Há rumores de que ele enviou emissários secretos a Zolernia — o que, se confirmado, precipitaria uma crise imediata.</p>
+    </div>
+
+    <div class="section-label">Estrutura de Poder</div>
+    <div class="detail-grid">
+      <div class="detail-block">
+        <div class="db-label">Forma de Governo</div>
+        <div class="db-value"><strong>Monarquia com Casas Nobres Mercantis</strong><br>As casas nobres de Braganza são ricas mas militarmente fracas em comparação ao rei. O poder real vem de riqueza, não de exércitos. Uma casa que controla uma rota comercial tem mais poder real que uma casa com 500 soldados.</div>
+      </div>
+      <div class="detail-block">
+        <div class="db-label">Casas Notáveis</div>
+        <div class="db-value">
+          <strong>Casa Braganz</strong> — Real. Passo Fundo.<br>
+          <strong>Casa Ervel</strong> — Forte Tutshil. Financiadores históricos.<br>
+          <strong>Casa Sondra</strong> — Kinapton. Fronteira com Trastara.<br>
+          <strong>Casa Mors e Braganz (casamentos)</strong> — Lar do Urso. Candidatos ao Trono.<br>
+          <strong>Casa Drav</strong> — Próxima Porta. Mercado de peles.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Hierarquia Militar</div>
+    <ul class="named-list">
+      <li><strong>Rei-Montador</strong> — <em>O rei de Braganza lidera pessoalmente, montado em urso, em batalhas formais. É tradição inquebrável.</em></li>
+      <li><strong>Guarda (Urso-Guardas)</strong> — <em>Treinadores e combatentes montados em urso. Unidade de elite, pequena em número (raramente mais de 12 ursos adultos ao mesmo tempo) mas devastadora em choque.</em></li>
+      <li><strong>Capitão de Casa</strong> — <em>Cada grande casa mantém seu próprio capitão. Em guerra, todos reportam ao rei — em teoria.</em></li>
+      <li><strong>Soldado de Guarda</strong> — <em>Bem pagos mas não excepcionalmente treinados. Braganza depende mais de mercenários contratados em tempo de guerra do que de um exército permanente robusto.</em></li>
+    </ul>
+
+    <div class="section-label">Comércio e Economia</div>
+    <div class="tag-row">
+      <span class="tag tag-gold">Taxas de rota terrestre (principal renda)</span>
+      <span class="tag tag-gold">Joalheria e metais preciosos</span>
+      <span class="tag tag-gold">Câmbio e serviços de crédito</span>
+      <span class="tag tag-gold">Especiarias em trânsito</span>
+      <span class="tag tag-rust">Crescente dependência econômica de Zolernia</span>
+    </div>
+
+    <div class="section-label">Tensões</div>
+    <div class="conflict-block">
+      <div class="ct">Crise Dinástica Iminente</div>
+      <p>A ausência de herdeiro legítimo é o maior fator desestabilizador de Braganza. Se o rei morrer sem solução, a guerra civil entre as casas é quase certa. Zolernia, que faz fronteira ao norte, já posicionou tropas em Kinapton sob pretexto de "proteger interesses comerciais" — linguagem que todos entendem como preparação para absorção.</p>
+    </div>
+    <div class="conflict-block">
+      <div class="ct">Casa Mors e o Candidato ao Trono</div>
+      <p>A Casa Mors, sediada em Lar do Urso, apresentou formalmente um primo de sangue real como pretendente legítimo. O rei declarou a pretensão "sem fundamento histórico". A Casa Mors parou de pagar impostos há dois meses. O rei ainda não respondeu militarmente — e esse silêncio está sendo interpretado como fraqueza por todas as outras casas.</p>
+    </div>
+
+  </div>
+</section>
+
+</div><!-- /codex-body -->
+
+<script>
+function scrollToSection(id){
+  const el = document.getElementById(id);
+  if(el){
+    const offset = 60;
+    // Usando window.scrollY que é o padrão moderno
+    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({top, behavior:'smooth'});
+  }
+}
+
+// Atualizar a classe active ao clicar e ao scrollar
+const sections = ['intro','romanovos','medicia','borgiath','bourbon','tudoria','graosgerais','valos','zolernia','trastara','orsini','braganza'];
+
+window.addEventListener('scroll', ()=>{
+  let current = sections[0];
+  
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if(el && el.getBoundingClientRect().top < 120) {
+      current = id;
+    }
+  });
+
+  document.querySelectorAll('.nav-btn').forEach((btn, index) => {
+    btn.classList.toggle('active', sections[index] === current);
+  });
+}, {passive:true});
+
+// Corrigindo a chamada dos botões dinamicamente
+document.querySelectorAll('.nav-btn').forEach((btn, index) => {
+  btn.removeAttribute('onclick'); // Remove o onclick antigo para não dar conflito
+  btn.addEventListener('click', () => {
+    scrollToSection(sections[index]);
+  });
+});
+</script>
+</body>
+</html>
