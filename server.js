@@ -22,7 +22,7 @@ const sheets = google.sheets({ version: 'v4', auth });
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID;
 
 // Tabelas permitidas para evitar acesso indevido a outras planilhas
-const ALLOWED_TABLES = ['Reinos', 'Cidades', 'Casas', 'Personagens', 'Lore', 'Conflitos'];
+const ALLOWED_TABLES = ['Reinos', 'Cidades', 'Casas', 'Personagens', 'Lore', 'Conflitos', 'Exercito'];
 
 // ─── Core Helpers ──────────────────────────────────────────────────────────
 
@@ -208,6 +208,9 @@ app.delete('/api/:table/:id', checkTable, async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+
+// Serve o mapa local
+app.get('/mapa.png', (req, res) => res.sendFile(path.join(__dirname, 'mapa.png')));
 
 // Fallback para servir o HTML
 app.get('*', (req, res) => {

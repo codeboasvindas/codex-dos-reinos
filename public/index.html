@@ -146,17 +146,6 @@ body::after{
 .named-list li::before{ content:'›';position:absolute;left:0; color:var(--gold2);font-weight:700; }
 .named-list li strong{color:var(--ink);font-family:var(--ft);font-size:.8rem;letter-spacing:.04em}
 
-.tree-container { background: var(--parch2); padding: 1rem; border: 1px solid rgba(139,101,16,.3); border-radius: 3px; overflow-x: auto; }
-.tree-ul { list-style: none; padding-left: 20px; border-left: 1px solid var(--gold); margin-top: 10px; }
-.tree-ul li { position: relative; padding: 10px 0 10px 20px; }
-.tree-ul li::before { content: ''; position: absolute; left: 0; top: 22px; width: 15px; border-top: 1px solid var(--gold); }
-.char-card {
-  display: flex; align-items: center; gap: 10px; background: var(--parch); border: 1px solid var(--gold);
-  padding: 8px 12px; border-radius: 3px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); width: max-content; position: relative;
-}
-.char-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid var(--gold); }
-.char-info { display: flex; flex-direction: column; }
-.char-title { font-family: var(--ft); font-size: 0.65rem; color: var(--ink3); }
 
 /* Botoes Auxiliares e Ações */
 .btn-crud {
@@ -205,6 +194,81 @@ body::after{
 
 /* Loading State */
 #loader { text-align: center; padding: 4rem; color: var(--gold2); font-family: var(--fd); font-size: 1.5rem; }
+
+/* ENCICLOPÉDIA — ABAS DE CATEGORIA */
+.lore-tabs { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:1.2rem; padding-bottom:0.8rem; border-bottom:1px solid rgba(139,101,16,.18); }
+.lore-tab-btn { font-family:var(--ft); font-size:0.6rem; letter-spacing:0.08em; padding:6px 14px; border-radius:3px; cursor:pointer; background:var(--parch2); border:1px solid rgba(139,101,16,.2); color:var(--ink3); transition:0.18s; white-space:nowrap; }
+.lore-tab-btn:hover { color:var(--gold2); border-color:rgba(139,101,16,.4); background:rgba(139,101,16,.08); }
+.lore-tab-btn.active { background:rgba(139,101,16,.18); color:var(--gold); border-color:var(--gold2); font-weight:600; }
+.lore-cat-section { display:none; animation:fadeIn .3s ease; }
+.lore-cat-section.visible { display:block; }
+
+/* CASAS — CARDS MELHORADOS */
+.casa-card { background:var(--parch2); border:1px solid rgba(139,101,16,.22); border-radius:5px; padding:0.9rem 1.1rem; margin-bottom:0.7rem; display:flex; align-items:center; gap:1rem; transition:border-color .2s; }
+.casa-card:hover { border-color:var(--gold2); }
+.casa-card-info { flex:1; }
+.casa-card-nome { font-family:var(--ft); font-size:0.9rem; color:var(--ink); font-weight:700; letter-spacing:0.03em; }
+.casa-card-lema { font-size:0.8rem; color:var(--ink3); font-style:italic; margin-top:3px; }
+.casa-card-btns { display:flex; gap:6px; align-items:center; flex-shrink:0; }
+
+/* ─── ÁRVORE GENEALÓGICA — ORG-CHART ─── */
+.gen-tree-root { overflow-x:auto; overflow-y:visible; padding:1.5rem 2rem 3rem; }
+.tree-roots { display:flex; gap:4rem; align-items:flex-start; width:max-content; min-width:100%; }
+.tree-family { display:flex; flex-direction:column; align-items:center; }
+
+/* Cartão de pessoa */
+.tree-person-card {
+  width:152px; background:linear-gradient(150deg,var(--parch) 0%,var(--parch2) 100%);
+  border:1px solid rgba(139,101,16,.28); border-radius:8px;
+  padding:14px 12px 12px; text-align:center; position:relative;
+  box-shadow:0 2px 10px rgba(0,0,0,.1); transition:box-shadow .2s,border-color .2s; flex-shrink:0;
+}
+.tree-person-card:hover { box-shadow:0 4px 18px rgba(0,0,0,.16); border-color:var(--gold2); z-index:1; }
+.tree-person-card.char-dead { opacity:.6; background:linear-gradient(150deg,var(--parch2) 0%,var(--parch3) 100%); border-style:dashed; }
+
+/* Avatar */
+.tree-avatar {
+  width:60px; height:60px; border-radius:50%; margin:0 auto 10px;
+  border:2px solid rgba(139,101,16,.22); overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.5rem; background:var(--parch3);
+}
+.tree-avatar.masc { background:#d4e4f0; color:#3a6a8a; }
+.tree-avatar.fem  { background:#f0d4e4; color:#8a3a6a; }
+.tree-avatar img  { width:100%; height:100%; object-fit:cover; }
+
+/* Textos */
+.tree-person-name { font-family:var(--ft); font-size:.7rem; font-weight:700; color:var(--ink); line-height:1.3; }
+.tree-person-title { font-size:.57rem; color:var(--ink3); margin-top:3px; font-style:italic; line-height:1.3; }
+.tree-person-morto {
+  display:inline-block; font-size:.5rem; font-family:var(--ft);
+  color:var(--rust2); background:rgba(176,64,24,.1);
+  border:1px solid rgba(176,64,24,.2); border-radius:3px;
+  padding:1px 5px; margin-top:5px; letter-spacing:.04em; text-transform:uppercase;
+}
+.tree-person-conjuge { font-size:.54rem; color:var(--ink4); margin-top:5px; font-style:italic; }
+
+/* Botões de ação — só no hover */
+.tree-person-actions { position:absolute; top:4px; right:4px; display:none; flex-direction:column; gap:2px; }
+.tree-person-card:hover .tree-person-actions { display:flex; }
+
+/* Linha vertical do pai até os filhos */
+.tree-vconn { width:2px; height:24px; background:rgba(139,101,16,.3); flex-shrink:0; }
+
+/* Linha de filhos */
+.tree-children { display:flex; gap:2rem; align-items:flex-start; }
+.tree-child-wrap { display:flex; flex-direction:column; align-items:center; padding-top:24px; position:relative; }
+
+/* Stub vertical do filho subindo até a linha horizontal */
+.tree-child-wrap::before {
+  content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:2px; height:24px; background:rgba(139,101,16,.3);
+}
+/* Segmentos da linha horizontal construídos por cada filho */
+.tree-child-wrap:not(:only-child)::after { content:''; position:absolute; top:0; height:2px; background:rgba(139,101,16,.3); }
+.tree-child-wrap:first-child:not(:only-child)::after  { left:50%; right:-1rem; }
+.tree-child-wrap:last-child:not(:only-child)::after   { right:50%; left:-1rem; }
+.tree-child-wrap:not(:first-child):not(:last-child)::after { left:-1rem; right:-1rem; }
 </style>
 </head>
 <body>
@@ -232,7 +296,7 @@ body::after{
       <p><em>Selecione um território no menu superior para explorar Casas Nobres, Assentamentos, Forças Militares e a Lore antiga.</em></p>
     </div>
     <div style="text-align: center;">
-      <img src="https://i.ibb.co/8nr8Pnf4/Untitled-2.jpg" alt="Mapa de Elvilia" class="mapa-global">
+      <img src="/mapa.png" alt="Mapa de Elvilia" class="mapa-global" onerror="this.src='https://res.cloudinary.com/drwpypl4t/image/upload/v1783476237/mapa_cxgx3e.png'">
     </div>
   </div>
 
@@ -254,18 +318,23 @@ body::after{
     </div>
 
     <div class="tabs-reino">
-      <button class="tab-reino-btn active" onclick="mudarAbaReino('aba-geral', this)">Visão Geral & Estratégia</button>
+      <button class="tab-reino-btn active" onclick="mudarAbaReino('aba-geral', this)">Visão Geral</button>
       <button class="tab-reino-btn" onclick="mudarAbaReino('aba-cidades', this)">Assentamentos</button>
+      <button class="tab-reino-btn" onclick="mudarAbaReino('aba-exercito', this)">⚔ Exército</button>
       <button class="tab-reino-btn" onclick="mudarAbaReino('aba-casas', this)">Casas & Árvore</button>
       <button class="tab-reino-btn" onclick="mudarAbaReino('aba-lore', this)">Enciclopédia</button>
     </div>
 
     <!-- ABA: VISÃO GERAL -->
     <div id="aba-geral" class="tab-content active">
-      <div class="stats-grid">
+      <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(110px,1fr))">
         <div class="stat-box"><div class="stat-title">População Total</div><div class="stat-value" id="stat-pop">0</div></div>
-        <div class="stat-box"><div class="stat-title">Força Militar</div><div class="stat-value" id="stat-mil">0</div></div>
-        <div class="stat-box"><div class="stat-title">Frota Naval</div><div class="stat-value" id="stat-nav">0</div></div>
+        <div class="stat-box"><div class="stat-title">Efetivo Militar</div><div class="stat-value" id="stat-mil">0</div></div>
+        <div class="stat-box"><div class="stat-title">⚔Infantaria</div><div class="stat-value" id="stat-inf">0</div></div>
+        <div class="stat-box"><div class="stat-title">🐴Cavalaria</div><div class="stat-value" id="stat-cav">0</div></div>
+        <div class="stat-box"><div class="stat-title">⚓Marinheiros</div><div class="stat-value" id="stat-mar">0</div></div>
+        <div class="stat-box"><div class="stat-title">⛵N. Guerra</div><div class="stat-value" id="stat-nguerra">0</div></div>
+        <div class="stat-box"><div class="stat-title">🚢N. Patrulha</div><div class="stat-value" id="stat-npatrulha">0</div></div>
       </div>
 
       <div id="img-capital-container" style="display:none; margin-bottom:1rem;">
@@ -297,6 +366,15 @@ body::after{
         <button class="btn-crud" onclick="abrirModal('cidades', null)">+ Novo Assentamento</button>
       </div>
       <div class="detail-grid" id="lista-cidades"></div>
+    </div>
+
+    <!-- ABA: EXÉRCITO -->
+    <div id="aba-exercito" class="tab-content">
+      <div class="crud-bar">
+        <div class="section-label" style="margin:0; border:none;">Ordem de Batalha</div>
+        <button class="btn-crud" onclick="abrirModal('exercito', null)">+ Nova Unidade</button>
+      </div>
+      <div id="lista-exercito"></div>
     </div>
 
     <!-- ABA: CASAS NOBRES E ÁRVORE -->
@@ -331,8 +409,8 @@ body::after{
     <!-- ABA: LORE -->
     <div id="aba-lore" class="tab-content">
       <div class="crud-bar">
-        <div class="section-label" style="margin:0; border:none;">Registros de Bestas, Mitos e Doenças</div>
-        <button class="btn-crud" onclick="abrirModal('lore', null)">+ Adicionar Lore</button>
+        <div class="section-label" style="margin:0; border:none;">Enciclopédia — Fauna, Doenças, Bestiário, Mitologia e mais</div>
+        <button class="btn-crud" onclick="abrirModal('lore', null)">+ Adicionar Entrada</button>
       </div>
       <div id="lista-lore"></div>
     </div>
@@ -341,7 +419,7 @@ body::after{
 </div> <!-- /codex-body -->
 
 <!-- ================= MODAL CRUD UNIVERSAL ================= -->
-<div class="modal-overlay" id="crud-modal">
+<div class="modal-overlay" id="crud-modal" onclick="fecharModalFora(event)">
   <div class="modal-box">
     <h3 id="modal-titulo">Cadastrar</h3>
     <div id="modal-corpo">
@@ -475,20 +553,29 @@ function carregarReino(idReino, btn) {
   atualizarImg('dom-armadura-geral-img', reino.url_armadura_geral);
   document.getElementById('dom-armadura-geral-desc').innerText = reino.desc_armadura_geral || "Sem registros.";
 
-  let somaPop = 0; let somaMil = 0; let somaNavios = 0;
+  let somaPop = 0, somaInf = 0, somaCav = 0, somaMar = 0, somaNG = 0, somaNP = 0;
   const cidadesDoReino = (db.cidades || []).filter(c => c.id_reino == idReino);
   cidadesDoReino.forEach(c => {
-    somaPop += parseInt(c.populacao) || 0;
-    somaMil += parseInt(c.militares) || 0;
-    somaNavios += (parseInt(c.navios_guerra) || 0) + (parseInt(c.navios_patrulha) || 0);
+    somaPop += parseInt(c.populacao)      || 0;
+    somaInf += parseInt(c.Infantaria)     || 0;
+    somaCav += parseInt(c.Cavalaria)      || 0;
+    somaMar += parseInt(c.Marinha)        || 0;
+    somaNG  += parseInt(c.navios_guerra)  || 0;
+    somaNP  += parseInt(c.navios_patrulha)|| 0;
   });
+  const somaMil = somaInf + somaCav + somaMar;
 
-  document.getElementById('stat-pop').innerText = formatarNumero(somaPop);
-  document.getElementById('stat-mil').innerText = formatarNumero(somaMil);
-  document.getElementById('stat-nav').innerText = formatarNumero(somaNavios);
+  document.getElementById('stat-pop').innerText      = formatarNumero(somaPop);
+  document.getElementById('stat-mil').innerText      = formatarNumero(somaMil);
+  document.getElementById('stat-inf').innerText      = formatarNumero(somaInf);
+  document.getElementById('stat-cav').innerText      = formatarNumero(somaCav);
+  document.getElementById('stat-mar').innerText      = formatarNumero(somaMar);
+  document.getElementById('stat-nguerra').innerText  = formatarNumero(somaNG);
+  document.getElementById('stat-npatrulha').innerText= formatarNumero(somaNP);
 
   renderizarConflitos(idReino);
   renderizarCidades(cidadesDoReino);
+  renderizarExercito(idReino);
   renderizarCasas(idReino);
   renderizarLore(idReino);
 
@@ -540,7 +627,9 @@ function renderizarCidades(cidades) {
       ${gerarAcoes('cidades', c.id_cidade)}
       <div class="db-label">${c.tipo || 'Assentamento'}</div>
       <div class="db-value"><strong>${c.nome}</strong></div>
-      <div class="db-sub">👥 Hab: ${formatarNumero(parseInt(c.populacao)||0)} | ⚔️ Mil: ${formatarNumero(parseInt(c.militares)||0)}</div>
+      <div class="db-sub">👥 ${formatarNumero(parseInt(c.populacao)||0)} hab.</div>
+      <div class="db-sub" style="margin-top:3px;">⚔ ${formatarNumero(parseInt(c.Infantaria)||0)} inf. &nbsp;🐴 ${formatarNumero(parseInt(c.Cavalaria)||0)} cav. &nbsp;⚓ ${formatarNumero(parseInt(c.Marinha)||0)} mar.</div>
+      ${(c.navios_guerra||c.navios_patrulha) ? `<div class="db-sub" style="margin-top:2px;">⛵ ${formatarNumero(parseInt(c.navios_guerra)||0)} guerra &nbsp;🚢 ${formatarNumero(parseInt(c.navios_patrulha)||0)} patrulha</div>` : ''}
     </div>
   `).join('');
 }
@@ -549,29 +638,102 @@ function renderizarLore(idReino) {
   const lore = (db.lore || []).filter(l => l.id_reino == idReino);
   const container = document.getElementById('lista-lore');
   if(lore.length === 0) {
-    container.innerHTML = '<p style="color:var(--ink3); font-style:italic;">Nenhum registro encontrado.</p>';
+    container.innerHTML = '<p style="color:var(--ink3); font-style:italic;">Nenhum registro encontrado. Adicione entradas de Fauna, Doenças, Bestiário, Mitologia, Religião, Lendas e muito mais.</p>';
     return;
   }
-  
-  const categoriasUnicas = [...new Set(lore.map(l => l.categoria).filter(Boolean))];
-  let htmlFinal = '';
 
-  categoriasUnicas.forEach(cat => {
-    htmlFinal += `<div class="section-label" style="margin-top: 1.5rem; font-size: 0.8rem;">Registro de ${cat}</div>`;
+  const catIcons = {
+    'Fauna': '🦅', 'Doença': '☠', 'Doenças': '☠', 'Bestiário': '🐉',
+    'Mitologia': '✦', 'Religião': '⛧', 'Mito': '✦', 'Lenda': '📜',
+    'Personagem Histórico': '👑', 'Geografia': '🗺', 'Artefato': '⚗',
+    'Organização': '⚜', 'Evento': '⚡'
+  };
+
+  const categoriasUnicas = [...new Set(lore.map(l => l.categoria).filter(Boolean))];
+
+  let tabsHtml = '<div class="lore-tabs">';
+  categoriasUnicas.forEach((cat, i) => {
+    const icon = catIcons[cat] || '◆';
+    const safeCat = cat.replace(/[^a-zA-Z0-9]/g, '-');
+    tabsHtml += `<button class="lore-tab-btn ${i===0?'active':''}" onclick="filtrarLore('${safeCat}',this)">${icon} ${cat}</button>`;
+  });
+  tabsHtml += '</div>';
+
+  let sectionsHtml = '';
+  categoriasUnicas.forEach((cat, i) => {
+    const icon = catIcons[cat] || '◆';
+    const safeCat = cat.replace(/[^a-zA-Z0-9]/g, '-');
     const itens = lore.filter(l => l.categoria === cat);
-    
-    htmlFinal += itens.map(l => `
-      <div class="detail-block" style="margin-bottom:10px; display:flex; gap:15px; align-items:center;">
+    sectionsHtml += `<div class="lore-cat-section ${i===0?'visible':''}" id="lore-sec-${safeCat}">`;
+    sectionsHtml += `<div class="section-label" style="font-size:0.78rem; margin-bottom:0.8rem;">${icon} ${cat} <button class="btn-crud" onclick="abrirModal('lore', null)">+ Adicionar</button></div>`;
+    sectionsHtml += itens.map(l => `
+      <div class="detail-block" style="margin-bottom:10px; display:flex; gap:15px; align-items:start; position:relative;">
         ${gerarAcoes('lore', l.id_lore)}
-        ${l.url_imagem ? `<img src="${l.url_imagem}" style="width:80px; height:80px; object-fit:cover; border:1px solid var(--gold); border-radius:3px;">` : ''}
-        <div>
-          <div class="db-value" style="color:var(--ink); font-family:var(--ft); font-size:1.05rem; font-weight:bold;">${l.nome}</div>
-          <div class="db-value" style="font-size:0.85rem; margin-top: 3px;">${l.descricao}</div>
+        ${l.url_imagem
+          ? `<img src="${l.url_imagem}" style="width:80px; height:80px; object-fit:cover; border:1px solid var(--gold); border-radius:3px; flex-shrink:0;">`
+          : `<div style="width:80px; height:80px; border:1px dashed rgba(139,101,16,.3); border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:0.52rem; color:var(--ink4); text-align:center; flex-shrink:0; background:var(--parch3);">SEM<br>IMG</div>`
+        }
+        <div style="flex:1;">
+          <div class="db-value" style="color:var(--ink); font-family:var(--ft); font-size:1rem; font-weight:bold; margin-bottom:4px;">${l.nome}</div>
+          <div class="db-value" style="font-size:0.85rem; line-height:1.6;">${l.descricao}</div>
         </div>
       </div>
     `).join('');
+    sectionsHtml += '</div>';
   });
-  container.innerHTML = htmlFinal;
+
+  container.innerHTML = tabsHtml + sectionsHtml;
+}
+
+function filtrarLore(safeCat, btn) {
+  document.querySelectorAll('.lore-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.lore-cat-section').forEach(s => { s.classList.remove('visible'); });
+  const sec = document.getElementById('lore-sec-' + safeCat);
+  if (sec) sec.classList.add('visible');
+}
+
+function renderizarExercito(idReino) {
+  const exercito = (db.exercito || []).filter(e => e.id_reino == idReino);
+  const container = document.getElementById('lista-exercito');
+
+  const ramosPriority = ['Infantaria', 'Cavalaria'];
+  const outrosRamos = [...new Set(exercito.map(e => e.ramo).filter(r => r && !ramosPriority.includes(r)))];
+  const allRamos = [...ramosPriority, ...outrosRamos];
+
+  const ramoIcons = { 'Infantaria': '⚔', 'Cavalaria': '🐴', 'Marinha': '⚓', 'Arqueiros': '🏹', 'Guardas de Elite': '🛡', 'Engenharia de Cerco': '🏰' };
+
+  const cardUnidade = (u) => `
+    <div class="detail-block" style="margin-bottom:10px; display:flex; gap:14px; align-items:start; position:relative;">
+      ${gerarAcoes('exercito', u.id_exercito)}
+      ${u.url_imagem
+        ? `<img src="${u.url_imagem}" style="width:75px; height:95px; object-fit:cover; border:1px solid var(--gold); border-radius:3px; flex-shrink:0;">`
+        : `<div style="width:75px; height:95px; border:1px dashed rgba(139,101,16,.3); border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:0.52rem; color:var(--ink4); text-align:center; flex-shrink:0; background:var(--parch3);">SEM<br>IMAGEM</div>`
+      }
+      <div style="flex:1; min-width:0;">
+        <div class="db-value" style="color:var(--ink); font-family:var(--ft); font-size:0.92rem; font-weight:bold; margin-bottom:4px;">${u.nome || 'Unidade sem nome'}</div>
+        ${u.comandante ? `<div class="db-sub" style="font-size:0.78rem; margin-top:2px;">Comandante: <em>${u.comandante}</em></div>` : ''}
+        ${u.descricao ? `<div class="db-value" style="font-size:0.83rem; margin-top:7px; line-height:1.55; color:var(--ink2);">${u.descricao}</div>` : ''}
+      </div>
+    </div>`;
+
+  let html = '';
+  allRamos.forEach(ramo => {
+    const unidades = exercito.filter(e => e.ramo === ramo);
+    const icon = ramoIcons[ramo] || '✦';
+    html += `<div class="section-label" style="margin-top:1.4rem;">${icon} ${ramo} <button class="btn-crud" onclick="abrirModal('exercito', null, '${ramo}')">+ ${ramo}</button></div>`;
+    if (unidades.length === 0) {
+      html += `<p style="color:var(--ink3); font-style:italic; font-size:0.85rem; padding:0.4rem 0;">Nenhuma unidade de ${ramo} registrada.</p>`;
+    } else {
+      html += unidades.map(u => cardUnidade(u)).join('');
+    }
+  });
+
+  if (exercito.length === 0) {
+    html = '<p style="color:var(--ink3); font-style:italic;">Nenhuma força militar registrada. Use o botão acima para adicionar unidades de Infantaria, Cavalaria e outras.</p>';
+  }
+
+  container.innerHTML = html;
 }
 
 // CASAS E PERSONAGENS
@@ -582,19 +744,33 @@ function renderizarCasas(idReino) {
     ul.innerHTML = '<p style="color:var(--ink3); font-style:italic;">Nenhuma casa nobre registrada.</p>';
     return;
   }
-  ul.innerHTML = casas.map(casa => `
-    <li>
-      <div>
-        <strong>${casa.nome}</strong> 
-        ${casa.status ? `<span class="tag-gold" style="margin-left:5px;">${casa.status}</span>` : ''}
+  const membrosCount = (idCasa) => (db.personagens || []).filter(p => p.id_casa == idCasa).length;
+
+  ul.innerHTML = casas.map(casa => {
+    const isSuserana = !casa.id_suserano;
+    const vassalos = casas.filter(c => c.id_suserano == casa.id_casa);
+    const nMembros = membrosCount(casa.id_casa);
+    return `
+    <div class="casa-card" style="${!isSuserana ? 'margin-left:2rem; border-left:3px solid rgba(139,101,16,.4);' : ''}">
+      <div class="casa-card-info">
+        <div class="casa-card-nome">
+          ${!isSuserana ? '<span style="color:var(--ink4); font-size:0.65rem; font-family:var(--fb); margin-right:5px;">↳ vassala</span>' : ''}
+          Casa ${casa.nome}
+          ${casa.status ? `<span class="tag-gold" style="margin-left:6px; font-size:0.6rem;">${casa.status}</span>` : ''}
+        </div>
+        ${casa.lema ? `<div class="casa-card-lema">"${casa.lema}"</div>` : ''}
+        <div style="font-size:0.65rem; color:var(--ink4); margin-top:4px;">
+          ${nMembros} membro${nMembros !== 1 ? 's' : ''} registrado${nMembros !== 1 ? 's' : ''}
+          ${vassalos.length ? ` &nbsp;·&nbsp; ${vassalos.length} casa${vassalos.length>1?'s':''} vassala${vassalos.length>1?'s':''}` : ''}
+        </div>
       </div>
-      <div>
+      <div class="casa-card-btns">
+        <button class="btn-crud" onclick="abrirArvoreCasa(${casa.id_casa})">Linhagem ❯</button>
         <button class="btn-icon" onclick="abrirModal('casas', '${casa.id_casa}')" title="Editar">✎</button>
         <button class="btn-icon" onclick="excluirRegistro('casas', '${casa.id_casa}')" title="Excluir">🗑</button>
-        <button class="btn-crud" style="margin-left: 10px;" onclick="abrirArvoreCasa(${casa.id_casa})">Ver Linhagem ❯</button>
       </div>
-    </li>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function abrirArvoreCasa(idCasa) {
@@ -611,34 +787,46 @@ function abrirArvoreCasa(idCasa) {
   const container = document.getElementById('dom-arvore');
   const personagens = (db.personagens || []).filter(p => p.id_casa == idCasa);
   
-  function buildNodes(idPai) {
-    const filhos = personagens.filter(p => p.id_pai == idPai || (idPai === null && !p.id_pai));
-    if(filhos.length === 0) return '';
-    
-    let html = '<ul class="tree-ul">';
-    filhos.forEach(f => {
-      const morto = f.status_vida && f.status_vida.toLowerCase() !== 'vivo' && f.status_vida.toLowerCase() !== 'viva' 
-                    ? `<span style="color:var(--rust2); font-size:0.7em;">(${f.status_vida})</span>` : '';
-      const foto = f.url_imagem ? f.url_imagem : 'https://via.placeholder.com/40/3d2b0e/f5f0e4?text=X';
-      
-      html += `
-        <li>
-          <div class="char-card">
-            ${gerarAcoes('personagens', f.id_personagem)}
-            <img src="${foto}" class="char-img">
-            <div class="char-info">
-              <span><strong>${f.nome}</strong> ${morto}</span>
-              <span class="char-title">${f.titulo || 'Membro da Casa'} ${f.idade ? `• ${f.idade} anos` : ''}</span>
-              ${f.notas ? `<span style="font-size:0.65rem; color:var(--ink4); margin-top:2px;">${f.notas}</span>` : ''}
-            </div>
-          </div>
-          ${buildNodes(f.id_personagem)}
-        </li>`;
-    });
-    html += '</ul>';
+  function renderCard(f) {
+    const isMorto = f.status_vida && !['vivo','viva'].includes((f.status_vida||'').toLowerCase());
+    const isFem = ['f','feminino','fem','mulher'].includes((f.sexo||'').toLowerCase());
+    const conjuge = f.id_conjuge ? personagens.find(p => p.id_personagem == f.id_conjuge) : null;
+    const avatar = f.url_imagem
+      ? `<div class="tree-avatar"><img src="${f.url_imagem}" alt=""></div>`
+      : `<div class="tree-avatar ${isFem ? 'fem' : 'masc'}">${isFem ? '♀' : '♂'}</div>`;
+    return `
+      <div class="tree-person-card${isMorto ? ' char-dead' : ''}">
+        <div class="tree-person-actions">
+          <button class="btn-icon" onclick="abrirModal('personagens','${f.id_personagem}')" title="Editar">✎</button>
+          <button class="btn-icon" onclick="excluirRegistro('personagens','${f.id_personagem}')" title="Excluir">🗑</button>
+        </div>
+        ${avatar}
+        <div class="tree-person-name">${f.nome}</div>
+        ${f.titulo ? `<div class="tree-person-title">${f.titulo}</div>` : ''}
+        ${isMorto ? `<span class="tree-person-morto">${f.status_vida}</span>` : ''}
+        ${conjuge ? `<div class="tree-person-conjuge">♥ ${conjuge.nome}</div>` : ''}
+      </div>`;
+  }
+
+  function renderFamily(f) {
+    const filhos = personagens.filter(p => p.id_pai == f.id_personagem);
+    let html = `<div class="tree-family">${renderCard(f)}`;
+    if (filhos.length > 0) {
+      html += `<div class="tree-vconn"></div><div class="tree-children">`;
+      filhos.forEach(filho => {
+        html += `<div class="tree-child-wrap">${renderFamily(filho)}</div>`;
+      });
+      html += `</div>`;
+    }
+    html += `</div>`;
     return html;
   }
-  container.innerHTML = buildNodes(null) || '<p style="color:var(--ink3); font-size:0.8rem;">Nenhum membro cadastrado nesta casa ainda.</p>';
+
+  const roots = personagens.filter(p => !p.id_pai || !personagens.find(pp => pp.id_personagem == p.id_pai));
+  const treeHtml = roots.length === 0
+    ? '<p style="color:var(--ink3);font-size:.85rem;padding:2rem;text-align:center;">Nenhum membro cadastrado nesta casa ainda.</p>'
+    : `<div class="tree-roots">${roots.map(r => renderFamily(r)).join('')}</div>`;
+  container.innerHTML = `<div class="gen-tree-root">${treeHtml}</div>`;
 }
 
 function voltarParaListaCasas() {
@@ -654,6 +842,10 @@ function fecharModal() {
   document.getElementById('crud-modal').style.display = 'none';
 }
 
+function fecharModalFora(event) {
+  if (event.target === document.getElementById('crud-modal')) fecharModal();
+}
+
 function criarCampo(label, id, valor = '', tipo = 'text', isArea = false) {
   if (isArea) {
     return `<div class="modal-form-group"><label>${label}</label><textarea id="${id}" rows="3">${valor}</textarea></div>`;
@@ -661,7 +853,12 @@ function criarCampo(label, id, valor = '', tipo = 'text', isArea = false) {
   return `<div class="modal-form-group"><label>${label}</label><input type="${tipo}" id="${id}" value="${valor}"></div>`;
 }
 
-function abrirModal(tabela, idRegistro) {
+function criarSelect(label, id, valor, opcoes) {
+  const opts = opcoes.map(o => `<option value="${o}" ${valor === o ? 'selected' : ''}>${o}</option>`).join('');
+  return `<div class="modal-form-group"><label>${label}</label><select id="${id}" style="width:100%;padding:.5rem;border:1px solid rgba(139,101,16,.4);border-radius:3px;background:var(--cream);color:var(--ink);font-family:var(--fb);">${opts}</select></div>`;
+}
+
+function abrirModal(tabela, idRegistro, ramoDefault) {
   const modal = document.getElementById('crud-modal');
   const titulo = document.getElementById('modal-titulo');
   const corpo = document.getElementById('modal-corpo');
@@ -674,8 +871,13 @@ function abrirModal(tabela, idRegistro) {
 
   if (idRegistro && idRegistro !== 'null') {
     isEdit = true;
-    const idField = 'id_' + tabela.slice(0, -1).replace('loe', 'lore').replace('conflito', 'conflito'); 
-    item = db[tabela].find(d => d[idField] == idRegistro) || {};
+    const idMap = {
+      reinos: 'id_reino', cidades: 'id_cidade', casas: 'id_casa',
+      personagens: 'id_personagem', lore: 'id_lore', conflitos: 'id_conflito',
+      exercito: 'id_exercito'
+    };
+    const idField = idMap[tabela] || ('id_' + tabela.slice(0, -1));
+    item = (db[tabela] || []).find(d => d[idField] == idRegistro) || {};
   }
 
   titulo.innerText = isEdit ? `Editar Registro` : `Novo Registro`;
@@ -700,9 +902,12 @@ function abrirModal(tabela, idRegistro) {
       html += criarCampo('Nome da Cidade/Forte', 'f-nome', item.nome);
       html += criarCampo('Tipo (Capital, Forte, etc)', 'f-tipo', item.tipo);
       html += criarCampo('População Habitante', 'f-populacao', item.populacao, 'number');
-      html += criarCampo('Efetivo Militar', 'f-militares', item.militares, 'number');
+      html += criarCampo('Infantaria (soldados a pé)', 'f-Infantaria', item.Infantaria, 'number');
+      html += criarCampo('Cavalaria (combatentes montados)', 'f-Cavalaria', item.Cavalaria, 'number');
+      html += criarCampo('Marinha (marinheiros)', 'f-Marinha', item.Marinha, 'number');
       html += criarCampo('Navios de Guerra', 'f-navios_guerra', item.navios_guerra, 'number');
       html += criarCampo('Navios de Patrulha', 'f-navios_patrulha', item.navios_patrulha, 'number');
+      html += criarCampo('Observações', 'f-obs', item.obs, 'text', true);
       break;
 
     case 'conflitos':
@@ -711,10 +916,18 @@ function abrirModal(tabela, idRegistro) {
       break;
 
     case 'lore':
-      html += criarCampo('Categoria (Ex: Fauna, Religião, Mito)', 'f-categoria', item.categoria);
+      html += criarCampo('Categoria (Fauna, Doença, Bestiário, Mitologia, Religião, Lenda, Artefato, Organização...)', 'f-categoria', item.categoria);
       html += criarCampo('Nome', 'f-nome', item.nome);
       html += criarCampo('Descrição', 'f-descricao', item.descricao, 'text', true);
-      html += criarCampo('URL da Imagem Ilustrativa', 'f-url_imagem', item.url_imagem);
+      html += criarCampo('URL da Imagem Ilustrativa (Imgur, etc.)', 'f-url_imagem', item.url_imagem);
+      break;
+
+    case 'exercito':
+      html += criarSelect('Ramo', 'f-ramo', item.ramo || ramoDefault || 'Infantaria', ['Infantaria', 'Cavalaria', 'Marinha', 'Arqueiros', 'Guardas de Elite', 'Engenharia de Cerco', 'Outros']);
+      html += criarCampo('Nome da Unidade', 'f-nome', item.nome);
+      html += criarCampo('Comandante Principal', 'f-comandante', item.comandante);
+      html += criarCampo('Descrição / Táticas / Equipamento', 'f-descricao', item.descricao, 'text', true);
+      html += criarCampo('URL da Imagem (uniforme, armadura, brasão)', 'f-url_imagem', item.url_imagem);
       break;
 
     case 'casas':
@@ -724,16 +937,24 @@ function abrirModal(tabela, idRegistro) {
       html += criarCampo('ID da Casa Suserana (Vazio se for principal)', 'f-id_suserano', item.id_suserano, 'number');
       break;
 
-    case 'personagens':
+    case 'personagens': {
+      const casaAtual = currentCasaId || item.id_casa;
+      const membros = (db.personagens || []).filter(p => p.id_casa == casaAtual && p.id_personagem != idRegistro);
+      const optsSelect = (campo) => '<option value="">— Nenhum —</option>' + membros.map(p =>
+        `<option value="${p.id_personagem}" ${item[campo] == p.id_personagem ? 'selected' : ''}>${p.nome}</option>`
+      ).join('');
+      const selectStyle = 'width:100%;padding:.5rem;border:1px solid rgba(139,101,16,.4);border-radius:3px;background:var(--cream);color:var(--ink);font-family:var(--fb);';
+      html += criarSelect('Sexo', 'f-sexo', item.sexo || 'M', ['M', 'F']);
       html += criarCampo('Nome', 'f-nome', item.nome);
-      html += criarCampo('Título', 'f-titulo', item.titulo);
+      html += criarCampo('Título / Posto', 'f-titulo', item.titulo);
       html += criarCampo('Idade', 'f-idade', item.idade, 'number');
-      html += criarCampo('Status (Vivo, Falecido)', 'f-status_vida', item.status_vida);
-      html += criarCampo('ID do Pai (Para montar a árvore)', 'f-id_pai', item.id_pai, 'number');
-      html += criarCampo('ID do Cônjuge', 'f-id_conjuge', item.id_conjuge, 'number');
+      html += criarCampo('Status de Vida (Vivo, Viva, Falecido, Falecida)', 'f-status_vida', item.status_vida);
+      html += `<div class="modal-form-group"><label>Pai / Mãe (membro desta casa)</label><select id="f-id_pai" style="${selectStyle}">${optsSelect('id_pai')}</select></div>`;
+      html += `<div class="modal-form-group"><label>Cônjuge (membro desta casa)</label><select id="f-id_conjuge" style="${selectStyle}">${optsSelect('id_conjuge')}</select></div>`;
       html += criarCampo('Notas de História', 'f-notas', item.notas, 'text', true);
       html += criarCampo('URL do Retrato', 'f-url_imagem', item.url_imagem);
       break;
+    }
   }
 
   corpo.innerHTML = html;
@@ -749,7 +970,7 @@ function abrirModal(tabela, idRegistro) {
       payload.id_casa = currentCasaId;
     }
 
-    const inputs = corpo.querySelectorAll('input, textarea');
+    const inputs = corpo.querySelectorAll('input, textarea, select');
     inputs.forEach(inp => {
       const key = inp.id.replace('f-', '');
       payload[key] = inp.value;
