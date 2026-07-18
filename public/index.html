@@ -118,7 +118,7 @@ body::after{
 .detail-block{ background:var(--parch2); border:1px solid rgba(139,101,16,.2); border-radius:3px;padding:.7rem .9rem; position: relative;}
 .detail-block .db-label{ font-family:var(--ft);font-size:.56rem;letter-spacing:.1em; color:var(--ink4);margin-bottom:3px;text-transform:uppercase; }
 .detail-block .db-value{ font-size:.92rem;color:var(--ink2);line-height:1.5; }
-.detail-block .db-sub { font-size: 0.8rem; color: var(--ink3); font-family: var(--ft); margin-top: 4px;}
+.detail-block .db-sub, .conflict-block .db-sub { font-size: 0.8rem; color: var(--ink3); font-family: var(--ft); margin-top: 4px;}
 
 /* Blocos de Conflito */
 .conflict-block{
@@ -126,8 +126,23 @@ body::after{
   border-left:3px solid var(--rust); background:rgba(122,42,14,.05);
   padding:.6rem .9rem;border-radius:0 3px 3px 0; margin:.8rem 0;
 }
-.conflict-block .ct{ font-family:var(--ft);font-size:.58rem;letter-spacing:.08em; color:var(--rust2);margin-bottom:3px; }
+.conflict-block .ct{ font-family:var(--ft);font-size:.58rem;letter-spacing:.08em; color:var(--rust2);margin-bottom:3px; cursor:pointer; user-select:none; display:flex; align-items:center; gap:5px; }
+.conflict-block .ct::before{ content:'▸'; display:inline-block; transition:transform .15s; font-size:.9em; }
+.conflict-block .ct.open::before{ transform:rotate(90deg); }
 .conflict-block p{font-size:.88rem;color:var(--ink2);line-height:1.55}
+
+/* Descrição recolhível — expande ao clicar no título */
+.desc-collapsible{ display:none; }
+.desc-collapsible.open{ display:block; }
+.registro-title{ cursor:pointer; user-select:none; display:flex; align-items:center; gap:5px; flex-wrap:wrap; }
+.registro-title::before{ content:'▸'; display:inline-block; transition:transform .15s; font-size:.85em; color:var(--ink4); }
+.registro-title.open::before{ transform:rotate(90deg); }
+
+/* Barra de filtro por reino */
+.filter-bar{ display:flex; align-items:center; gap:8px; margin-bottom:.9rem; flex-wrap:wrap; }
+.filter-bar label{ font-family:var(--ft); font-size:.6rem; letter-spacing:.08em; color:var(--ink3); text-transform:uppercase; }
+.filter-bar select{ font-family:var(--fb); font-size:.85rem; padding:.35rem .6rem; border:1px solid rgba(139,101,16,.4); border-radius:3px; background:var(--cream); color:var(--ink); }
+.reino-tag{ display:inline-block; font-family:var(--ft); font-size:.55rem; letter-spacing:.06em; color:var(--gold3); background:rgba(139,101,16,.15); border:1px solid rgba(139,101,16,.3); border-radius:2px; padding:1px 6px; text-transform:uppercase; vertical-align:middle; }
 
 /* Abas do Reino */
 .tabs-reino { display: flex; gap: 5px; margin-bottom: 1.5rem; border-bottom: 2px solid rgba(139,101,16,.2); }
@@ -324,6 +339,10 @@ body::after{
       </div>
       <div class="subtab-panel visible" id="painel-conflitos-globais">
         <div class="section-label" style="margin-top:0;">Conflitos Regionais entre Reinos <button class="btn-crud" onclick="abrirModal('conflitos', null, null, 'Externo')">+ Novo Conflito Externo</button></div>
+        <div class="filter-bar">
+          <label for="filtro-reino-conflitos">Filtrar por reino:</label>
+          <select id="filtro-reino-conflitos" onchange="renderizarConflitosGlobais()"><option value="">Todos os Reinos</option></select>
+        </div>
         <div id="lista-conflitos-globais"></div>
       </div>
       <div class="subtab-panel" id="painel-registros-globais">
@@ -561,6 +580,19 @@ function renderizarMenuReinos() {
     btn.onclick = function() { carregarReino(reino.id_reino, this); };
     nav.appendChild(btn);
   });
+
+  renderizarFiltrosHome(reinosValidos);
+}
+
+function renderizarFiltrosHome(reinosValidos) {
+  const optsReinos = reinosValidos.map(r => `<option value="${r.id_reino}">${r.nome}</option>`).join('');
+
+  const selConflitos = document.getElementById('filtro-reino-conflitos');
+  if (selConflitos) {
+    const atual = selConflitos.value;
+    selConflitos.innerHTML = `<option value="">Todos os Reinos</option>${optsReinos}`;
+    selConflitos.value = atual;
+  }
 }
 
 function mostrarHome(btn) {
@@ -667,6 +699,13 @@ function gerarAcoes(tabela, id) {
   `;
 }
 
+function toggleDesc(el) {
+  el.classList.toggle('open');
+  const wrapper = el.closest('.conflict-block, .detail-block');
+  const desc = wrapper ? wrapper.querySelector('.desc-collapsible') : el.nextElementSibling;
+  if (desc) desc.classList.toggle('open');
+}
+
 function renderizarConflitos(idReino) {
   // Apenas conflitos internos (escopo diferente de "Externo") pertencem à Visão Geral do reino
   const conflitos = (db.conflitos || []).filter(c => c.id_reino == idReino && c.escopo !== 'Externo');
@@ -678,22 +717,29 @@ function renderizarConflitos(idReino) {
   container.innerHTML = conflitos.map(c => `
     <div class="conflict-block">
       ${gerarAcoes('conflitos', c.id_conflito)}
-      <div class="ct">${c.nome}</div>
-      <p>${c.descricao}</p>
+      <div class="ct" onclick="toggleDesc(this)">${c.nome}</div>
+      <p class="desc-collapsible">${c.descricao}</p>
     </div>
   `).join('');
 }
 
 function renderizarConflitosGlobais() {
   // Conflitos externos, entre dois reinos, exibidos abaixo do Mapa Global
-  const conflitos = (db.conflitos || []).filter(c => c.escopo === 'Externo');
+  const nomeReino = (id) => (db.reinos || []).find(r => r.id_reino == id)?.nome || '???';
+  const filtro = document.getElementById('filtro-reino-conflitos')?.value || '';
+  let conflitos = (db.conflitos || []).filter(c => c.escopo === 'Externo');
+  if (filtro) {
+    conflitos = conflitos.filter(c => {
+      const ids = (c.reinos_ids ? c.reinos_ids.split(',') : [c.id_reino, c.id_reino_2]).filter(Boolean).map(String);
+      return ids.includes(filtro);
+    });
+  }
   const container = document.getElementById('lista-conflitos-globais');
   if (!container) return;
   if (conflitos.length === 0) {
     container.innerHTML = '<p style="color:var(--ink3); font-style:italic;">Nenhum conflito entre reinos registrado.</p>';
     return;
   }
-  const nomeReino = (id) => (db.reinos || []).find(r => r.id_reino == id)?.nome || '???';
   container.innerHTML = conflitos.map(c => {
     // reinos_ids é a lista atual; id_reino/id_reino_2 mantidos por compatibilidade com registros antigos
     const ids = (c.reinos_ids ? c.reinos_ids.split(',') : [c.id_reino, c.id_reino_2]).filter(Boolean);
@@ -701,13 +747,18 @@ function renderizarConflitosGlobais() {
     return `
     <div class="conflict-block">
       ${gerarAcoes('conflitos', c.id_conflito)}
-      <div class="ct">${nomes} — ${c.nome}</div>
-      <p>${c.descricao}</p>
+      <div class="ct" onclick="toggleDesc(this)">${nomes} — ${c.nome}</div>
+      ${c.subtitulo ? `<div class="db-sub" style="margin:0 0 4px;">${c.subtitulo}</div>` : ''}
+      ${c.data_periodo ? `<div class="db-sub" style="margin:0 0 4px; font-style:italic;">${c.data_periodo}</div>` : ''}
+      <p class="desc-collapsible">${c.descricao}</p>
     </div>`;
   }).join('');
 }
 
-function cardRegistro(r) {
+function cardRegistro(r, mostrarTagReino) {
+  const tagReino = mostrarTagReino
+    ? (r.id_reino ? ((db.reinos || []).find(k => k.id_reino == r.id_reino)?.nome || '???') : '🌍 Mundial')
+    : '';
   return `
     <div class="detail-block" style="margin-bottom:10px; display:flex; gap:15px; align-items:start; position:relative;">
       ${gerarAcoes('registros', r.id_registro)}
@@ -715,9 +766,11 @@ function cardRegistro(r) {
         ? `<img src="${r.url_imagem}" style="width:80px; height:80px; object-fit:cover; border:1px solid var(--gold); border-radius:3px; flex-shrink:0;">`
         : ''}
       <div style="flex:1;">
-        <div class="db-value" style="color:var(--ink); font-family:var(--ft); font-size:0.95rem; font-weight:bold; margin-bottom:2px;">${r.titulo}</div>
+        <div class="db-value registro-title" onclick="toggleDesc(this)" style="color:var(--ink); font-family:var(--ft); font-size:0.95rem; font-weight:bold; margin-bottom:2px;">
+          ${r.titulo}${tagReino ? `<span class="reino-tag">${tagReino}</span>` : ''}
+        </div>
         ${r.data_periodo ? `<div class="db-sub" style="margin-bottom:4px;">${r.data_periodo}</div>` : ''}
-        <div class="db-value" style="font-size:0.85rem; line-height:1.6;">${r.descricao}</div>
+        <div class="db-value desc-collapsible" style="font-size:0.85rem; line-height:1.6;">${r.descricao}</div>
       </div>
     </div>`;
 }
@@ -727,16 +780,17 @@ function renderizarRegistros(idReino) {
   const container = document.getElementById('lista-registros');
   container.innerHTML = registros.length === 0
     ? '<p style="color:var(--ink3); font-style:italic;">Nenhum registro histórico catalogado.</p>'
-    : registros.map(cardRegistro).join('');
+    : registros.map(r => cardRegistro(r, false)).join('');
 }
 
 function renderizarRegistrosGlobais() {
-  const registros = (db.registros || []).filter(r => !r.id_reino);
+  // Painel unificado: todos os registros (mundiais + de cada reino)
+  const registros = db.registros || [];
   const container = document.getElementById('lista-registros-globais');
   if (!container) return;
   container.innerHTML = registros.length === 0
-    ? '<p style="color:var(--ink3); font-style:italic;">Nenhum registro histórico mundial catalogado.</p>'
-    : registros.map(cardRegistro).join('');
+    ? '<p style="color:var(--ink3); font-style:italic;">Nenhum registro histórico catalogado.</p>'
+    : registros.map(r => cardRegistro(r, true)).join('');
 }
 
 function renderizarGeografia(idReino) {
@@ -1126,6 +1180,10 @@ function abrirModal(tabela, idRegistro, ramoDefault, escopoDefault) {
         html += `<div class="modal-form-group"><label>Reinos Envolvidos (marque dois ou mais)</label><div class="chk-reino-list">${checkboxesReino}</div></div>`;
       }
       html += criarCampo('Nome / Local', 'f-nome', item.nome);
+      if (isExterno) {
+        html += criarCampo('Subtítulo', 'f-subtitulo', item.subtitulo);
+        html += criarCampo('Data / Período', 'f-data_periodo', item.data_periodo);
+      }
       html += criarCampo('Descrição do Conflito', 'f-descricao', item.descricao, 'text', true);
       break;
     }

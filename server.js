@@ -31,7 +31,7 @@ const TABLE_SCHEMAS = {
   Casas: ['id_casa', 'id_reino', 'nome', 'status', 'lema', 'id_suserano'],
   Personagens: ['id_personagem', 'id_casa', 'sexo', 'nome', 'titulo', 'idade', 'status_vida', 'id_pai', 'id_conjuge', 'notas', 'url_imagem'],
   Lore: ['id_lore', 'id_reino', 'categoria', 'nome', 'descricao', 'url_imagem'],
-  Conflitos: ['id_conflito', 'id_reino', 'nome', 'descricao', 'escopo', 'id_reino_2'],
+  Conflitos: ['id_conflito', 'id_reino', 'nome', 'descricao', 'escopo', 'id_reino_2', 'subtitulo', 'data_periodo'],
   Exercito: ['id_exercito', 'id_reino', 'ramo', 'nome', 'efetivo', 'comandante', 'descricao', 'url_imagem'],
   Registros: ['id_registro', 'id_reino', 'titulo', 'data_periodo', 'descricao', 'url_imagem'],
   Geografia: ['id_geografia', 'id_reino', 'nome', 'descricao', 'url_imagem'],
