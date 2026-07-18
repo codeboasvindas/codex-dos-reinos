@@ -21,19 +21,90 @@ const auth = new google.auth.GoogleAuth({
 const sheets = google.sheets({ version: 'v4', auth });
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID;
 
-// Tabelas permitidas para evitar acesso indevido a outras planilhas
-const ALLOWED_TABLES = ['Reinos', 'Cidades', 'Casas', 'Personagens', 'Lore', 'Conflitos', 'Exercito'];
+// ─── Esquema das Tabelas (Auto-provisionamento) ───────────────────────────
+// Cada tabela nova ou coluna nova adicionada aqui (ou dinamicamente pelo
+// frontend via payload) é criada automaticamente na planilha, sem precisar
+// mexer manualmente no Google Sheets.
+const TABLE_SCHEMAS = {
+  Reinos: ['id_reino', 'nome', 'capital', 'governo', 'lema', 'url_emblema', 'url_img_capital', 'url_armadura_cap', 'desc_armadura_cap', 'url_armadura_geral', 'desc_armadura_geral'],
+  Cidades: ['id_cidade', 'id_reino', 'nome', 'tipo', 'populacao', 'Infantaria', 'Cavalaria', 'Marinha', 'navios_guerra', 'navios_patrulha', 'obs', 'id_casa_governante'],
+  Casas: ['id_casa', 'id_reino', 'nome', 'status', 'lema', 'id_suserano'],
+  Personagens: ['id_personagem', 'id_casa', 'sexo', 'nome', 'titulo', 'idade', 'status_vida', 'id_pai', 'id_conjuge', 'notas', 'url_imagem'],
+  Lore: ['id_lore', 'id_reino', 'categoria', 'nome', 'descricao', 'url_imagem'],
+  Conflitos: ['id_conflito', 'id_reino', 'nome', 'descricao', 'escopo', 'id_reino_2'],
+  Exercito: ['id_exercito', 'id_reino', 'ramo', 'nome', 'efetivo', 'comandante', 'descricao', 'url_imagem'],
+  Registros: ['id_registro', 'id_reino', 'titulo', 'data_periodo', 'descricao', 'url_imagem'],
+  Geografia: ['id_geografia', 'id_reino', 'nome', 'descricao', 'url_imagem'],
+};
+
+const ALLOWED_TABLES = Object.keys(TABLE_SCHEMAS);
 
 // ─── Core Helpers ──────────────────────────────────────────────────────────
 
+// Cache dos nomes de abas existentes na planilha, para evitar chamadas repetidas
+let sheetTitlesCache = null;
+async function getSheetTitles(force = false) {
+  if (!sheetTitlesCache || force) {
+    const meta = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+    sheetTitlesCache = meta.data.sheets.map(s => s.properties.title);
+  }
+  return sheetTitlesCache;
+}
+
+// Garante que a aba exista na planilha. Se não existir, cria automaticamente
+// com o cabeçalho definido em TABLE_SCHEMAS.
+async function ensureSheetExists(tableName) {
+  const titles = await getSheetTitles();
+  const exists = titles.some(t => t.toLowerCase() === tableName.toLowerCase());
+  if (exists) return;
+
+  const headers = TABLE_SCHEMAS[tableName] || ['id'];
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: SPREADSHEET_ID,
+    requestBody: { requests: [{ addSheet: { properties: { title: tableName } } }] },
+  });
+  await sheets.spreadsheets.values.update({
+    spreadsheetId: SPREADSHEET_ID,
+    range: `'${tableName}'!A1`,
+    valueInputOption: 'RAW',
+    requestBody: { values: [headers] },
+  });
+  await getSheetTitles(true);
+}
+
+// Garante que todas as tabelas conhecidas existam (chamado na subida do servidor)
+async function ensureAllSheets() {
+  for (const table of ALLOWED_TABLES) {
+    await ensureSheetExists(table);
+  }
+}
+
+// Garante que todas as colunas usadas em um payload existam no cabeçalho da aba.
+// Se o frontend mandar um campo novo que ainda não existe na planilha, a coluna
+// é criada automaticamente ao final do cabeçalho.
+async function ensureHeaders(tableName, headers, payloadKeys) {
+  const missing = payloadKeys.filter(k => k && !headers.includes(k));
+  if (missing.length === 0) return headers;
+
+  const newHeaders = [...headers, ...missing];
+  await sheets.spreadsheets.values.update({
+    spreadsheetId: SPREADSHEET_ID,
+    range: `'${tableName}'!A1`,
+    valueInputOption: 'RAW',
+    requestBody: { values: [newHeaders] },
+  });
+  return newHeaders;
+}
+
 // Lê uma tabela inteira e transforma as linhas em objetos baseados no cabeçalho (Linha 1)
 async function getTableData(tableName) {
+  await ensureSheetExists(tableName);
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
     range: `'${tableName}'!A:Z`, // Lê da coluna A até Z
   });
   const rows = res.data.values || [];
-  if (rows.length === 0) return { headers: [], data: [] };
+  if (rows.length === 0) return { headers: TABLE_SCHEMAS[tableName] || [], data: [] };
 
   const headers = rows[0];
   const data = rows.slice(1).map((row, idx) => {
@@ -68,6 +139,7 @@ function checkTable(req, res, next) {
 // 1. CARGA INICIAL (Puxa o banco inteiro de uma vez para o frontend)
 app.get('/api/db', async (req, res) => {
   try {
+    await ensureAllSheets();
     const ranges = ALLOWED_TABLES.map(t => `'${t}'!A:Z`);
     const response = await sheets.spreadsheets.values.batchGet({
       spreadsheetId: SPREADSHEET_ID,
@@ -111,7 +183,9 @@ app.get('/api/:table', checkTable, async (req, res) => {
 // 3. CRIAR UM NOVO REGISTRO (Ex: POST /api/personagens)
 app.post('/api/:table', checkTable, async (req, res) => {
   try {
-    const { headers, data } = await getTableData(req.tableName);
+    let { headers, data } = await getTableData(req.tableName);
+    headers = await ensureHeaders(req.tableName, headers, Object.keys(req.body));
+
     const idField = headers[0]; // Assume que a primeira coluna é sempre o ID principal (ex: id_personagem)
 
     // Lógica de Auto-Incremento do ID
@@ -120,7 +194,7 @@ app.post('/api/:table', checkTable, async (req, res) => {
       const val = parseInt(item[idField]);
       if (!isNaN(val) && val > maxId) maxId = val;
     });
-    
+
     // Insere o novo ID gerado no body da requisição
     const newData = { ...req.body, [idField]: maxId + 1 };
 
@@ -145,8 +219,10 @@ app.post('/api/:table', checkTable, async (req, res) => {
 // 4. ATUALIZAR UM REGISTRO EXISTENTE (Ex: PUT /api/casas/5)
 app.put('/api/:table/:id', checkTable, async (req, res) => {
   try {
-    const { headers, data } = await getTableData(req.tableName);
-    const idField = headers[0]; 
+    let { headers, data } = await getTableData(req.tableName);
+    headers = await ensureHeaders(req.tableName, headers, Object.keys(req.body));
+
+    const idField = headers[0];
     const targetId = req.params.id;
 
     // Encontra a linha onde o ID bate
@@ -156,7 +232,7 @@ app.put('/api/:table/:id', checkTable, async (req, res) => {
     // Mescla os dados antigos com os novos
     const updatedRow = headers.map(h => {
       if (req.body[h] !== undefined) return req.body[h]; // Atualiza se foi enviado
-      return item[h]; // Mantém o que já estava
+      return item[h] !== undefined ? item[h] : ''; // Mantém o que já estava
     });
 
     await sheets.spreadsheets.values.update({
@@ -218,4 +294,9 @@ app.get('*', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Codex Relacional rodando em http://localhost:${PORT}`));
+
+ensureAllSheets()
+  .catch(e => console.error('Falha ao garantir abas da planilha na subida:', e.message))
+  .finally(() => {
+    app.listen(PORT, () => console.log(`Codex Relacional rodando em http://localhost:${PORT}`));
+  });

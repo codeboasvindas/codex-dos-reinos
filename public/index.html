@@ -252,6 +252,24 @@ body::after{
 .tree-person-actions { position:absolute; top:4px; right:4px; display:none; flex-direction:column; gap:2px; }
 .tree-person-card:hover .tree-person-actions { display:flex; }
 
+/* Casal — cônjuge conectado ao lado */
+.tree-couple { display:flex; align-items:center; gap:0; }
+.tree-couple-link { font-size:.85rem; color:var(--rust2); padding:0 6px; flex-shrink:0; }
+
+/* Sub-abas (ex: Áreas de Tensão vs Registros) — alterna painéis lado a lado */
+.subtab-bar { display:flex; flex-wrap:wrap; gap:6px; margin:1.5rem 0 .8rem; }
+.subtab-btn { font-family:var(--ft); font-size:.62rem; letter-spacing:.08em; padding:6px 14px; border-radius:3px; cursor:pointer; background:var(--parch2); border:1px solid rgba(139,101,16,.2); color:var(--ink3); transition:.18s; white-space:nowrap; text-transform:uppercase; }
+.subtab-btn:hover { color:var(--gold2); border-color:rgba(139,101,16,.4); background:rgba(139,101,16,.08); }
+.subtab-btn.active { background:rgba(139,101,16,.18); color:var(--gold); border-color:var(--gold2); font-weight:600; }
+.subtab-panel { display:none; animation:fadeIn .3s ease; }
+.subtab-panel.visible { display:block; }
+
+/* Lista de checkboxes (ex: reinos envolvidos em um conflito) — touch-friendly */
+.chk-reino-list { display:flex; flex-direction:column; gap:2px; max-height:230px; overflow-y:auto; border:1px solid rgba(139,101,16,.4); border-radius:3px; padding:.4rem .6rem; background:var(--cream); }
+.chk-reino-label { display:flex; align-items:center; gap:10px; font-size:.9rem; color:var(--ink2); cursor:pointer; padding:8px 4px; border-bottom:1px dashed rgba(139,101,16,.12); }
+.chk-reino-label:last-child { border-bottom:none; }
+.chk-reino-label input[type="checkbox"] { width:18px; height:18px; flex-shrink:0; accent-color:var(--gold2); }
+
 /* Linha vertical do pai até os filhos */
 .tree-vconn { width:2px; height:24px; background:rgba(139,101,16,.3); flex-shrink:0; }
 
@@ -298,6 +316,21 @@ body::after{
     <div style="text-align: center;">
       <img src="/mapa.png" alt="Mapa de Elvilia" class="mapa-global" onerror="this.src='https://res.cloudinary.com/drwpypl4t/image/upload/v1783476237/mapa_cxgx3e.png'">
     </div>
+
+    <div class="subtab-group">
+      <div class="subtab-bar">
+        <button class="subtab-btn active" onclick="mudarSubTab('painel-conflitos-globais', this)">⚔ Conflitos Regionais entre Reinos</button>
+        <button class="subtab-btn" onclick="mudarSubTab('painel-registros-globais', this)">📜 Registros Históricos do Mundo</button>
+      </div>
+      <div class="subtab-panel visible" id="painel-conflitos-globais">
+        <div class="section-label" style="margin-top:0;">Conflitos Regionais entre Reinos <button class="btn-crud" onclick="abrirModal('conflitos', null, null, 'Externo')">+ Novo Conflito Externo</button></div>
+        <div id="lista-conflitos-globais"></div>
+      </div>
+      <div class="subtab-panel" id="painel-registros-globais">
+        <div class="section-label" style="margin-top:0;">Registros Históricos do Mundo <button class="btn-crud" onclick="abrirModal('registros', null)">+ Novo Registro</button></div>
+        <div id="lista-registros-globais"></div>
+      </div>
+    </div>
   </div>
 
   <!-- ================= TELA 2: VISÃO DO REINO ================= -->
@@ -322,6 +355,7 @@ body::after{
       <button class="tab-reino-btn" onclick="mudarAbaReino('aba-cidades', this)">Assentamentos</button>
       <button class="tab-reino-btn" onclick="mudarAbaReino('aba-exercito', this)">⚔ Exército</button>
       <button class="tab-reino-btn" onclick="mudarAbaReino('aba-casas', this)">Casas & Árvore</button>
+      <button class="tab-reino-btn" onclick="mudarAbaReino('aba-geografia', this)">Geografia</button>
       <button class="tab-reino-btn" onclick="mudarAbaReino('aba-lore', this)">Enciclopédia</button>
     </div>
 
@@ -355,8 +389,20 @@ body::after{
         </div>
       </div>
 
-      <div class="section-label">Áreas de Tensão e Instabilidade <button class="btn-crud" onclick="abrirModal('conflitos', null)">+ Novo Conflito</button></div>
-      <div id="lista-conflitos"></div>
+      <div class="subtab-group">
+        <div class="subtab-bar">
+          <button class="subtab-btn active" onclick="mudarSubTab('painel-tensao', this)">⚠ Áreas de Tensão e Instabilidade</button>
+          <button class="subtab-btn" onclick="mudarSubTab('painel-registros', this)">📜 Registros</button>
+        </div>
+        <div class="subtab-panel visible" id="painel-tensao">
+          <div class="section-label" style="margin-top:0;">Áreas de Tensão e Instabilidade <button class="btn-crud" onclick="abrirModal('conflitos', null)">+ Novo Conflito</button></div>
+          <div id="lista-conflitos"></div>
+        </div>
+        <div class="subtab-panel" id="painel-registros">
+          <div class="section-label" style="margin-top:0;">Registros <button class="btn-crud" onclick="abrirModal('registros', null)">+ Novo Registro</button></div>
+          <div id="lista-registros"></div>
+        </div>
+      </div>
     </div>
 
     <!-- ABA: CIDADES -->
@@ -404,6 +450,15 @@ body::after{
         <div class="section-label">Linhagem e Genealogia</div>
         <div class="tree-container" id="dom-arvore"></div>
       </div>
+    </div>
+
+    <!-- ABA: GEOGRAFIA -->
+    <div id="aba-geografia" class="tab-content">
+      <div class="crud-bar">
+        <div class="section-label" style="margin:0; border:none;">Peculiaridades Geográficas</div>
+        <button class="btn-crud" onclick="abrirModal('geografia', null)">+ Nova Entrada</button>
+      </div>
+      <div id="lista-geografia"></div>
     </div>
 
     <!-- ABA: LORE -->
@@ -514,6 +569,16 @@ function mostrarHome(btn) {
   if(btn) btn.classList.add('active');
   document.getElementById('view-home').classList.add('active');
   document.getElementById('view-kingdom').classList.remove('active');
+  renderizarConflitosGlobais();
+  renderizarRegistrosGlobais();
+}
+
+function mudarSubTab(painelId, btn) {
+  const grupo = btn.closest('.subtab-group');
+  grupo.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  grupo.querySelectorAll('.subtab-panel').forEach(p => p.classList.remove('visible'));
+  document.getElementById(painelId).classList.add('visible');
 }
 
 function mudarAbaReino(abaId, btn) {
@@ -574,9 +639,11 @@ function carregarReino(idReino, btn) {
   document.getElementById('stat-npatrulha').innerText= formatarNumero(somaNP);
 
   renderizarConflitos(idReino);
+  renderizarRegistros(idReino);
   renderizarCidades(cidadesDoReino);
   renderizarExercito(idReino);
   renderizarCasas(idReino);
+  renderizarGeografia(idReino);
   renderizarLore(idReino);
 
   document.querySelector(`.tab-reino-btn[onclick*="${activeAba}"]`).click();
@@ -601,7 +668,8 @@ function gerarAcoes(tabela, id) {
 }
 
 function renderizarConflitos(idReino) {
-  const conflitos = (db.conflitos || []).filter(c => c.id_reino == idReino);
+  // Apenas conflitos internos (escopo diferente de "Externo") pertencem à Visão Geral do reino
+  const conflitos = (db.conflitos || []).filter(c => c.id_reino == idReino && c.escopo !== 'Externo');
   const container = document.getElementById('lista-conflitos');
   if(conflitos.length === 0) {
     container.innerHTML = '<p style="color:var(--ink3); font-style:italic;">Nenhuma tensão registrada.</p>';
@@ -616,22 +684,101 @@ function renderizarConflitos(idReino) {
   `).join('');
 }
 
+function renderizarConflitosGlobais() {
+  // Conflitos externos, entre dois reinos, exibidos abaixo do Mapa Global
+  const conflitos = (db.conflitos || []).filter(c => c.escopo === 'Externo');
+  const container = document.getElementById('lista-conflitos-globais');
+  if (!container) return;
+  if (conflitos.length === 0) {
+    container.innerHTML = '<p style="color:var(--ink3); font-style:italic;">Nenhum conflito entre reinos registrado.</p>';
+    return;
+  }
+  const nomeReino = (id) => (db.reinos || []).find(r => r.id_reino == id)?.nome || '???';
+  container.innerHTML = conflitos.map(c => {
+    // reinos_ids é a lista atual; id_reino/id_reino_2 mantidos por compatibilidade com registros antigos
+    const ids = (c.reinos_ids ? c.reinos_ids.split(',') : [c.id_reino, c.id_reino_2]).filter(Boolean);
+    const nomes = ids.map(nomeReino).join(' ⚔ ');
+    return `
+    <div class="conflict-block">
+      ${gerarAcoes('conflitos', c.id_conflito)}
+      <div class="ct">${nomes} — ${c.nome}</div>
+      <p>${c.descricao}</p>
+    </div>`;
+  }).join('');
+}
+
+function cardRegistro(r) {
+  return `
+    <div class="detail-block" style="margin-bottom:10px; display:flex; gap:15px; align-items:start; position:relative;">
+      ${gerarAcoes('registros', r.id_registro)}
+      ${r.url_imagem
+        ? `<img src="${r.url_imagem}" style="width:80px; height:80px; object-fit:cover; border:1px solid var(--gold); border-radius:3px; flex-shrink:0;">`
+        : ''}
+      <div style="flex:1;">
+        <div class="db-value" style="color:var(--ink); font-family:var(--ft); font-size:0.95rem; font-weight:bold; margin-bottom:2px;">${r.titulo}</div>
+        ${r.data_periodo ? `<div class="db-sub" style="margin-bottom:4px;">${r.data_periodo}</div>` : ''}
+        <div class="db-value" style="font-size:0.85rem; line-height:1.6;">${r.descricao}</div>
+      </div>
+    </div>`;
+}
+
+function renderizarRegistros(idReino) {
+  const registros = (db.registros || []).filter(r => r.id_reino == idReino);
+  const container = document.getElementById('lista-registros');
+  container.innerHTML = registros.length === 0
+    ? '<p style="color:var(--ink3); font-style:italic;">Nenhum registro histórico catalogado.</p>'
+    : registros.map(cardRegistro).join('');
+}
+
+function renderizarRegistrosGlobais() {
+  const registros = (db.registros || []).filter(r => !r.id_reino);
+  const container = document.getElementById('lista-registros-globais');
+  if (!container) return;
+  container.innerHTML = registros.length === 0
+    ? '<p style="color:var(--ink3); font-style:italic;">Nenhum registro histórico mundial catalogado.</p>'
+    : registros.map(cardRegistro).join('');
+}
+
+function renderizarGeografia(idReino) {
+  const geo = (db.geografia || []).filter(g => g.id_reino == idReino);
+  const container = document.getElementById('lista-geografia');
+  if (geo.length === 0) {
+    container.innerHTML = '<p style="color:var(--ink3); font-style:italic;">Nenhuma peculiaridade geográfica registrada.</p>';
+    return;
+  }
+  container.innerHTML = geo.map(g => `
+    <div class="detail-block" style="margin-bottom:10px; display:flex; gap:15px; align-items:start; position:relative;">
+      ${gerarAcoes('geografia', g.id_geografia)}
+      ${g.url_imagem
+        ? `<img src="${g.url_imagem}" style="width:100px; height:100px; object-fit:cover; border:1px solid var(--gold); border-radius:3px; flex-shrink:0;">`
+        : `<div style="width:100px; height:100px; border:1px dashed rgba(139,101,16,.3); border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:0.52rem; color:var(--ink4); text-align:center; flex-shrink:0; background:var(--parch3);">SEM<br>IMG</div>`}
+      <div style="flex:1;">
+        <div class="db-value" style="color:var(--ink); font-family:var(--ft); font-size:0.95rem; font-weight:bold; margin-bottom:4px;">${g.nome}</div>
+        <div class="db-value" style="font-size:0.85rem; line-height:1.6;">${g.descricao}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
 function renderizarCidades(cidades) {
   const container = document.getElementById('lista-cidades');
   if(cidades.length === 0) {
     container.innerHTML = '<p style="color:var(--ink3); font-style:italic;">Nenhum assentamento registrado.</p>';
     return;
   }
-  container.innerHTML = cidades.map(c => `
+  container.innerHTML = cidades.map(c => {
+    const casaGov = c.id_casa_governante ? (db.casas || []).find(h => h.id_casa == c.id_casa_governante) : null;
+    return `
     <div class="detail-block">
       ${gerarAcoes('cidades', c.id_cidade)}
       <div class="db-label">${c.tipo || 'Assentamento'}</div>
       <div class="db-value"><strong>${c.nome}</strong></div>
+      ${casaGov ? `<div class="db-sub">🏛 Governada pela Casa ${casaGov.nome}</div>` : ''}
       <div class="db-sub">👥 ${formatarNumero(parseInt(c.populacao)||0)} hab.</div>
       <div class="db-sub" style="margin-top:3px;">⚔ ${formatarNumero(parseInt(c.Infantaria)||0)} inf. &nbsp;🐴 ${formatarNumero(parseInt(c.Cavalaria)||0)} cav. &nbsp;⚓ ${formatarNumero(parseInt(c.Marinha)||0)} mar.</div>
       ${(c.navios_guerra||c.navios_patrulha) ? `<div class="db-sub" style="margin-top:2px;">⛵ ${formatarNumero(parseInt(c.navios_guerra)||0)} guerra &nbsp;🚢 ${formatarNumero(parseInt(c.navios_patrulha)||0)} patrulha</div>` : ''}
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function renderizarLore(idReino) {
@@ -790,7 +937,6 @@ function abrirArvoreCasa(idCasa) {
   function renderCard(f) {
     const isMorto = f.status_vida && !['vivo','viva'].includes((f.status_vida||'').toLowerCase());
     const isFem = ['f','feminino','fem','mulher'].includes((f.sexo||'').toLowerCase());
-    const conjuge = f.id_conjuge ? personagens.find(p => p.id_personagem == f.id_conjuge) : null;
     const avatar = f.url_imagem
       ? `<div class="tree-avatar"><img src="${f.url_imagem}" alt=""></div>`
       : `<div class="tree-avatar ${isFem ? 'fem' : 'masc'}">${isFem ? '♀' : '♂'}</div>`;
@@ -804,13 +950,45 @@ function abrirArvoreCasa(idCasa) {
         <div class="tree-person-name">${f.nome}</div>
         ${f.titulo ? `<div class="tree-person-title">${f.titulo}</div>` : ''}
         ${isMorto ? `<span class="tree-person-morto">${f.status_vida}</span>` : ''}
-        ${conjuge ? `<div class="tree-person-conjuge">♥ ${conjuge.nome}</div>` : ''}
       </div>`;
+  }
+
+  // Busca o cônjuge nos dois sentidos: tanto pelo próprio id_conjuge quanto
+  // pelo registro do parceiro que aponta de volta para esta pessoa (o cadastro
+  // costuma registrar o vínculo apenas do lado da esposa, por ex.).
+  function getConjuge(f) {
+    if (f.id_conjuge) {
+      const direto = personagens.find(p => p.id_personagem == f.id_conjuge);
+      if (direto) return direto;
+    }
+    return personagens.find(p => p.id_conjuge && String(p.id_conjuge) === String(f.id_personagem)) || null;
+  }
+
+  // Decide qual dos dois parceiros é a "âncora" (o membro de sangue da casa,
+  // que carrega a linhagem) — o outro é desenhado ao lado dele, nunca como raiz própria.
+  function ehAncora(p, parceiro) {
+    const temFilhos = (pessoa) => personagens.some(x => x.id_pai == pessoa.id_personagem);
+    const pTemFilhos = temFilhos(p), parceiroTemFilhos = temFilhos(parceiro);
+    if (pTemFilhos !== parceiroTemFilhos) return pTemFilhos;
+
+    const temPaiNaCasa = (pessoa) => pessoa.id_pai && personagens.some(x => x.id_personagem == pessoa.id_pai);
+    const pTemPai = temPaiNaCasa(p), parceiroTemPai = temPaiNaCasa(parceiro);
+    if (pTemPai !== parceiroTemPai) return pTemPai;
+
+    if (!!p.id_conjuge !== !!parceiro.id_conjuge) return !p.id_conjuge;
+    return Number(p.id_personagem) < Number(parceiro.id_personagem);
+  }
+
+  // Renderiza a pessoa junto do cônjuge, lado a lado, como um casal conectado
+  function renderCouple(f) {
+    const conjuge = getConjuge(f);
+    if (!conjuge) return renderCard(f);
+    return `<div class="tree-couple">${renderCard(f)}<div class="tree-couple-link">♥</div>${renderCard(conjuge)}</div>`;
   }
 
   function renderFamily(f) {
     const filhos = personagens.filter(p => p.id_pai == f.id_personagem);
-    let html = `<div class="tree-family">${renderCard(f)}`;
+    let html = `<div class="tree-family">${renderCouple(f)}`;
     if (filhos.length > 0) {
       html += `<div class="tree-vconn"></div><div class="tree-children">`;
       filhos.forEach(filho => {
@@ -822,7 +1000,21 @@ function abrirArvoreCasa(idCasa) {
     return html;
   }
 
-  const roots = personagens.filter(p => !p.id_pai || !personagens.find(pp => pp.id_personagem == p.id_pai));
+  // Um cônjuge que casou na casa (sem ser a âncora) não deve virar uma raiz
+  // isolada — ele já é desenhado ao lado do parceiro por renderCouple().
+  const excluidosPorConjuge = new Set();
+  personagens.forEach(p => {
+    const parceiro = getConjuge(p);
+    if (!parceiro) return;
+    if (!ehAncora(p, parceiro)) excluidosPorConjuge.add(String(p.id_personagem));
+  });
+
+  const roots = personagens.filter(p => {
+    const temPaiNaCasa = p.id_pai && personagens.some(pp => pp.id_personagem == p.id_pai);
+    if (temPaiNaCasa) return false;
+    if (excluidosPorConjuge.has(String(p.id_personagem))) return false;
+    return true;
+  });
   const treeHtml = roots.length === 0
     ? '<p style="color:var(--ink3);font-size:.85rem;padding:2rem;text-align:center;">Nenhum membro cadastrado nesta casa ainda.</p>'
     : `<div class="tree-roots">${roots.map(r => renderFamily(r)).join('')}</div>`;
@@ -858,14 +1050,15 @@ function criarSelect(label, id, valor, opcoes) {
   return `<div class="modal-form-group"><label>${label}</label><select id="${id}" style="width:100%;padding:.5rem;border:1px solid rgba(139,101,16,.4);border-radius:3px;background:var(--cream);color:var(--ink);font-family:var(--fb);">${opts}</select></div>`;
 }
 
-function abrirModal(tabela, idRegistro, ramoDefault) {
+function abrirModal(tabela, idRegistro, ramoDefault, escopoDefault) {
   const modal = document.getElementById('crud-modal');
   const titulo = document.getElementById('modal-titulo');
   const corpo = document.getElementById('modal-corpo');
   const btnSalvar = document.getElementById('modal-save-btn');
-  
+  const selectStyle = 'width:100%;padding:.5rem;border:1px solid rgba(139,101,16,.4);border-radius:3px;background:var(--cream);color:var(--ink);font-family:var(--fb);';
+
   modal.style.display = 'flex';
-  
+
   let isEdit = false;
   let item = {};
 
@@ -874,7 +1067,7 @@ function abrirModal(tabela, idRegistro, ramoDefault) {
     const idMap = {
       reinos: 'id_reino', cidades: 'id_cidade', casas: 'id_casa',
       personagens: 'id_personagem', lore: 'id_lore', conflitos: 'id_conflito',
-      exercito: 'id_exercito'
+      exercito: 'id_exercito', registros: 'id_registro', geografia: 'id_geografia'
     };
     const idField = idMap[tabela] || ('id_' + tabela.slice(0, -1));
     item = (db[tabela] || []).find(d => d[idField] == idRegistro) || {};
@@ -898,9 +1091,14 @@ function abrirModal(tabela, idRegistro, ramoDefault) {
       html += criarCampo('Descrição Armadura Geral', 'f-desc_armadura_geral', item.desc_armadura_geral, 'text', true);
       break;
     
-    case 'cidades':
+    case 'cidades': {
+      const casasDoReino = (db.casas || []).filter(c => c.id_reino == currentReinoId);
+      const optsCasaGov = '<option value="">— Sem casa governante —</option>' + casasDoReino.map(c =>
+        `<option value="${c.id_casa}" ${item.id_casa_governante == c.id_casa ? 'selected' : ''}>${c.nome}</option>`
+      ).join('');
       html += criarCampo('Nome da Cidade/Forte', 'f-nome', item.nome);
       html += criarCampo('Tipo (Capital, Forte, etc)', 'f-tipo', item.tipo);
+      html += `<div class="modal-form-group"><label>Casa Governante</label><select id="f-id_casa_governante" style="${selectStyle}">${optsCasaGov}</select></div>`;
       html += criarCampo('População Habitante', 'f-populacao', item.populacao, 'number');
       html += criarCampo('Infantaria (soldados a pé)', 'f-Infantaria', item.Infantaria, 'number');
       html += criarCampo('Cavalaria (combatentes montados)', 'f-Cavalaria', item.Cavalaria, 'number');
@@ -909,10 +1107,40 @@ function abrirModal(tabela, idRegistro, ramoDefault) {
       html += criarCampo('Navios de Patrulha', 'f-navios_patrulha', item.navios_patrulha, 'number');
       html += criarCampo('Observações', 'f-obs', item.obs, 'text', true);
       break;
+    }
 
-    case 'conflitos':
+    case 'conflitos': {
+      const isExterno = item.escopo === 'Externo' || (!isEdit && escopoDefault === 'Externo');
+      if (isExterno) {
+        const reinosOpts = (db.reinos || []).filter(r => r.id_reino && r.nome);
+        // Compatível com registros antigos que só tinham id_reino/id_reino_2
+        const selecionadosStr = item.reinos_ids || [item.id_reino, item.id_reino_2].filter(Boolean).join(',');
+        const selecionados = selecionadosStr.split(',').filter(Boolean).map(String);
+        const checkboxesReino = reinosOpts.map(r => `
+          <label class="chk-reino-label">
+            <input type="checkbox" class="chk-reino-envolvido" value="${r.id_reino}" style="width:auto;padding:0;" ${selecionados.includes(String(r.id_reino)) ? 'checked' : ''}>
+            ${r.nome}
+          </label>
+        `).join('');
+        html += `<input type="hidden" id="f-escopo" value="Externo">`;
+        html += `<div class="modal-form-group"><label>Reinos Envolvidos (marque dois ou mais)</label><div class="chk-reino-list">${checkboxesReino}</div></div>`;
+      }
       html += criarCampo('Nome / Local', 'f-nome', item.nome);
       html += criarCampo('Descrição do Conflito', 'f-descricao', item.descricao, 'text', true);
+      break;
+    }
+
+    case 'registros':
+      html += criarCampo('Título', 'f-titulo', item.titulo);
+      html += criarCampo('Data / Período', 'f-data_periodo', item.data_periodo);
+      html += criarCampo('Descrição', 'f-descricao', item.descricao, 'text', true);
+      html += criarCampo('URL da Imagem (opcional)', 'f-url_imagem', item.url_imagem);
+      break;
+
+    case 'geografia':
+      html += criarCampo('Nome do Acidente Geográfico', 'f-nome', item.nome);
+      html += criarCampo('Descrição', 'f-descricao', item.descricao, 'text', true);
+      html += criarCampo('URL da Imagem', 'f-url_imagem', item.url_imagem);
       break;
 
     case 'lore':
@@ -930,12 +1158,17 @@ function abrirModal(tabela, idRegistro, ramoDefault) {
       html += criarCampo('URL da Imagem (uniforme, armadura, brasão)', 'f-url_imagem', item.url_imagem);
       break;
 
-    case 'casas':
+    case 'casas': {
+      const outrasCasas = (db.casas || []).filter(c => c.id_reino == currentReinoId && c.id_casa != idRegistro);
+      const optsSuserana = '<option value="">— Nenhuma (Casa Principal) —</option>' + outrasCasas.map(c =>
+        `<option value="${c.id_casa}" ${item.id_suserano == c.id_casa ? 'selected' : ''}>${c.nome}</option>`
+      ).join('');
       html += criarCampo('Nome da Casa', 'f-nome', item.nome);
       html += criarCampo('Status (Ex: Real, Vassalo)', 'f-status', item.status);
       html += criarCampo('Lema', 'f-lema', item.lema);
-      html += criarCampo('ID da Casa Suserana (Vazio se for principal)', 'f-id_suserano', item.id_suserano, 'number');
+      html += `<div class="modal-form-group"><label>Casa Suserana (deixe vazio se for casa principal)</label><select id="f-id_suserano" style="${selectStyle}">${optsSuserana}</select></div>`;
       break;
+    }
 
     case 'personagens': {
       const casaAtual = currentCasaId || item.id_casa;
@@ -943,7 +1176,6 @@ function abrirModal(tabela, idRegistro, ramoDefault) {
       const optsSelect = (campo) => '<option value="">— Nenhum —</option>' + membros.map(p =>
         `<option value="${p.id_personagem}" ${item[campo] == p.id_personagem ? 'selected' : ''}>${p.nome}</option>`
       ).join('');
-      const selectStyle = 'width:100%;padding:.5rem;border:1px solid rgba(139,101,16,.4);border-radius:3px;background:var(--cream);color:var(--ink);font-family:var(--fb);';
       html += criarSelect('Sexo', 'f-sexo', item.sexo || 'M', ['M', 'F']);
       html += criarCampo('Nome', 'f-nome', item.nome);
       html += criarCampo('Título / Posto', 'f-titulo', item.titulo);
@@ -964,7 +1196,7 @@ function abrirModal(tabela, idRegistro, ramoDefault) {
     const payload = {};
     
     if(tabela !== 'reinos' && !isEdit) {
-      payload.id_reino = currentReinoId;
+      payload.id_reino = currentReinoId || '';
     }
     if(tabela === 'personagens' && !isEdit && currentCasaId) {
       payload.id_casa = currentCasaId;
@@ -972,9 +1204,19 @@ function abrirModal(tabela, idRegistro, ramoDefault) {
 
     const inputs = corpo.querySelectorAll('input, textarea, select');
     inputs.forEach(inp => {
+      if (inp.type === 'checkbox') return; // reinos envolvidos são coletados à parte
       const key = inp.id.replace('f-', '');
-      payload[key] = inp.value;
+      if (inp.tagName === 'SELECT' && inp.multiple) {
+        payload[key] = Array.from(inp.selectedOptions).map(o => o.value).join(',');
+      } else {
+        payload[key] = inp.value;
+      }
     });
+
+    const reinosMarcados = corpo.querySelectorAll('.chk-reino-envolvido:checked');
+    if (reinosMarcados.length > 0 || corpo.querySelector('.chk-reino-envolvido')) {
+      payload.reinos_ids = Array.from(reinosMarcados).map(c => c.value).join(',');
+    }
 
     try {
       const method = isEdit ? 'PUT' : 'POST';
